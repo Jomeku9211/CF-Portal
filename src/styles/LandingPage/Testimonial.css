@@ -1,0 +1,11 @@
+.Testimonial_Heading_Div{
+    text-align: center;
+    font-size: 38px;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.Testimonial_Heading_Div > h1 > span{
+    color: #F16A23;
+}
+
