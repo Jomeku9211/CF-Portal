@@ -1,0 +1,233 @@
+.DeveloperSkill_Main {
+  width: 60%;
+  height: 100%;
+  border-radius: 8px;
+  cursor:  default;
+}
+
+.DeveloperSkill_Main_Box {
+  display: flex;
+  border-radius: 10px;
+  height: 75%;
+}
+
+.DeveloperSkill_Main_Box_Languages {
+  width: 50%;
+  height: 100%;
+  background: white;
+  border-radius: 10px;
+  border-right: 5px solid #F0F0F0;
+  border-bottom: 5px solid #F0F0F0;
+  padding: 3%;
+}
+
+.Developer_Skills_Box {
+  display: flex;
+  flex-direction: row;
+  gap: 4%;
+  margin-top: 2%;
+}
+
+.languages{
+  height: 40%;
+}
+
+.heading{
+  font-weight: 500;
+  margin-top: 7%;
+  font-size: small;
+}
+
+.DeveloperSkill_Main_Box_Languages_Box1 {
+  display: flex;  
+  flex-direction: row;
+  margin-top: 2%;
+  overflow-x: auto;
+  width: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+p{
+  color: #9F9F9F;
+}
+
+.DeveloperSkill_Main_Box_Languages_Box1 img{
+   height: 50%;
+}
+
+.DeveloperSkill_Main_Box_Languages_Box1::-webkit-scrollbar {
+   display: none
+}
+
+.inner_content{
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  gap: 2px;
+  margin-left: 7%;
+  
+}
+
+.inner_content p{
+  font-size: 10px;
+   color: #2C426B;
+}
+
+.Scroll_Button {
+  background-color: #1010100D;
+  width: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.Scroll_Button img{
+  width: 50%;
+  height: 35%;
+}
+
+.DeveloperSkill_Main_Box_Services {
+  width: 50%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.DeveloperSkill_Main_Box_Cloud {
+  width: 100%;
+  height: 70%;
+  background: white;
+  border-bottom: 5px solid #F0F0F0;
+  border-radius: 12px;
+  padding: 5%;
+}
+
+.DeveloperSkill_Main_Box_Coding {
+  width: 100%;
+  height: 30%;
+  background: white;
+  border-radius: 8px;
+  border-bottom: 5px solid #F0F0F0;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 5%;
+}
+
+.DeveloperSkill_Main_Box_Coding_Box1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  width: 100%;
+  padding: 07px;
+  box-sizing: border-box;
+}
+
+.inner_content1 {
+   padding-left: 4%;
+}
+
+.inner_content1 p {
+  font-size: 10px;
+  font-weight: bold;
+  color: #2C426B;
+}
+
+.DeveloperSkill_Main_Box_Coding_Box1::-webkit-scrollbar {
+  display: none
+}
+
+.Scroll_Button_Coding {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.Scroll_Button_Coding img{
+  width: 100%;
+}
+
+.DeveloperSkill_Main_Box_Bottom_Section {
+  width: 100%;
+  height: 24%;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+}
+
+
+.DeveloperSkill_Main_Box_Bottom_Section_Domain {
+  width: 30%;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  border-right: 5px solid #F0F0F0;
+  padding-top: 2%;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.Developer_Domain_Box{
+  display: flex;
+  font-size: 20px;
+}
+
+.Developer_Domain_Box p{
+  font-size: 11px;
+}
+
+
+
+.DeveloperSkill_Main_Box_Bottom_Section_Offer {
+  width: 70%;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+}
+
+.Developer_Pending_Offer{
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   margin-top: 2%;
+}
+
+.Developer_Shortlist_Offer{
+   display: flex;
+    flex-direction: row;
+    justify-content: center;
+   align-items: center; 
+   gap: 5%;
+  padding: 4%;
+}
+
+.btn1{
+  width: 50%;
+  font-weight: 500;
+  background-color: #326B8F26;
+  border-radius: 7px;
+  padding: 1%;
+  color: #2C426B;
+}
+
+.btn2 {
+  width: 50%;
+  font-weight: 500;
+  background-color: #F16A2326;
+  padding: 1%;
+  border-radius: 7px;
+  color: #F16A23;
+
+}

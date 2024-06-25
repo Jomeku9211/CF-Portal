@@ -1,0 +1,217 @@
+.Developer_Main{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.Developer_Main_Box1{
+    position: absolute;
+    top: 2%;
+    left: 2%;   
+    background: white;
+    width: 18%;
+    border-radius: 2% ;
+    z-index: 10;
+    height: 80vh;
+    box-shadow: 0 0 5px #6495ED ; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Developer_Main_Box1_Filter{
+    display: flex;
+    align-items: center;
+    margin-top: 5%;
+    width: 80%;
+}
+
+.Developer_Main_Box1_Filter>div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#Filter_Para{
+    font-weight: 500;
+    color: black;
+}
+
+.Developer_Main_Box1_Data{
+    display: flex;
+    flex-direction: column;
+    height: 60vh;
+    width: 80%;
+    margin-top: 15%;
+    overflow-y: scroll;
+    gap: 8px;
+}
+
+.Developer_Main_Box1_Data::-webkit-scrollbar {
+         width: 7px;
+}
+
+.Developer_Main_Box1_Data::-webkit-scrollbar-thumb {
+    background-color: #b0b0b0;
+    width: 16px;
+}
+
+.Developer_Main_Box1_Data::-webkit-scrollbar-button:single-button{
+    border-style: solid;
+    height: 10px;
+}
+  
+.Developer_Main_Box1_Data::-webkit-scrollbar-button:single-button:vertical:decrement{
+    border-width: 0px 3px 5px 2px;
+    border-color: transparent transparent #555555 transparent;
+}
+
+.Developer_Main_Box1_Data::-webkit-scrollbar-button:single-button:vertical:increment {
+        border-width: 5px 2px 0px 2px;
+        border-color: #555555 transparent transparent transparent;
+} 
+
+
+.Developer_Main_Box2{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3%;
+    margin-left: -10%;
+}
+
+.Developer_Main_Box2_Stepper{
+    width: 40%;
+    margin-left: 15%; 
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    position: relative;
+}
+
+.Developer_Main_Box2_Profile{
+    width: 75%;
+    height: 70vh;
+    margin-left: 15%;
+    margin-top: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    cursor: grab;
+}
+
+.Developer_Main_Box2_Profile_out{
+    width: 80%;
+    height: 100%;
+    background: #F0F0F0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Developer_Main_Box2_Profile_out_major{
+    width: 95%;
+    height: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px ;
+}
+
+.Developer_Main_Box3{
+    position: absolute;
+    top: 2%;
+    right: 1.5%;   
+    background: white;
+    width: 15%;
+    border-radius: 2% ;
+    z-index: 10;
+    height: 80vh;
+    box-shadow: 0 0 5px #6495ED;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1%;
+}
+
+.Developer_Main_Box3_head{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2%;
+}
+
+.Developer_Main_Box3_head p{
+    color: #326B8F;
+    font-weight: bolder;
+}
+
+.Developer_Main_Box3_head img{
+    width: 15%;
+}
+
+.Developer_Main_Box3_Developers{
+    width: 100%;
+    height: 100%;
+    margin-top: 7%;
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+}
+
+/* Target the droppedComponent when it's a child of Developer_Main_Box3_Developers  */
+.Developer_Main_Box3_Developers .DeveloperCard_Main {
+    width: 100%;
+    height: 50%;
+    border-radius: 6px;
+    box-shadow: 0 0 4px #6495ED;
+    margin-top: 0px;
+}
+
+.blur-background> :not(.Developer_Main_Box4) {
+    filter: blur(5px);
+}
+
+.Developer_Main_Box4>div{
+    width: 16%;
+    height: 28%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20%;
+    z-index: 20;
+    box-shadow: 0 0 8px #6495ED;
+    background-color: #FCFCFC;
+    margin-left: -9%;
+    margin-top: 5%;
+    cursor: pointer;
+}
+
+.Developer_Main_Box4_Card{
+    margin-top: 50%;
+}
+
+.hidden{
+    display: none;
+}
+
+.Developer_Main_Box4_Card_heading{
+    display: flex;
+    justify-content: space-between;
+    gap: 3px;
+    align-items: center;
+    font-weight: bold;
+}

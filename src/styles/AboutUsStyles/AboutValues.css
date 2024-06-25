@@ -1,0 +1,32 @@
+.Aboutvalues_Main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 6%;
+    gap: 4%;
+}
+
+.Aboutvalues_Main_Box1 {
+    width: 30%;
+}
+
+.Aboutvalues_Main_Box1 img {
+    width: 100%;
+}
+
+.Aboutvalues_Main_Box2 {
+    width: 50%;
+}
+
+.Aboutvalues_Main_Box2 h1 {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.Aboutvalues_Main_Box2 p {
+    font-weight: 400;
+    margin-top: 2%;
+}

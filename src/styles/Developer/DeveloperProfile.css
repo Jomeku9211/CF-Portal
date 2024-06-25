@@ -1,0 +1,43 @@
+.DeveloperProfile_Main{
+ width: 40%;
+ height: 100%;
+ background: white;
+ border-radius: 8px;  
+}
+
+.DeveloperProfile_Main_Box{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.LikeImage{
+   display: flex;
+   align-items: center;
+   justify-items: center;
+    position: absolute;
+    top: 1%;
+    left: 4%;
+    width: 6rem;
+}
+
+.LikeImage p{
+  color: black;
+}
+
+.Developer_Personal_Details{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;  
+}
+
+.Developer_Personal_Details p {
+  color: #2C426B;
+  font-size: large;
+  font-weight: 600;
+}

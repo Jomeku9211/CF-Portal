@@ -1,0 +1,75 @@
+.AboutInput_Main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 6%;
+    gap: 4%;
+    }
+
+.AboutInput_Main_Values{
+    width: 20%;
+    height: 100%;
+    background-color: #326B8F;
+    color: white;
+    padding: 5%;
+}
+
+.AboutInput_Main_Values p{
+    color: white;
+}
+
+.AboutInput_Main_Inputs_Box1{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+}
+
+.inputField{
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    width: 70%;
+    margin-left: 6%;
+}
+
+.inputMessage{
+    margin-top: 2;
+    font-size: small;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    width: 100%;
+    padding: 4%;
+    grid-column: span 2;
+    width: calc(100% + 80%);
+}
+
+.btn{
+    background-color: #326B8F;
+    border-radius: 8px;
+    font-size: small;
+    margin-top: 7%;
+    margin-left: 60%;
+    padding: 10px;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    
+.AboutInput_Main_Values {
+        height: 100%;
+        padding: 3%;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px){
+
+    .AboutInput_Main_Values {
+        height: 100%;
+        padding: 4.5%;
+    }
+}

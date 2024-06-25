@@ -1,0 +1,71 @@
+/* this DeveloperCard_Main css for card that show on dragging
+ main content below short Listed is put in the developer.css */
+.DeveloperCard_Main{
+   width: 70%;
+   height: 75%;
+   border-radius: 7px;
+   box-shadow: 0 0 5px #6495ED;
+   margin-top: -20%;
+}
+
+.DeveloperCard_Main_Card{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.DeveloperCard_Main_Card_Text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2%;
+}
+
+.DeveloperCard_Main_Card_Text p:nth-child(1){
+    color: #2C426B;
+    font-weight: 700;
+    font-size: 0.900rem;
+    line-height: 1.25rem;
+    margin-top: 1%;
+}
+
+.DeveloperCard_Main_Card_Text p:nth-child(2) {
+    color: #8B8B8B;
+    font-weight: 700;
+    font-size: 0.700rem;
+    line-height: 1.25rem;
+}
+
+.DeveloperCard_Main_Card_Text p:nth-child(3) {
+    color: #2C426B;
+    margin-top: 5%;
+}
+
+.DeveloperCard_Main_Card_Button{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #F16A23;
+    width: 100%;
+    margin-top: 2%;
+}
+
+.DeveloperCard_Main_Card_Button:hover{
+    background: #F16A23;
+   border-radius: 3px;
+    width: 80%;
+}
+
+.DeveloperCard_Main_Card_Button button{
+  color: #F16A23;
+  margin-top: 1%;
+  font-size: 15px;
+}
+
+.DeveloperCard_Main_Card_Button button:hover {
+    color: white;
+    font-weight: 600;
+}

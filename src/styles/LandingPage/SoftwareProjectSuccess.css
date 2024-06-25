@@ -1,0 +1,342 @@
+.LandingPage_Fourth_Section {
+  margin-top: 10%;
+  background-color: #326B8F;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5%;
+}
+
+.Fourth_Section_Paragraph_Div {
+   margin: auto;
+  text-align: center;
+  width: 50%; 
+}
+
+.Fourth_Section_Paragraph_Div p{
+  color: white;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+
+.Fourth_Section_Boxes {
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  text-align: center;
+  width: 45%;
+}
+
+.Fourth_Section_Boxes .HandShake_Box,
+.Fourth_Section_Boxes .HandCoins_Box,
+.Fourth_Section_Boxes .MagnifyingGlass_Box {
+  margin-top: 5%;
+  width: 30%;
+  height: 24vh;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.Fourth_Section_Logo {
+  width: 30%;
+  max-width: 150px;
+  height: auto;
+}
+
+.Fourth_Section_Boxes p {
+  font-size: 15px;
+  color: black;
+  font-weight: bold;
+  margin-top: 5%;
+}
+
+/* @media (min-width: 1024px) and (max-width: 1439px) {
+  .Fourth_Section_Paragraph_Div {
+    margin: auto;
+    text-align: center;
+    width: 60%;
+  }
+
+  .Fourth_Section_Paragraph {
+    font-size: 25px;
+    color: #326b8f;
+    font-weight: bold;
+  }
+
+  .Fourth_Section_Boxes {
+    margin: auto;
+    text-align: center;
+    width: 55%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .Fourth_Section_Boxes .HandShake_Box,
+  .Fourth_Section_Boxes .HandCoins_Box,
+  .Fourth_Section_Boxes .MagnifyingGlass_Box {
+    margin-top: 10%;
+    width: 32%;
+    height: 28vh;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fourth_Section_Logo {
+    width: 20%;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .Fourth_Section_Boxes p {
+    margin-top: 5%;
+    font-size: 16px;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .Fourth_Section_Paragraph_Div {
+    margin: auto;
+    text-align: center;
+    width: 70%;
+  }
+
+  .Fourth_Section_Paragraph {
+    font-size: 22px;
+    color: #326b8f;
+    font-weight: bold;
+  }
+
+  .Fourth_Section_Boxes {
+    margin: auto;
+    text-align: center;
+    width: 55%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .Fourth_Section_Boxes .HandShake_Box,
+  .Fourth_Section_Boxes .HandCoins_Box,
+  .Fourth_Section_Boxes .MagnifyingGlass_Box {
+    margin-top: 10%;
+    width: 32%;
+    height: 25vh;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fourth_Section_Logo {
+    width: 25%;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .Fourth_Section_Boxes p {
+    margin-top: 5%;
+    font-size: 14px;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 475px) and (max-width: 767px) {
+  .Fourth_Section_Paragraph_Div {
+    margin: auto;
+    text-align: center;
+    width: 90%;
+  }
+
+  .Fourth_Section_Paragraph {
+    font-size: 20px;
+    color: #326b8f;
+    font-weight: bold;
+  }
+
+  .Fourth_Section_Boxes {
+    margin-top: 10%;
+    width: 100%;
+    display: block;
+  }
+
+  .Fourth_Section_Boxes .HandShake_Box,
+  .Fourth_Section_Boxes .HandCoins_Box,
+  .Fourth_Section_Boxes .MagnifyingGlass_Box {
+    width: 26%;
+    height: 20vh;
+    margin: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    margin-top: 4%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fourth_Section_Logo {
+    width: 30%;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .Fourth_Section_Boxes p {
+    font-size: 14px;
+    margin-top: 4%;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 425px) and (max-width: 475px) {
+  .Fourth_Section_Paragraph_Div {
+    margin: auto;
+    text-align: center;
+    width: 90%;
+  }
+
+  .Fourth_Section_Paragraph {
+    font-size: 18px;
+    color: #326b8f;
+    font-weight: bold;
+  }
+
+  .Fourth_Section_Boxes {
+    margin-top: 10%;
+    width: 100%;
+    display: block;
+  }
+
+  .Fourth_Section_Boxes .HandShake_Box,
+  .Fourth_Section_Boxes .HandCoins_Box,
+  .Fourth_Section_Boxes .MagnifyingGlass_Box {
+    width: 30%;
+    height: 18vh;
+    margin: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    margin-top: 4%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fourth_Section_Logo {
+    width: 30%;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .Fourth_Section_Boxes p {
+    font-size: 14px;
+    margin-top: 4%;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 424px) {
+  .Fourth_Section_Paragraph_Div {
+    margin: auto;
+    text-align: center;
+    width: 90%;
+  }
+
+  .Fourth_Section_Paragraph {
+    font-size: 16px;
+    color: #326b8f;
+    font-weight: bold;
+  }
+
+  .Fourth_Section_Boxes {
+    margin-top: 8%;
+    width: 100%;
+    display: block;
+  }
+
+  .Fourth_Section_Boxes .HandShake_Box,
+  .Fourth_Section_Boxes .HandCoins_Box,
+  .Fourth_Section_Boxes .MagnifyingGlass_Box {
+    width: 30%;
+    height: 18vh;
+    margin: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    margin-top: 4%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fourth_Section_Logo {
+    width: 30%;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .Fourth_Section_Boxes p {
+    font-size: 12px;
+    margin-top: 4%;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 375px) {
+  .Fourth_Section_Paragraph_Div {
+    margin: auto;
+    text-align: center;
+    width: 90%;
+  }
+
+  .Fourth_Section_Paragraph {
+    font-size: 14px;
+    color: #326b8f;
+    font-weight: bold;
+  }
+
+  .Fourth_Section_Boxes {
+    margin-top: 10%;
+    width: 100%;
+    display: block;
+  }
+
+  .Fourth_Section_Boxes .HandShake_Box,
+  .Fourth_Section_Boxes .HandCoins_Box,
+  .Fourth_Section_Boxes .MagnifyingGlass_Box {
+    margin-top: 5%;
+    width: 32%;
+    height: 18vh;
+    margin: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    margin-top: 10%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Fourth_Section_Logo {
+    width: 30%;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .Fourth_Section_Boxes p {
+    font-size: 12px;
+    margin-top: 4%;
+    color: black;
+    font-weight: bold;
+  }
+} */

@@ -1,0 +1,77 @@
+.main_Container {
+  text-align: center;
+  /* background-color: rgb(48, 47, 47); */
+  background-image: url("../../assets/LandingPage/MainSec.png");
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  position: relative;
+  color: white; 
+  padding: 20px; 
+  overflow: hidden; 
+}
+
+.main_Container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background: linear-gradient(rgba(34, 48, 75, 0.5), rgba(34, 48, 75, 0.5));  */
+  z-index: 0; 
+  backdrop-filter: blur(1px);
+}
+
+.main_Heading_Div, .Paragraph_div, .button_div {
+  position: relative;
+  z-index: 1;
+}
+
+.main_Heading_Div {
+  text-align: center;
+  font-size: 44px;
+  font-weight: bold;
+}
+
+.main_Heading_Div > h1 {
+  padding-top: 14%;
+  color: white;
+}
+
+.main_Heading_Div > h1 > span {
+  color: #f16a23;
+}
+
+.Paragraph_div {
+  text-align: center;
+}
+
+.Paragraph_div > p {
+  font-size: 16px;
+  color: #ffffff9e;
+}
+
+.Paragraph_div > p > span {
+  color: white;
+  font-weight: bold;
+}
+
+.button_div > button {
+  font-size: 16px;
+  background-color: #f16a23;
+  padding: 10px;
+  width: 29%;
+  color: white;
+  border-radius: 30px;
+}
+
+.button_div {
+  padding-top: 4%;
+  padding-bottom: 14%;
+}
+
+.button_div > button > span {
+  margin-left: 6px;
+  font-size: large;
+}

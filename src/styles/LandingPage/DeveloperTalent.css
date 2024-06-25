@@ -1,0 +1,573 @@
+.LandingPage_Third_Section {
+  margin-top: 8%;
+}
+
+.Third_Section_Main_Div {
+  display: flex;
+  margin-top: 4%;
+}
+
+.LandingPage_Third_Section h1 {
+  font-size: 35px;
+  color: #326b8f;
+  margin: auto;
+  text-align: center;
+  font-weight: bold;
+}
+
+.Image_Section_Div {
+  width: 50%;
+}
+
+.Text_Section_Div {
+  margin-top: 5%;
+  width: 50%;
+}
+
+.CoderFarm_Image {
+  width: 98%;
+  height: auto;
+}
+
+.Text_Section_Box {
+  margin-top: 15%;
+}
+
+.Text_Section_heading {
+  font-size: 30px;
+  font-weight: bold;
+  padding-left: 60px;
+}
+
+.Text_Inner_Box1 {
+  display: flex;
+  gap: 50px;
+  padding-left: 8%;
+}
+.Text_Inner_Box2 {
+  display: flex;
+  margin-top: 40px;
+  gap: 50px;
+  padding-left: 8%;
+}
+
+.Box1 {
+  width: 40%;
+}
+.Box2 {
+  width: 35%;
+}
+.Box3 {
+  width: 37%;
+}
+.Box4 {
+  padding-left: 20px;
+  margin-top: -2%;
+  width: 40%;
+}
+
+.Text_Section_Box h2 {
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.Text_Section_Box p {
+  margin-top: 5px;
+  font-size: 17px;
+  color: black;
+}
+
+.logo {
+  width: 10%;
+  margin-bottom: 5%;
+  margin-left: 10px;
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .LandingPage_Third_Section {
+    margin-top: 10%;
+  }
+
+  .Third_Section_Main_Div {
+    display: flex;
+    margin-top: 2%;
+  }
+
+  .LandingPage_Third_Section h1 {
+    font-size: 30px;
+    color: #326b8f;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+  }
+  .logo {
+    width: 12%;
+    margin-bottom: 5%;
+    margin-left: 10px;
+  }
+  .Text_Section_heading {
+    font-size: 22px;
+    font-weight: bold;
+    padding-left: 35px;
+  }
+  .Text_Section_Box h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .Text_Section_Box p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: black;
+  }
+  .Text_Section_Box {
+    margin-top: 8%;
+  }
+  .Text_Inner_Box1 {
+    display: flex;
+    gap: 50px;
+    padding-left: 8%;
+  }
+  .Text_Inner_Box2 {
+    display: flex;
+    margin-top: 40px;
+    gap: 50px;
+    padding-left: 8%;
+  }
+
+  .Box1 {
+    width: 35%;
+  }
+  .Box2 {
+    width: 38%;
+  }
+  .Box3 {
+    width: 30%;
+  }
+  .Box4 {
+    padding-left: 20px;
+    margin-top: -3%;
+    width: 45%;
+  }
+
+  .CoderFarm_Image {
+    width: 88%;
+    height: auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .Third_Section_Main_Div {
+    display: flex;
+    margin-top: 2%;
+  }
+  .LandingPage_Third_Section {
+    margin-top: 8%;
+  }
+  .LandingPage_Third_Section h1 {
+    font-size: 26px;
+    color: #326b8f;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .Text_Section_heading {
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 26px;
+  }
+  .Text_Section_Box h2 {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .Text_Section_Box p {
+    margin-top: 5px;
+    font-size: 12px;
+    color: black;
+  }
+  .Text_Section_Box {
+    margin-top: 5%;
+  }
+  .Text_Inner_Box1 {
+    display: flex;
+    gap: 40px;
+  }
+  .Text_Inner_Box2 {
+    display: flex;
+    margin-top: 40px;
+    gap: 40px;
+  }
+
+  .Box1 {
+    width: 40%;
+  }
+  .Box2 {
+    width: 40%;
+  }
+  .Box3 {
+    width: 40%;
+  }
+  .Box4 {
+    padding-left: 5px;
+    margin-top: -4%;
+    width: 50%;
+  }
+
+  .CoderFarm_Image {
+    width: 90%;
+    height: auto;
+  }
+  .logo {
+    width: 12%;
+    margin-bottom: 5%;
+    margin-left: 10px;
+  }
+}
+
+@media (min-width: 475px) and (max-width: 767px) {
+  .Image_Section_Div {
+    width: 100%;
+  }
+
+  .Text_Section_Div {
+    margin-top: 5%;
+    width: 100%;
+  }
+  .Third_Section_Main_Div {
+    display: block;
+    margin-top: 2%;
+  }
+  .LandingPage_Third_Section {
+    margin-bottom: 8%;
+    margin-top: 8%;
+  }
+  .LandingPage_Third_Section h1 {
+    font-size: 22px;
+    color: #326b8f;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .Text_Section_heading {
+    font-size: 20px;
+    font-weight: bold;
+    padding-left: 0px;
+    text-align: center;
+  }
+  .Text_Section_Box h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .Text_Section_Box p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: black;
+  }
+  .Text_Section_Box {
+    margin-left: 10%;
+    margin-top: 5%;
+  }
+  .Text_Inner_Box1 {
+    display: block;
+  }
+  .Text_Inner_Box2 {
+    display: block;
+  }
+
+  .Box1 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+  .Box2 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+  .Box3 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+  .Box4 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+
+  .CoderFarm_Image {
+    width: 75%;
+    margin-left: 10%;
+    height: auto;
+  }
+  .logo {
+    width: 10%;
+    margin-left: 45%;
+  }
+}
+
+@media (min-width: 425px) and (max-width: 475px) {
+  .Image_Section_Div {
+    width: 100%;
+  }
+
+  .Text_Section_Div {
+    margin-top: 5%;
+    width: 100%;
+  }
+  .Third_Section_Main_Div {
+    display: block;
+    margin-top: 2%;
+  }
+  .LandingPage_Third_Section {
+    margin-top: 8%;
+    margin-bottom: 18%;
+  }
+  .LandingPage_Third_Section h1 {
+    font-size: 22px;
+    color: #326b8f;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .Text_Section_heading {
+    font-size: 20px;
+    font-weight: bold;
+    padding-left: 0px;
+    text-align: center;
+  }
+  .Text_Section_Box h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .Text_Section_Box p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: black;
+  }
+  .Text_Section_Box {
+    margin-left: 10%;
+    margin-top: 5%;
+  }
+  .Text_Inner_Box1 {
+    display: block;
+  }
+  .Text_Inner_Box2 {
+    display: block;
+  }
+
+  .Box1 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+  .Box2 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+  .Box3 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+  .Box4 {
+    width: 80%;
+    text-align: center;
+    margin-top: 5%;
+  }
+
+  .CoderFarm_Image {
+    width: 75%;
+    margin-left: 10%;
+    height: auto;
+  }
+  .logo {
+    width: 10%;
+    margin-left: 45%;
+  }
+  .logo_bulb {
+    width: 10%;
+    margin-left: 43%;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 424px) {
+  .Image_Section_Div {
+    width: 100%;
+  }
+
+  .Text_Section_Div {
+    margin-top: 5%;
+    width: 100%;
+  }
+  .Third_Section_Main_Div {
+    display: block;
+    margin-top: 2%;
+  }
+  .LandingPage_Third_Section {
+    margin-top: 8%;
+    margin-bottom: 20%;
+  }
+  .LandingPage_Third_Section h1 {
+    font-size: 22px;
+    color: #326b8f;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .Text_Section_heading {
+    font-size: 20px;
+    font-weight: bold;
+    padding-left: 0px;
+    text-align: center;
+  }
+  .Text_Section_Box h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .Text_Section_Box p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: black;
+  }
+  .Text_Section_Box {
+    margin-top: 5%;
+  }
+  .Text_Inner_Box1 {
+    display: block;
+  }
+  .Text_Inner_Box2 {
+    display: block;
+  }
+
+  .Box1 {
+    width: 90%;
+    text-align: center;
+    margin-bottom: 5%;
+  }
+  .Box2 {
+    width: 90%;
+    text-align: center;
+    margin-bottom: 5%;
+  }
+  .Box3 {
+    width: 90%;
+    text-align: center;
+    margin-bottom: 5%;
+  }
+  .Box4 {
+    width: 90%;
+    text-align: center;
+    margin-left: -10px;
+  }
+
+  .CoderFarm_Image {
+    width: 75%;
+    margin-left: 10%;
+    height: auto;
+  }
+  .logo {
+    width: 10%;
+    margin-left: 45%;
+  }
+  .logo_bulb {
+    width: 10%;
+    margin-left: 46%;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 375px) {
+  .Image_Section_Div {
+    width: 100%;
+  }
+
+  .Text_Section_Div {
+    margin-top: 5%;
+    width: 100%;
+  }
+  .Third_Section_Main_Div {
+    display: block;
+    margin-top: 2%;
+  }
+  .LandingPage_Third_Section {
+    margin-top: 8%;
+    margin-bottom: 15%;
+  }
+  .LandingPage_Third_Section h1 {
+    font-size: 18px;
+    color: #326b8f;
+    margin: auto;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .Text_Section_heading {
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 0px;
+    text-align: center;
+  }
+  .Text_Section_Box h2 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .Text_Section_Box p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: black;
+  }
+  .Text_Section_Box {
+    margin-top: 5%;
+  }
+  .Text_Inner_Box1 {
+    display: block;
+  }
+  .Text_Inner_Box2 {
+    display: block;
+  }
+
+  .Box1 {
+    width: 90%;
+    text-align: center;
+    margin-bottom: 10%;
+  }
+  .Box2 {
+    width: 90%;
+    text-align: center;
+    margin-bottom: 10%;
+  }
+  .Box3 {
+    width: 90%;
+    text-align: center;
+    margin-bottom: 10%;
+  }
+  .Box4 {
+    width: 80%;
+    text-align: center;
+    margin-bottom: 10%;
+  }
+
+  .CoderFarm_Image {
+    width: 75%;
+    margin-left: 10%;
+    height: auto;
+  }
+  .logo {
+    width: 8%;
+    margin-left: 45%;
+  }
+  .logo_bulb {
+    width: 8%;
+    margin-left: 48%;
+  }
+}

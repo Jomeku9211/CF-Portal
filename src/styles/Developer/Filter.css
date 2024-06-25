@@ -1,0 +1,16 @@
+.Filter_Main {
+    width: 85%;
+}
+
+.Filter_Main>p{
+   margin-bottom: 5%;  
+}
+
+.Filter_Main_ListItem{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+    font-size: 11px;
+    margin-top: 5%;
+}
