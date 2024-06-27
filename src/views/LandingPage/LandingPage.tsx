@@ -1,4 +1,5 @@
 import AutoSliderimages from "../../components/LandingPage/AutoSliderimages";
+import ContactUs from "../../components/LandingPage/ContactUs";
 import DeveloperTrial from "../../components/LandingPage/DeveloperTrial";
 import Technologies from "../../components/LandingPage/Technologies";
 import Testimonial from "../../components/LandingPage/Testimonial";
@@ -9,6 +10,7 @@ const LandingPage = () => {
       <AutoSliderimages />
       <Technologies />
       <Testimonial/>
+      <ContactUs/>
     </div>
   );
 };
