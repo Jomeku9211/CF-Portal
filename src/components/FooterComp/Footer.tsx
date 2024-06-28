@@ -21,10 +21,11 @@ function Footer() {
           </div>
         </div>
         <div className="Footer_Main_Box2">
-          <p>About company</p>
+          <h4>About company</h4>
           <div>
             <p>Contact Us</p>
             <p>Term of service</p>
+            <p>Privacy Policy</p>
           </div>
         </div>
         <div className="Footer_Main_Box3">
@@ -61,7 +62,7 @@ function Footer() {
           </div>
         </div>
         <div className="Footer_Main_Box4">
-          <p>Contact</p>
+          <p className="contact_text">Contact</p>
           <div className="Footer_Main_Box4_Location">
             <div className="contact">
               <img src={Location} className="Img" />
@@ -90,7 +91,7 @@ function Footer() {
           <p>Made with </p>
           <FaHeart />
         </div>
-        <p>Privacy Policy</p>
+        <p className="policy">Privacy Policy</p>
       </div>
     </div>
   );
