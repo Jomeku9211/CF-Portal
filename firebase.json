@@ -4,17 +4,17 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "redirects": [
       {
-        "source": "www.coderfarm.in",
+        "source": "/www.coderfarm.in",
         "destination": "https://coderfarm.in",
         "type": 301
       },
       {
-        "source": "http://www.coderfarm.in",
+        "source": "/http://www.coderfarm.in",
         "destination": "https://coderfarm.in",
         "type": 301
       },
       {
-        "source": "https://www.coderfarm.in",
+        "source": "/https://www.coderfarm.in",
         "destination": "https://coderfarm.in",
         "type": 301
       }
