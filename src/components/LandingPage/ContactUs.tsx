@@ -12,10 +12,10 @@ const ContactUs = () => {
          <img src={contactImg2} alt="" className="img3"/>
       </div>
       <div className="text_container">
-        <h1>Still Have Questions?</h1>
+        <h1>Not Ready to Commit? Learn More About Us</h1>
         <p>Can’t find the answer you’re looking for? Not sure which course is right for you? Please chat to our friendly team.</p>
 
-        <button >Get in Touch</button>
+        <button>Download Our Free Guide</button>
       </div>
     </div>
     </div>

@@ -7,7 +7,7 @@ import "../../styles/LandingPage/AutoSliderImages.css";
 function AutoSliderimages() {
   return (
     <div data-testid="AutoSliderimagesID"  className="autoSlider_main_container">
-      <h1 className="auto_Slider_Heading"></h1>
+      <h1 className="auto_Slider_Heading">Our Creative Partners</h1>
       <div className="box_Shadow">
         <div className="image_wrapper">
           <img src={tedx} alt="slider_image" />
@@ -21,7 +21,7 @@ function AutoSliderimages() {
         <div className="image_wrapper">
           <img src={LyftedEdible} alt="slider_image" />
         </div>
-        <div className="image_wrapper">
+        <div className="image_smartdata">
           <img src={smartdata} alt="slider_image" />
         </div>
       </div>
