@@ -1,0 +1,88 @@
+.Main_Div{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Trial_Box{
+   width: 60%;
+   margin-top: 7rem;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-items: center;
+   gap: 1.5rem;
+}
+
+.Trial_Box h1{
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.Trial_Box >p{
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.Trial_Box p{
+  color: rgb(87, 82, 82);
+}
+
+.Trial_Advantages{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    margin-top: 2rem;
+    background-color: white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-width: 1px;
+    border-style: solid;
+    border-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0),    /* Start transparent at top left */
+      rgba(0, 0, 0, 1)     /* End black at top right */
+    ) 1;
+    border-image-source: linear-gradient(
+        to left,             /* Bottom border gradient: left to right */
+        rgba(0, 0, 0, 1),     /* Bottom left corner black */
+        rgba(0, 0, 0, 0)      /* Bottom right corner transparent */
+      );
+    border-image-slice: 1; /* Ensure the gradient applies evenly */
+}
+
+.Trial_Advantages_Divs{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+
+.Trial_Advantages_Divs >h2{
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.Trial_Advantages_Divs >p{
+    margin-top: 20px;
+    text-align: center;
+}
+
+.fade-line {
+    width: 3px; 
+    height: 200px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    margin: 20px;
+}
+  
+  .Trial_btn button{
+    background-color: #E25A12;
+    color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+    height:50px;
+  }
