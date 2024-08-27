@@ -6,7 +6,7 @@
 }
 
 .Trial_Box{
-   width: 60%;
+   width: 80%;
    margin-top: 7rem;
    display: flex;
    flex-direction: column;
@@ -63,7 +63,7 @@
 
 .Trial_Advantages_Divs >h2{
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .Trial_Advantages_Divs >p{
