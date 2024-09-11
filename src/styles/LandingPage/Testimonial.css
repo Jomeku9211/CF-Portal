@@ -62,7 +62,6 @@
 .Testimonial_Description {
   width: 280px;
   margin-top: 3%;
-  font-size: 16px;
   white-space: normal;
   font-weight: 400;
   line-height: 30px;
@@ -77,12 +76,45 @@
   margin-top: 3rem;
 }
 
-.Start_btn button{
+/* .Start_btn button{
   background-color: #E25A12;
   color: white;
   padding-left: 20px;
   padding-right: 20px;
-  width: 100%;
+  width: 30rem;
   height:50px;
+  font-size: 1rem;
+} */
+
+ .Start_btn span{
+    margin-left: 1rem;
+  }
+
+
+  .Start_btn button {
+  color: #E25A12;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 30rem;
+  height:40px;
+  font-size: 1rem;
+  margin-top: 2.5rem;
+  background-image: linear-gradient(to right, #6dbae0 -10%, transparent 50%);
+  background-size: 0% 100%;
+  background-position: 0% 100%;
+  transition: background-size 0.5s ease-in-out;
 }
 
+.Start_btn button:hover {
+  background-color: #E25A12;
+  color: white;
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+}
+
+.Start_btn button:active {
+  background-image: linear-gradient(to right, #9b9fa1 50%, transparent 50%);
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}

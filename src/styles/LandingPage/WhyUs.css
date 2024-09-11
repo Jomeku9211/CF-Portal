@@ -1,0 +1,62 @@
+.Main_Div_Whyus{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6rem;
+}
+
+.Whyus_Box{
+   width: 80%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-items: center;
+   gap: 1.5rem;
+}
+
+.Whyus_Box h1{
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.Whyus_Box >p{
+    text-align: center;
+    font-size: 1.1rem;
+  color: rgb(87, 82, 82);
+}
+
+.Whyus_Box p{
+  /* color: rgb(87, 82, 82); */
+}
+
+.Choose_Cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.Cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.Cards h2{
+    font-weight: bold;
+}
+
+.Cards p{
+  color: rgb(87, 82, 82);
+  font-size: 0.9rem;
+}
+
+.Choose_Cards img{
+    width: 16%;
+}

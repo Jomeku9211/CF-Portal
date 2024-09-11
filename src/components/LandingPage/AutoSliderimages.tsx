@@ -2,11 +2,12 @@ import tedx from "./../../assets/LandingPage/Auto Slider Images/tedx.png";
 import IIT from "./../../assets/LandingPage/Auto Slider Images/IITR.png";
 import LyftedEdible from "./../../assets/LandingPage/Auto Slider Images/LyftedEdible.png";
 import smartdata from "./../../assets/LandingPage/Auto Slider Images/Smartdata.png";
-import canva from "./../../assets/LandingPage/Auto Slider Images/Canva.png";
+// import canva from "../../assets/LandingPage/Auto Slider Images/canva.png";
+import canva from "./../../assets/LandingPage/Auto Slider Images/canva.png";
 import "../../styles/LandingPage/AutoSliderImages.css";
 function AutoSliderimages() {
   return (
-    <div data-testid="AutoSliderimagesID"  className="autoSlider_main_container">
+    <div data-testid="AutoSliderimagesID" className="autoSlider_main_container">
       <h1 className="auto_Slider_Heading">Our Creative Partners</h1>
       <div className="box_Shadow">
         <div className="image_wrapper">

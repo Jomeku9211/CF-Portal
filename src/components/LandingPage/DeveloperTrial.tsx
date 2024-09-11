@@ -1,26 +1,46 @@
 import "../../styles/LandingPage/DeveloperTrial.css";
+import Profile from "../../assets/LandingPage/profile.png";
+import tedx from "./../../assets/LandingPage/Auto Slider Images/tedx.png";
+import IIT from "./../../assets/LandingPage/Auto Slider Images/IITR.png";
+import LyftedEdible from "./../../assets/LandingPage/Auto Slider Images/LyftedEdible.png";
+import smartdata from "./../../assets/LandingPage/Auto Slider Images/Smartdata.png";
+import canva from "./../../assets/LandingPage/Auto Slider Images/canva.png";
+import indore from "./../../assets/LandingPage/Auto Slider Images/indorecity.png";
+
 const DeveloperTrial = () => {
   return (
-    <>
+    <div>
       <div className="main_Container" data-testid="DeveloperTrialId">
-        <div className="main_Heading_Div">
-          <h1>
-            Need Top - Tier Developers? <br /> <span> We Deliver !!</span>
-          </h1>
-        </div>
-        <div className="Paragraph_div">
-          <p>
-            Coderfarm “Your One-Stop Shop for Scalable Development Teams”,{" "}
-            <br /> <span>Build Your Dream Team</span>
+        <div className="Main_Content">
+          <p className="content-1">
+            <span>Transparent</span> Hiring, <br />
+            Top Remote <span>Coder</span>
           </p>
+          <p className="content-2">
+            “For leaders who demand <span>excellence</span>, hire top remote
+            developers with a process that’s transparent,{" "}
+            <span>personalized</span>, and rooted in best practices.”
+          </p>
+          <div className="Role_btn">
+            <button>Explore Developer Profiles</button>
+          </div>
+          <p>Personalised Hiring Request</p>
         </div>
-        <div className="button_div">
-          <button>
-            Book your Free Strategy Session <span>&#8599;</span>
-          </button>
+        <div className="Profile_Img">
+          <img src={Profile} alt="" />
         </div>
       </div>
-    </>
+      <div className="Clients_Container">
+        <div className="Clients_Container_img">
+          <img src={tedx} />
+          <img src={canva} className="canvaImg" />
+          <img src={indore} />
+          <img src={IIT} />
+          <img src={smartdata} className="canvaImg" />
+          <img src={LyftedEdible} className="canvaImg" />
+        </div>
+      </div>
+    </div>
   );
 };
 
