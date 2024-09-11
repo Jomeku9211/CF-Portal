@@ -7,7 +7,6 @@ import smartdata from "./../../assets/LandingPage/Auto Slider Images/Smartdata.p
 import canva from "./../../assets/LandingPage/Auto Slider Images/canva.png";
 import indore from "./../../assets/LandingPage/Auto Slider Images/indorecity.png";
 
-
 const DeveloperTrial = () => {
   return (
     <div>
