@@ -1,46 +1,73 @@
+.Upper_Main{
+  width: 100%;
+  background-color: #C0D3F7;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.2rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  font-size: 0.8rem;
+}
+
+.Upper_Main_items{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.Upper_Main_items>p{
+  color: rgb(65, 62, 62);
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.Upper_Main > p{
+  font-weight: 500;
+  color: black;
+  display: flex;
+  align-items: center;
+}
+
 .Header_Main {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  height: 80px;
+  height: 100%;
+  padding: 0.9rem;
   border-bottom: 1px solid grey;
 }
 
 .Header_Main_Logo {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
   width: 22%;
-  height: 100%;
+}
+
+.Header_LogoLink {
+  display: flex;
+  width: 50%;
+}
+
+.Header_LogoLink > img {
+  width: 100%;
+  object-fit: contain;
+  margin-left: 3rem;
 }
 
 .Header_Main_Components {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
-  width: 70%;
-  height: 100%;
+  padding-right: 2rem;
 }
 
-.Header_LogoLink {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  width: 40%;
-  height: 100%;
-  margin-left: 10%;
-}
 
-.Header_Main_Logo > img {
-  width: 40%;
-  aspect-ratio: 3/2;
-  object-fit: contain;
-  margin-left: 3rem;
-}
 
 .Header_Main_Components > ul {
   list-style: none;
@@ -48,15 +75,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
-}
-
-.Header_Main_Components > ul > li {
-  margin-left: 6%;
-  font-size: 16px;
-}
-.Header_Main_Components > ul {
-  margin-left: 30%;
+  gap: 2rem;
 }
 
 .NavLink {
@@ -66,13 +85,12 @@
 }
 
 .Trial_Button {
-  width: 150px;
-  height: auto;
-  border-radius: 6px;
-  padding: 10px;
+  width: 100%;
+  font-size: 0.95rem;
+  padding: 0.4em;
   color: white;
   background-color: #f16a23;
-  margin-top: 5%;
+  margin-top: 0;
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {

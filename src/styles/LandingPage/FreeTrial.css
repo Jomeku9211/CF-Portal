@@ -69,6 +69,7 @@
 .Trial_Advantages_Divs >p{
     margin-top: 20px;
     text-align: center;
+   font-size: 0.9rem;
 }
 
 .fade-line {
@@ -78,11 +79,44 @@
     margin: 20px;
 }
   
-  .Trial_btn button{
+  /* .Trial_btn button{
     background-color: #E25A12;
     color: white;
     padding-left: 20px;
     padding-right: 20px;
-    width: 100%;
+    width: 30rem;
     height:50px;
+    font-size: 1rem;
+  } */
+
+  .Trial_btn span{
+    margin-left: 1rem;
   }
+
+  .Trial_btn button {
+  color: #E25A12;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 30rem;
+  height:40px;
+  font-size: 1rem;
+  margin-top: 2.5rem;
+  background-image: linear-gradient(to right, #6dbae0 -10%, transparent 50%);
+  background-size: 0% 100%;
+  background-position: 0% 100%;
+  transition: background-size 0.5s ease-in-out;
+}
+
+.Trial_btn button:hover {
+  background-color: #E25A12;
+  color: white;
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+}
+
+.Trial_btn button:active {
+  background-image: linear-gradient(to right, #9b9fa1 50%, transparent 50%);
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Role from "../../../styles/LandingPage/Role";
+import Role from "../../../components/LandingPage/Role";
 
 test("Rendering Role Component", () => {
   render(<Role />);

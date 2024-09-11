@@ -1,0 +1,131 @@
+.Role_Container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Role_MainDiv h1{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5rem;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.Role_cards{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6rem;
+    margin-top: 2rem;
+}
+
+.Role_cards img{
+    width: 50%;
+}
+
+.Role_cards :nth-child(3){
+    background-color: #ffa60059;
+    border-color: #E15A12;
+}
+
+.card{
+    border: 2px solid #dae0e2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 8px;
+    height: 8rem;
+    width: 10rem;
+    border-radius: 10px;
+}
+
+.Prob_Sol_Div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding-left: 10rem;
+  padding-right: 10rem;
+  margin-top: 2rem;
+}
+
+.Prob_Sol_Div1{
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #9b9fa1;
+   border-radius: 10px;
+   padding: 1rem;
+}
+
+.Prob_Sol_Div1 h2{
+   font-weight: bolder;
+   font-size: 1.3rem;
+}
+
+.Prob_Sol_Div1 p{
+   font-size: 0.9rem;
+   color: rgb(39, 38, 38);  
+}
+
+.Role_btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* .Role_btn button{
+    background-color: #ffa60059;
+    color: #E25A12;
+    color: black;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 30rem;
+    height:50px;
+    font-size: 1rem;
+    margin-top: 2.5rem;
+  } */
+
+  .Role_btn span{
+    margin-left: 1rem;
+  }
+
+  /* .Role_btn button:hover {
+    background-color: #E25A12;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.5s ease-in-out;
+  } */
+
+.Role_btn button {
+  color: #E25A12;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 30rem;
+  height:40px;
+  font-size: 1rem;
+  margin-top: 2.5rem;
+  background-image: linear-gradient(to right, #6dbae0 -10%, transparent 50%);
+  background-size: 0% 100%;
+  background-position: 0% 100%;
+  transition: background-size 0.5s ease-in-out;
+}
+
+.Role_btn button:hover {
+  background-color: #E25A12;
+  color: white;
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+}
+
+.Role_btn button:active {
+  background-image: linear-gradient(to right, #9b9fa1 50%, transparent 50%);
+  background-size: 100% 100%;
+  background-position: 100% 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
