@@ -4,8 +4,8 @@ import tedx from "./../../assets/LandingPage/Auto Slider Images/tedx.png";
 import IIT from "./../../assets/LandingPage/Auto Slider Images/IITR.png";
 import LyftedEdible from "./../../assets/LandingPage/Auto Slider Images/LyftedEdible.png";
 import smartdata from "./../../assets/LandingPage/Auto Slider Images/Smartdata.png";
-import canva from "./../../assets/LandingPage/Auto Slider Images/canva.png";
 import indore from "./../../assets/LandingPage/Auto Slider Images/indorecity.png";
+import canvas from "../../assets/LandingPage/canvass.png";
 
 const DeveloperTrial = () => {
   return (
@@ -33,7 +33,7 @@ const DeveloperTrial = () => {
       <div className="Clients_Container">
         <div className="Clients_Container_img">
           <img src={tedx} />
-          <img src={canva} className="canvaImg" />
+          <img src={canvas} className="canvaImg" />
           <img src={indore} />
           <img src={IIT} />
           <img src={smartdata} className="canvaImg" />
