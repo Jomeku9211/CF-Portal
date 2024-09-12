@@ -1,0 +1,90 @@
+.Role_Main_Div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    background-color: #DFE9FB;
+    margin-top: 5rem;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.Heading{
+    color: black;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.Role_Div{
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #FAFAFA;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.role{
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.Role_Text{
+      width: 60%;
+      color: #4e4b4b;
+}
+
+.Role_Text span{
+    color: #F16A23;
+}
+
+.Role_Text span span{
+    color: #e75608;
+    font-weight: bold;
+}
+
+.role :nth-child(1){
+  color: black;
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+.Developer_Div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+}
+
+.Developer_Div img{
+    width: 20%;
+}
+
+.Developer_Div div{
+    width: 50%;
+}
+
+.Developer_Div_Text{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.Developer_Div_Text p{
+    color: rgb(43, 41, 41);
+}
+
+.Developer_Div_Text span{
+    font-weight: bold;
+}
+
+.Developer_Div_Text :nth-child(3) span{
+    color: #F16A23;;
+}
