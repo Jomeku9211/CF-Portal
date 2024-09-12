@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import AutoSliderimages from "../../../components/LandingPage/AutoSliderimages";
+import AutoSliderimages from "../../../components/LandingPage/TrustedClients";
 
 global.ResizeObserver = jest.fn(() => ({
   observe: jest.fn(),
@@ -8,9 +8,8 @@ global.ResizeObserver = jest.fn(() => ({
   disconnect: jest.fn(),
 }));
 
-
 test("AutoSliderImage component testing ", () => {
-  render(<AutoSliderimages/>);
+  render(<AutoSliderimages />);
 
   const AutoSlider = screen.getByTestId("AutoSliderimagesID");
   expect(AutoSlider).toBeInTheDocument();
