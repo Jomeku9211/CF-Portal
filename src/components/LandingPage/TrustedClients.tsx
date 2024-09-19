@@ -8,10 +8,6 @@ import "../../styles/LandingPage/TrustedClients.css";
 function TrustedClients() {
   return (
     <div data-testid="AutoSliderimagesID" className="main_container">
-      <div className="Head">
-        <h1>Clients Who</h1>
-        <p>Trust Us</p>
-      </div>
       <div className="Cleints_Logo">
         <img src={tedx} alt="slider_image" />
         <img src={canvas} alt="slider_image" />

@@ -1,6 +1,5 @@
 import "../../styles/LandingPage/RoleInfo.css";
 import Developer from "../../assets/LandingPage/developer.png";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 const RoleInfoCard = () => {
   return (
@@ -8,26 +7,26 @@ const RoleInfoCard = () => {
       <p className="Heading">Let’s make it easier together</p>
       <div className="Role_Div">
         <div className="role">
-          <p>
-            <span>
-              <PlayArrowIcon />
-            </span>
-            CTO
-          </p>
+          <p>CTO</p>
           <p>Agency Owner</p>
           <p>Senior Developer</p>
         </div>
-        <p className="Role_Text">
-          You’re struggling to find developers{" "}
-          <span>
-            who can match your high <span>code quality standards</span>
-          </span>{" "}
-          without
-          <span>consuming too much of your valuable time.</span>
-        </p>
+        <div className="Role_Text">
+          <p>
+            You’re struggling to find developers who can match your
+            <span>
+              high code quality standards without consuming too much time.
+            </span>
+          </p>
+          <p>
+            It is a long established fact that a reader will be distracted by
+            the readable content of a page when looking at its layout. The point
+            of using Lorem Ipsum is that it has a more-or-less normal
+            distribution of letters, as opposed to using.
+          </p>
+        </div>
       </div>
       <div className="Developer_Div">
-        <img src={Developer} className="" />
         <div className="Developer_Div_Text">
           <p>
             You’re under <span>immense pressure to deliver software</span>{" "}
@@ -48,6 +47,7 @@ const RoleInfoCard = () => {
             reviews.
           </p>
         </div>
+        <img src={Developer} className="" />
       </div>
     </div>
   );
