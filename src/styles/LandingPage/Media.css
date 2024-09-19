@@ -1,0 +1,28 @@
+.Media_Main_Div{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-top: -1rem;
+  padding: 5rem;
+}
+
+.Media_Heading p{
+  color: black;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.Media_Partners {
+  margin-top: 2.5rem;
+}
+
+.Media_Partners_Logos{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5rem;
+}
+
+.Media_Partners_Logos img{
+    width: 14%;
+}
