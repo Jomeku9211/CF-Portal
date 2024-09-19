@@ -1,14 +1,16 @@
 .Testimonial_main_Container{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 5rem;
+  align-items: end;
+  margin-top: -1rem;
+  padding: 5rem;
 }
 
 .Heading{
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  /* align-items: end; */
 }
 
 .Heading p{
@@ -37,7 +39,6 @@
 }
 
 .Testimonial_Box {
-  width: 23%;
   border: 1.5px solid rgb(204, 198, 198);
   padding: 1rem;
   border-radius: 25px;

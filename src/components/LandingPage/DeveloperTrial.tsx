@@ -1,11 +1,5 @@
 import "../../styles/LandingPage/DeveloperTrial.css";
 import Profile from "../../assets/LandingPage/profile.png";
-import tedx from "./../../assets/LandingPage/Auto Slider Images/tedx.png";
-import IIT from "./../../assets/LandingPage/Auto Slider Images/IITR.png";
-import LyftedEdible from "./../../assets/LandingPage/Auto Slider Images/LyftedEdible.png";
-import smartdata from "./../../assets/LandingPage/Auto Slider Images/Smartdata.png";
-import indore from "./../../assets/LandingPage/Auto Slider Images/indorecity.png";
-import canvas from "../../assets/LandingPage/canvass.png";
 
 const DeveloperTrial = () => {
   return (
@@ -28,16 +22,6 @@ const DeveloperTrial = () => {
         </div>
         <div className="Profile_Img">
           <img src={Profile} alt="" />
-        </div>
-      </div>
-      <div className="Clients_Container">
-        <div className="Clients_Container_img">
-          <img src={tedx} />
-          <img src={canvas} className="canvaImg" />
-          <img src={indore} />
-          <img src={IIT} />
-          <img src={smartdata} className="canvaImg" />
-          <img src={LyftedEdible} className="canvaImg" />
         </div>
       </div>
     </div>

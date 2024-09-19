@@ -15,9 +15,9 @@ const LandingPage = () => {
       style={{ backgroundColor: "#FAFAFA" }}
     >
       <DeveloperTrial />
+      <TrustedClients />
       <RoleInfoCard />
       <Testimonial />
-      <TrustedClients />
       <Role />
       <WhyUs />
       <FreeTrial />
