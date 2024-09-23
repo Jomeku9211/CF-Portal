@@ -1,4 +1,4 @@
-import {  FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { GoArrowUpRight } from "react-icons/go";
 import "../../styles/Footerstyles/Footer.css";
 import Linkedin from "../../assets/LandingPage/linkedin.png";
@@ -8,16 +8,17 @@ import Facebook from "../../assets/LandingPage/facebook.png";
 import Location from "../../assets/LandingPage/location.png";
 import Phone from "../../assets/LandingPage/phoneNo.png";
 import Email from "../../assets/LandingPage/email.png";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
     <div className="Footer_Main" data-testid="FooterId">
       <div className="Footer_Main_UpperSection">
         <div className="Footer_Main_Box1">
-          <p>Enhance your team and challenge  the deadline!</p>
+          <p>Enhance your team and challenge the deadline!</p>
           <div className="">
             <p>Get Free Trial</p>
-            <GoArrowUpRight width={120}/>
+            <GoArrowUpRight width={120} />
           </div>
         </div>
         <div className="Footer_Main_Box2">
@@ -25,7 +26,9 @@ function Footer() {
           <div>
             <p>Contact Us</p>
             <p>Term of service</p>
-            <p>Privacy Policy</p>
+            <Link to={"/privacypolicy"}>
+              <p>Privacy Policy</p>
+            </Link>
           </div>
         </div>
         <div className="Footer_Main_Box3">

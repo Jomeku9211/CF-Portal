@@ -7,6 +7,7 @@ import Testimonial from "../../components/LandingPage/Testimonial";
 import WhyUs from "../../components/LandingPage/WhyUs";
 import TrustedClients from "../../components/LandingPage/TrustedClients";
 import Media from "../../components/LandingPage/Media";
+import DevelopersProfile from "../../components/LandingPage/DevelopersProfile";
 
 const LandingPage = () => {
   return (
@@ -20,6 +21,7 @@ const LandingPage = () => {
       <RoleInfoCard />
       <Testimonial />
       <Media />
+      <DevelopersProfile />
       <Role />
       <WhyUs />
       <FreeTrial />

@@ -1,0 +1,7 @@
+.Privacy_Main_Div{
+    padding: 3%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
