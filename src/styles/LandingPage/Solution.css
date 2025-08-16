@@ -29,12 +29,13 @@
 .solution-image {
   width: 350px;
   height: 350px;
-  background-color: #FEF0E9;
   border-radius: 50%;
   position: absolute;
   left: 24px;
   top: 40px;
   box-shadow: 0 32px 64px rgba(0, 0, 0, 0.14);
+  object-fit: cover;
+  object-position: center;
 }
 
 /* Floating Icon Buttons */

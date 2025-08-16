@@ -4,8 +4,8 @@ import '../../styles/LandingPage/Hero.css';
 const Hero = () => {
   const navigate = useNavigate();
 
-  const handleExploreDevelopers = () => {
-    navigate('/auth');
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   return (
@@ -25,9 +25,9 @@ const Hero = () => {
           <div className="hero-cta-section">
             <button 
               className="hero-cta-button"
-              onClick={handleExploreDevelopers}
+              onClick={handleLogin}
             >
-              <span>Explore Developer Profiles</span>
+              <span>Login</span>
               <svg className="arrow-icon" width="19" height="19" viewBox="0 0 19 19" fill="none">
                 <path d="M3.14 4.13L13.75 4.13M13.75 4.13L13.75 14.74M13.75 4.13L4.13 13.75" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

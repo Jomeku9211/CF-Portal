@@ -1,4 +1,7 @@
 import '../../styles/LandingPage/BonusBenefits.css';
+import MagnifyingGlass from '../../assets/LandingPage/Bonus/MagnifyingGlass.png';
+import FairAndTransparent from '../../assets/LandingPage/Bonus/Fair and Transparent Image.png';
+import WinningHandshake from '../../assets/LandingPage/Bonus/Winning handshake.png';
 
 const BonusBenefits = () => {
   return (
@@ -7,19 +10,17 @@ const BonusBenefits = () => {
         {/* Header */}
         <div className="bonus-benefits-header">
           <h2 className="bonus-benefits-title">Bonus Benefits</h2>
-          <p className="bonus-benefits-subtitle">How we match you with Top Talent</p>
         </div>
         
         {/* Process Cards */}
         <div className="process-cards">
           {/* Card 1: Culture Fit 1st */}
           <div className="process-card">
-            <h3 className="process-title">Culture Fit 1st</h3>
+            <div className="process-icon">
+              <img src={MagnifyingGlass} alt="Culture Fit" className="icon-image" />
+            </div>
             <div className="process-content">
-              <div className="process-image">
-                {/* Placeholder for image */}
-                <div className="image-placeholder"></div>
-              </div>
+              <h3 className="process-title">Culture Fit 1st</h3>
               <p className="process-description">
                 1st Get matched with developers who resonate with your team's values from day one.
               </p>
@@ -31,12 +32,11 @@ const BonusBenefits = () => {
           
           {/* Card 2: Fair & Transparent */}
           <div className="process-card">
-            <h3 className="process-title">Fair & Transparent</h3>
+            <div className="process-icon">
+              <img src={FairAndTransparent} alt="Fair & Transparent" className="icon-image" />
+            </div>
             <div className="process-content">
-              <div className="process-image">
-                {/* Placeholder for image */}
-                <div className="image-placeholder"></div>
-              </div>
+              <h3 className="process-title">Fair & Transparent</h3>
               <p className="process-description">
                 See real Feedback & Reputation Scores from verified projects—no more guesswork.
               </p>
@@ -48,12 +48,11 @@ const BonusBenefits = () => {
           
           {/* Card 3: Win-Win Hiring */}
           <div className="process-card">
-            <h3 className="process-title">Win–Win Hiring</h3>
+            <div className="process-icon">
+              <img src={WinningHandshake} alt="Win-Win Hiring" className="icon-image" />
+            </div>
             <div className="process-content">
-              <div className="process-image">
-                {/* Placeholder for image */}
-                <div className="image-placeholder"></div>
-              </div>
+              <h3 className="process-title">Win–Win Hiring</h3>
               <p className="process-description">
                 Both sides are motivated to be honest and do great work because trust is rewarded.
               </p>

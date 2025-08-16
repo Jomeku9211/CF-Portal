@@ -1,4 +1,5 @@
 import '../../styles/LandingPage/Solution.css';
+import solutionImg from '../../assets/LandingPage/solutionImg.png';
 
 const Solution = () => {
   return (
@@ -7,7 +8,7 @@ const Solution = () => {
         {/* Left Content - Image with Floating Icons */}
         <div className="solution-image-section">
           <div className="solution-image-container">
-            <div className="solution-image"></div>
+            <img src={solutionImg} alt="Solution" className="solution-image" />
             
             {/* Floating Icon Buttons */}
             <div className="floating-icon-button icon-1">

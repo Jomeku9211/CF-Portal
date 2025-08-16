@@ -213,9 +213,6 @@ const AuthPage = () => {
             </form>
 
             <div className="social-auth">
-              <div className="divider">
-                <span>or continue with</span>
-              </div>
               <div className="social-buttons">
                 <button type="button" className="social-btn google">
                   <span>Google</span>

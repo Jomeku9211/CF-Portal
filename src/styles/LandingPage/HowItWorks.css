@@ -74,46 +74,15 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 12px 16px rgba(0, 0, 0, 0.08);
 }
 
-/* Floating Elements for Card 3 */
-.floating-avatar {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.avatar-1 {
-  left: 52px;
-  top: 78px;
-}
-
-.avatar-2 {
-  right: 52px;
-  top: 78px;
-}
-
-.avatar-image {
-  width: 64px;
-  height: 64px;
-  background-color: #FEF0E9;
-  border: 1px solid #D4D9E1;
-  border-radius: 50%;
+.process-step-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 12px 16px rgba(0, 0, 0, 0.08);
 }
 
-.avatar-label {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
-  font-weight: 500;
-}
 
-.floating-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
 
 .process-description {
   font-size: 16px;

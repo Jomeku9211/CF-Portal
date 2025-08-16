@@ -9,49 +9,65 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
 }
 
-/* Main Content */
-.benefits-content {
-  margin-bottom: 48px;
+/* Header */
+.bonus-benefits-header {
+  text-align: center;
 }
 
-.benefits-heading {
+.bonus-benefits-title {
   font-size: 48px;
   font-weight: 700;
   color: #F16A23;
-  text-align: center;
-  margin: 0 0 32px 0;
+  margin: 0;
   line-height: 1.2;
 }
 
-.benefits-cards {
+/* Process Cards */
+.process-cards {
   display: flex;
   gap: 48px;
   justify-content: space-between;
+  align-items: flex-start;
 }
 
-.benefit-card {
+.process-card {
   flex: 1;
   max-width: 298px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: 12px;
 }
 
-.benefit-icon {
+.process-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 12px;
 }
 
-.benefit-content {
+.icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.process-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.benefit-title {
+.process-title {
   font-size: 28px;
   font-weight: 600;
   color: #020303;
@@ -59,11 +75,19 @@
   line-height: 1.2;
 }
 
-.benefit-description {
+.process-description {
   font-size: 16px;
   color: #020303;
   line-height: 1.6;
   margin: 0;
+}
+
+/* Process Divider */
+.process-divider {
+  width: 0;
+  height: 150px;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #F16A23 50%, rgba(255,255,255,0) 100%);
+  margin: 36px 0;
 }
 
 /* CTA Section */
@@ -85,6 +109,7 @@
   gap: 12px;
   box-shadow: 0 32px 64px rgba(0, 0, 0, 0.14);
   transition: all 0.3s ease;
+  margin: 0 auto;
 }
 
 .cta-button:hover {
@@ -106,37 +131,49 @@
     padding: 0 32px;
   }
   
-  .benefits-cards {
+  .process-cards {
     gap: 32px;
+  }
+  
+  .process-card {
+    max-width: 280px;
   }
 }
 
 @media (max-width: 1024px) {
-  .benefits-cards {
+  .bonus-benefits-section {
+    padding: 64px 0;
+  }
+  
+  .process-cards {
     flex-direction: column;
     align-items: center;
     gap: 48px;
   }
   
-  .benefit-card {
-    max-width: 400px;
+  .process-card {
+    max-width: 500px;
+  }
+  
+  .bonus-benefits-title {
+    font-size: 36px;
+  }
+  
+  .process-divider {
+    display: none;
   }
 }
 
 @media (max-width: 768px) {
-  .bonus-benefits-section {
-    padding: 64px 0;
-  }
-  
   .bonus-benefits-container {
     padding: 0 24px;
   }
   
-  .benefits-heading {
-    font-size: 36px;
+  .bonus-benefits-title {
+    font-size: 28px;
   }
   
-  .benefit-title {
+  .process-title {
     font-size: 24px;
   }
   
@@ -151,16 +188,11 @@
     padding: 0 16px;
   }
   
-  .benefits-heading {
-    font-size: 28px;
+  .bonus-benefits-title {
+    font-size: 24px;
   }
   
-  .benefit-card {
+  .process-card {
     max-width: 100%;
-  }
-  
-  .cta-button {
-    width: 100%;
-    justify-content: center;
   }
 }

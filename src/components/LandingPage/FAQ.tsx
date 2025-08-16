@@ -76,7 +76,7 @@ const FAQ = () => {
                   </svg>
                 </div>
               </div>
-              <div className="divider"></div>
+
               {openQuestions.includes(item.id) && (
                 <div className="faq-answer">
                   <p>{item.answer}</p>

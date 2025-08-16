@@ -1,4 +1,7 @@
 import '../../styles/LandingPage/HowItWorks.css';
+import HowItWorkImg1 from '../../assets/LandingPage/HowITworks/HowItWorkImg1.png';
+import HowItWorkImg2 from '../../assets/LandingPage/HowITworks/HowItWorkImg2.png';
+import HowItWorkImg3 from '../../assets/LandingPage/HowITworks/HowItWorkImg3.png';
 
 const HowItWorks = () => {
   return (
@@ -17,8 +20,7 @@ const HowItWorks = () => {
             <h3 className="process-title">Define Your Fit</h3>
             <div className="process-content">
               <div className="process-image">
-                {/* Placeholder for image */}
-                <div className="image-placeholder"></div>
+                <img src={HowItWorkImg1} alt="Define Your Fit" className="process-step-image" />
               </div>
               <p className="process-description">
                 Create Job Roles & Share your company's values, project needs, and work style—let us understand your DNA.
@@ -31,8 +33,7 @@ const HowItWorks = () => {
             <h3 className="process-title">Meet Your Matches</h3>
             <div className="process-content">
               <div className="process-image">
-                {/* Placeholder for image */}
-                <div className="image-placeholder"></div>
+                <img src={HowItWorkImg2} alt="Meet Your Matches" className="process-step-image" />
               </div>
               <p className="process-description">
                 Review a shortlist of top-fit developers, with honest reputation scores/ Match Rate and project feedback.
@@ -45,23 +46,7 @@ const HowItWorks = () => {
             <h3 className="process-title">Build & Grow</h3>
             <div className="process-content">
               <div className="process-image">
-                {/* Placeholder for image with floating elements */}
-                <div className="image-placeholder">
-                  <div className="floating-avatar avatar-1">
-                    <div className="avatar-image"></div>
-                    <span className="avatar-label">You</span>
-                  </div>
-                  <div className="floating-avatar avatar-2">
-                    <div className="avatar-image"></div>
-                    <span className="avatar-label">Developer</span>
-                  </div>
-                  <div className="floating-icon">
-                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                      <path d="M7.5 10.5L37.5 10.5M37.5 10.5L37.5 36M37.5 10.5L7.5 36" stroke="#F16A23" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M0.001 9.001L47.995 9.001M47.995 9.001L47.995 42M47.995 9.001L0.001 42" stroke="#F16A23" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                </div>
+                <img src={HowItWorkImg3} alt="Build & Grow" className="process-step-image" />
               </div>
               <p className="process-description">
                 Make confident hires backed by transparent data—enjoy lower fees as your reputation rises.

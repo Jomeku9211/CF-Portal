@@ -80,6 +80,14 @@
   box-shadow: 0 32px 64px rgba(0, 0, 0, 0.14);
 }
 
+.profile-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.14);
+}
+
 .profile-info {
   display: flex;
   flex-direction: column;

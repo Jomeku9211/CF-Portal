@@ -1,4 +1,7 @@
 import '../../styles/LandingPage/TrustedLeaders.css';
+import Person1 from '../../assets/LandingPage/Testimonial_images/Person1.png';
+import Person2 from '../../assets/LandingPage/Testimonial_images/Person2.png';
+import Person3 from '../../assets/LandingPage/Testimonial_images/Person3.png';
 
 const TrustedLeaders = () => {
   return (
@@ -19,8 +22,7 @@ const TrustedLeaders = () => {
             <div className="testimonial-header">
               <div className="profile-section">
                 <div className="profile-image">
-                  {/* Placeholder for profile image */}
-                  <div className="image-placeholder"></div>
+                  <img src={Person1} alt="James Herwitz" className="profile-photo" />
                 </div>
                 <div className="profile-info">
                   <h3 className="profile-name">James Herwitz</h3>
@@ -46,8 +48,7 @@ const TrustedLeaders = () => {
             <div className="testimonial-header">
               <div className="profile-section">
                 <div className="profile-image">
-                  {/* Placeholder for profile image */}
-                  <div className="image-placeholder"></div>
+                  <img src={Person2} alt="Hanna Botosh" className="profile-photo" />
                 </div>
                 <div className="profile-info">
                   <h3 className="profile-name">Hanna Botosh</h3>
@@ -73,8 +74,7 @@ const TrustedLeaders = () => {
             <div className="testimonial-header">
               <div className="profile-section">
                 <div className="profile-image">
-                  {/* Placeholder for profile image */}
-                  <div className="image-placeholder"></div>
+                  <img src={Person3} alt="Cristopher Bergson" className="profile-photo" />
                 </div>
                 <div className="profile-info">
                   <h3 className="profile-name">Cristopher Bergson</h3>

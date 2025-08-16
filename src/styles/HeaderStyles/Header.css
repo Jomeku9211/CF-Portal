@@ -94,7 +94,7 @@
   color: #007AFF;
 }
 
-.Explore_Button {
+.Login_Button {
   display: flex;
   align-items: center;
   gap: 8.39px;
@@ -109,7 +109,7 @@
   transition: background-color 0.2s ease;
 }
 
-.Explore_Button:hover {
+.Login_Button:hover {
   background-color: #1E2F4A;
 }
 
@@ -149,12 +149,7 @@
   height: 14px !important;
 }
 
-.divider {
-  width: 16px;
-  height: 1px;
-  background-color: #000000;
-  transform: rotate(90deg);
-}
+
 
 .contact-section {
   display: flex;
@@ -191,7 +186,7 @@
     font-size: 18px;
   }
   
-  .Explore_Button {
+  .Login_Button {
     font-size: 16px;
     padding: 6px 12px;
   }
@@ -215,7 +210,7 @@
     font-size: 16px;
   }
   
-  .Explore_Button {
+  .Login_Button {
     font-size: 14px;
     padding: 6px 12px;
   }
@@ -244,7 +239,7 @@
     font-size: 14px;
   }
   
-  .Explore_Button {
+  .Login_Button {
     font-size: 12px;
     padding: 4px 8px;
   }
@@ -273,7 +268,7 @@
     font-size: 14px;
   }
   
-  .Explore_Button {
+  .Login_Button {
     font-size: 12px;
     padding: 4px 8px;
   }
@@ -300,9 +295,10 @@
   
   .NavLink {
     font-size: 14px;
+    font-size: 14px;
   }
   
-  .Explore_Button {
+  .Login_Button {
     font-size: 12px;
     padding: 4px 8px;
   }

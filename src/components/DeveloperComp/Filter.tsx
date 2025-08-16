@@ -43,8 +43,6 @@ function Filter(props: FilterProps) {
           </div>
         );
       })}
-      <br />
-      <hr />
     </div>
   );
 }
