@@ -1,0 +1,166 @@
+.bonus-benefits-section {
+  width: 100%;
+  min-height: 602px;
+  background-color: #FEF0E9;
+  padding: 96px 0;
+}
+
+.bonus-benefits-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 64px;
+}
+
+/* Main Content */
+.benefits-content {
+  margin-bottom: 48px;
+}
+
+.benefits-heading {
+  font-size: 48px;
+  font-weight: 700;
+  color: #F16A23;
+  text-align: center;
+  margin: 0 0 32px 0;
+  line-height: 1.2;
+}
+
+.benefits-cards {
+  display: flex;
+  gap: 48px;
+  justify-content: space-between;
+}
+
+.benefit-card {
+  flex: 1;
+  max-width: 298px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.benefit-icon {
+  margin-bottom: 12px;
+}
+
+.benefit-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.benefit-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #020303;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.benefit-description {
+  font-size: 16px;
+  color: #020303;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+}
+
+.cta-button {
+  background-color: #2C426B;
+  border: 2px solid #D4D9E1;
+  border-radius: 8px;
+  padding: 16px 48px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.14);
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.18);
+}
+
+.cta-text {
+  white-space: nowrap;
+}
+
+.cta-arrow {
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1280px) {
+  .bonus-benefits-container {
+    padding: 0 32px;
+  }
+  
+  .benefits-cards {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .benefits-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+  }
+  
+  .benefit-card {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bonus-benefits-section {
+    padding: 64px 0;
+  }
+  
+  .bonus-benefits-container {
+    padding: 0 24px;
+  }
+  
+  .benefits-heading {
+    font-size: 36px;
+  }
+  
+  .benefit-title {
+    font-size: 24px;
+  }
+  
+  .cta-button {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bonus-benefits-container {
+    padding: 0 16px;
+  }
+  
+  .benefits-heading {
+    font-size: 28px;
+  }
+  
+  .benefit-card {
+    max-width: 100%;
+  }
+  
+  .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

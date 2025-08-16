@@ -1,0 +1,183 @@
+.how-it-works-section {
+  width: 100%;
+  min-height: 772px;
+  background-color: #FFFFFF;
+  padding: 96px 0;
+}
+
+.how-it-works-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 64px;
+}
+
+/* Header */
+.how-it-works-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.how-it-works-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #020303;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+}
+
+.how-it-works-subtitle {
+  font-size: 18px;
+  color: rgba(2, 3, 3, 0.4);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Process Cards */
+.process-cards {
+  display: flex;
+  gap: 54px;
+  justify-content: space-between;
+}
+
+.process-card {
+  flex: 1;
+  max-width: 345px;
+}
+
+.process-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #020303;
+  margin: 0 0 32px 0;
+  line-height: 1.2;
+}
+
+.process-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.process-image {
+  width: 100%;
+  height: 250px;
+  position: relative;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #FEF0E9;
+  border: 2px solid #F59665;
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 12px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Floating Elements for Card 3 */
+.floating-avatar {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-1 {
+  left: 52px;
+  top: 78px;
+}
+
+.avatar-2 {
+  right: 52px;
+  top: 78px;
+}
+
+.avatar-image {
+  width: 64px;
+  height: 64px;
+  background-color: #FEF0E9;
+  border: 1px solid #D4D9E1;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 12px 16px rgba(0, 0, 0, 0.08);
+}
+
+.avatar-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 500;
+}
+
+.floating-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.process-description {
+  font-size: 16px;
+  color: #020303;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 1280px) {
+  .how-it-works-container {
+    padding: 0 32px;
+  }
+  
+  .process-cards {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .process-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+  }
+  
+  .process-card {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .how-it-works-section {
+    padding: 64px 0;
+  }
+  
+  .how-it-works-container {
+    padding: 0 24px;
+  }
+  
+  .how-it-works-title {
+    font-size: 36px;
+  }
+  
+  .how-it-works-subtitle {
+    font-size: 16px;
+  }
+  
+  .process-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .how-it-works-container {
+    padding: 0 16px;
+  }
+  
+  .how-it-works-title {
+    font-size: 28px;
+  }
+  
+  .process-card {
+    max-width: 100%;
+  }
+}

@@ -10,76 +10,55 @@ function Header() {
   return (
     <div>
       <div className="Upper_Main">
-        <p>
-          <span>
-            <GppGoodIcon sx={{ color: "#172EFF" }} />
-          </span>
-          30 days money back guaranty | Zero Down time gurantee{" "}
-        </p>
-        <div className="Upper_Main_items">
-          <p>
-            <span>
-              <MailOutlineIcon />
-            </span>
-            dheeraj@coderfarm.in
-          </p>
-          <p>
-            <span>
-              <LocalPhoneOutlinedIcon />
-            </span>
-            9965348637
-          </p>
-          <p>
-            <span>
-              <FmdGoodOutlinedIcon />
-            </span>
-            Indore, India
-          </p>
+        <div className="guarantee-section">
+          <div className="guarantee-item">
+            <GppGoodIcon className="shield-icon" />
+            <span>30 days money back guaranty</span>
+          </div>
+          <div className="divider"></div>
+          <div className="guarantee-item">
+            <span>Zero Down time gurantee</span>
+          </div>
+        </div>
+        <div className="contact-section">
+          <div className="contact-item">
+            <MailOutlineIcon className="contact-icon" />
+            <span>dheeraj@coderfarm.in</span>
+          </div>
+          <div className="contact-item">
+            <LocalPhoneOutlinedIcon className="contact-icon" />
+            <span>76940 46986</span>
+          </div>
+          <div className="contact-item">
+            <FmdGoodOutlinedIcon className="contact-icon" />
+            <span>Indore, India</span>
+          </div>
         </div>
       </div>
       <div className="Header_Main" data-testid="HeaderId">
         <div className="Header_Main_Logo">
           <Link to={"/"} className="Header_LogoLink">
-            <img src={CFLogo} alt="" />
+            <img src={CFLogo} alt="CoderFarm Logo" />
           </Link>
         </div>
         <div className="Header_Main_Components">
-          <ul>
-            <li>
-              <Link to={"/about"} className="NavLink">
-                <select name="" id="">
-                  <option value="">Know us</option>
-                  <option value="">Next</option>
-                  <option value="">Next</option>
-                </select>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/developers"} className="NavLink">
-                Developers
-              </Link>
-            </li>
-            <li>
-              <Link to={"/developers"} className="NavLink">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link to={"/blog"} className="NavLink">
-                Blog
-              </Link>
-            </li>
-            <li>
-              <Link to={"/blog"} className="NavLink">
-                Contact Us
-              </Link>
-            </li>
-            <li>
-              <button className="Trial_Button">
-                Explore Developer Profiles
-              </button>
-            </li>
-          </ul>
+          <nav className="Header_Navigation">
+            <Link to={"/about"} className="NavLink">
+              About Us
+            </Link>
+            <Link to={"/developers"} className="NavLink">
+              Developers
+            </Link>
+            <Link to={"/contact"} className="NavLink">
+              Contact Us
+            </Link>
+            <Link to={"/developers"} className="Explore_Button">
+              <span>Explore Developer Profiles</span>
+              <svg className="arrow-icon" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                <path d="M3.14 4.13L13.75 4.13M13.75 4.13L13.75 14.74M13.75 4.13L4.13 13.75" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
+          </nav>
         </div>
       </div>
     </div>

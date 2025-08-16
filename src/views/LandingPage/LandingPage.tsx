@@ -1,13 +1,15 @@
 import ContactUs from "../../components/LandingPage/ContactUs";
-import DeveloperTrial from "../../components/LandingPage/DeveloperTrial";
-import FreeTrial from "../../components/LandingPage/FreeTrial";
-import Role from "../../components/LandingPage/Role";
-import RoleInfoCard from "../../components/LandingPage/RoleInfoCard";
-import Testimonial from "../../components/LandingPage/Testimonial";
-import WhyUs from "../../components/LandingPage/WhyUs";
-import TrustedClients from "../../components/LandingPage/TrustedClients";
 import Media from "../../components/LandingPage/Media";
-import DevelopersProfile from "../../components/LandingPage/DevelopersProfile";
+import Hero from "../../components/LandingPage/Hero";
+import ClientLogos from "../../components/LandingPage/ClientLogos";
+import ProblemStatement from "../../components/LandingPage/ProblemStatement";
+import Solution from "../../components/LandingPage/Solution";
+import BonusBenefits from "../../components/LandingPage/BonusBenefits";
+import HowItWorks from "../../components/LandingPage/HowItWorks";
+import TrustedLeaders from "../../components/LandingPage/TrustedLeaders";
+import Features from "../../components/LandingPage/Features";
+import FAQ from "../../components/LandingPage/FAQ";
+import ScheduleAppointment from "../../components/LandingPage/ScheduleAppointment";
 
 const LandingPage = () => {
   return (
@@ -16,17 +18,17 @@ const LandingPage = () => {
       data-testid="LandingPageID"
       style={{ backgroundColor: "#FAFAFA" }}
     >
-      <DeveloperTrial />
-      <TrustedClients />
-      <RoleInfoCard />
-      <Testimonial />
+      <Hero />
+      <ClientLogos />
+      <ProblemStatement />
+      <Solution />
+      <BonusBenefits />
+      <HowItWorks />
+      <TrustedLeaders />
+      <Features />
       <Media />
-      <DevelopersProfile />
-      <Role />
-      <WhyUs />
-      <FreeTrial />
-      {/* <Technologies /> */}
-      {/* <HiringFlow /> */}
+      <FAQ />
+      <ScheduleAppointment />
       <ContactUs />
     </div>
   );
