@@ -52,7 +52,7 @@ function Header() {
             <Link to={"/contact"} className="NavLink">
               Contact Us
             </Link>
-            <Link to={"/developers"} className="Explore_Button">
+            <Link to={"/explore-developers"} className="Explore_Button">
               <span>Explore Developer Profiles</span>
               <svg className="arrow-icon" width="19" height="19" viewBox="0 0 19 19" fill="none">
                 <path d="M3.14 4.13L13.75 4.13M13.75 4.13L13.75 14.74M13.75 4.13L4.13 13.75" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
