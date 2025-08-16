@@ -1,20 +1,39 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MailIcon, LockIcon } from 'lucide-react';
 import { AuthCard } from '../common/AuthCard';
 import { AuthInput } from '../common/AuthInput';
 import { AuthButton } from '../common/AuthButton';
 import { AuthDivider } from '../common/AuthDivider';
 import { GoogleAuthButton } from '../common/GoogleAuthButton';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login form submitted:', { email, password });
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        navigate('/'); // Redirect to home page after successful login
+      } else {
+        setError(result.message || 'Login failed');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -43,8 +62,13 @@ export function Login() {
             Forgot password?
           </Link>
         </div>
-        <AuthButton type="submit" fullWidth>
-          Login
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        <AuthButton type="submit" fullWidth disabled={isLoading}>
+          {isLoading ? 'Logging in...' : 'Login'}
         </AuthButton>
         <AuthDivider text="OR" />
         <GoogleAuthButton />
