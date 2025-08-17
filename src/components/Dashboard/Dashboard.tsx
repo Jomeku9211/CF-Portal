@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { organizationService, Organization } from '../../services/organizationService';
 import { teamService, Team } from '../../services/teamService';
-import { jobPersonaService, JobPost } from '../../services/jobPersonaService';
-import { mockDataService } from '../../services/mockDataService';
-import { PlusIcon, BuildingIcon, UsersIcon, EditIcon, TrashIcon, BriefcaseIcon } from 'lucide-react';
+import { PlusIcon, BuildingIcon, UsersIcon, EditIcon, TrashIcon } from 'lucide-react';
 
 export function Dashboard() {
   const { user, isAuthenticated } = useAuth();

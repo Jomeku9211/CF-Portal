@@ -227,6 +227,24 @@ export function OnboardingFlow() {
           formData={formData} 
           updateFormData={updateFormData}
           onComplete={() => {}}
+          onNext={() => {
+            if (currentSubStep < currentSubSteps.length - 1) {
+              setCurrentSubStep(currentSubStep + 1);
+            } else {
+              setCurrentMainStep(2);
+              setCurrentSubStep(0);
+            }
+            window.scrollTo(0, 0);
+          }}
+          onBack={() => {
+            if (currentSubStep > 0) {
+              setCurrentSubStep(currentSubStep - 1);
+            } else {
+              setCurrentMainStep(1);
+              setCurrentSubStep(0);
+            }
+            window.scrollTo(0, 0);
+          }}
         />
       );
     } else if (currentMainStep === 2) {

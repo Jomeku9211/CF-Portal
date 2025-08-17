@@ -1,4 +1,3 @@
-import React from 'react';
 import { BuildingIcon, HeartHandshakeIcon, BarChart4Icon, ClipboardCheckIcon, UsersIcon, CalendarClockIcon, GlobeIcon, LineChartIcon, ArrowLeftIcon } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { TopBanner } from './LandingPage/TopBanner';

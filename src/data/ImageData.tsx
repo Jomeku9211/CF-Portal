@@ -1,6 +1,5 @@
 import HTML5 from "../assets/Technologies/html5.png";
 import Bootstrap from "../assets/Technologies/bootstrap.png";
-import Firebase from "../assets/Technologies/firebase.png";
 import React from "../assets/Technologies/react.png";
 import Flutter from "../assets/Technologies/flutter.png";
 import FlutterFlow from "../assets/Technologies/flutterFlow.png";
@@ -14,14 +13,11 @@ import webpack from "../assets/Technologies/webpack.png";
 import AWS from "../assets/Technologies/aws.png";
 import NodeJs from "../assets/Technologies/nodeJs.png";
 
-
-
 export const tecnologiesData = {
   data: {
     imagesSection1: [
       HTML5,
       Bootstrap,
-      Firebase,
       React,
       Flutter,
       FlutterFlow,
@@ -38,7 +34,6 @@ export const tecnologiesData = {
       webpack,
       AWS,
       NodeJs,
-      Firebase,
     ],
    
   },

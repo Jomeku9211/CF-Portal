@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BuildingIcon, UsersIcon, UserIcon, ArrowRightIcon, CheckCircle } from 'lucide-react';
+import { BuildingIcon, UsersIcon, UserIcon, CheckCircle } from 'lucide-react';
 
 type Role = 'client' | 'freelancer' | 'agency' | null;
 
