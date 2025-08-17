@@ -139,8 +139,23 @@ describe('Signup Component', () => {
       fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
       fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
       
+      // Ensure privacy policy is unchecked by clicking it if it's checked
+      const privacyCheckbox = screen.getByTestId('checkbox-privacy-policy') as HTMLInputElement;
+      
+      if (privacyCheckbox.checked) {
+        fireEvent.click(privacyCheckbox);
+      }
+      
+      // Verify the checkbox is unchecked
+      expect(privacyCheckbox.checked).toBe(false);
+      
       // Submit form without accepting privacy policy
-      fireEvent.click(screen.getByTestId('signup-button'));
+      const form = screen.getByTestId('auth-card').querySelector('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        fireEvent.click(screen.getByTestId('signup-button'));
+      }
       
       await waitFor(() => {
         expect(screen.getByText('You must accept the Privacy Policy and Terms & Conditions to continue')).toBeInTheDocument();

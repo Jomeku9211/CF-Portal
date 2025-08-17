@@ -1,9 +1,13 @@
-import { render, screen } from "@testing-library/react";
-import Footer from "../components/FooterComp/Footer";
-import "@testing-library/jest-dom";
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import Footer from '../components/FooterComp/Footer';
 
 test("Render Footer Component", () => {
-  render(<Footer />);
+  render(
+    <BrowserRouter>
+      <Footer />
+    </BrowserRouter>
+  );
   const FooterId = screen.getByTestId("FooterId");
   expect(FooterId).toBeInTheDocument();
 });

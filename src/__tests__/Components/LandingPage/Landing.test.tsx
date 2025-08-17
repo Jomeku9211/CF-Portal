@@ -1,17 +1,14 @@
-import { render ,screen} from "@testing-library/react";
-import LandingPage from "../../../views/LandingPage/LandingPage";
-import "@testing-library/jest-dom";
-
-global.ResizeObserver = jest.fn(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}));
-
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import LandingPage from '../../../views/LandingPage/LandingPage';
 
 test('Landing Page testing ', () => {
-render(<LandingPage/>)  
+  render(
+    <BrowserRouter>
+      <LandingPage />
+    </BrowserRouter>
+  );
 
-const landingpageId= screen.getByTestId("LandingPageID")
-expect(landingpageId).toBeInTheDocument();
-})
+  const landingpageId = screen.getByTestId("LandingPageID");
+  expect(landingpageId).toBeInTheDocument();
+});

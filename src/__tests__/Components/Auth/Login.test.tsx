@@ -84,7 +84,7 @@ describe('Login Component', () => {
     it('renders login form with all required fields', () => {
       renderLogin();
       
-      expect(screen.getByText('Login')).toBeInTheDocument();
+      expect(screen.getByTestId('login-button')).toBeInTheDocument();
       expect(screen.getByText('Welcome back! Please enter your details.')).toBeInTheDocument();
       expect(screen.getByTestId('input-email')).toBeInTheDocument();
       expect(screen.getByTestId('input-password')).toBeInTheDocument();
@@ -155,7 +155,7 @@ describe('Login Component', () => {
       fireEvent.click(screen.getByTestId('login-button'));
       
       await waitFor(() => {
-        expect(mockedAuthService.login).toHaveBeenCalledWith('john@example.com', 'password123');
+        expect(mockedAuthService.login).toHaveBeenCalledWith({ email: 'john@example.com', password: 'password123' });
       });
 
       await waitFor(() => {
@@ -181,7 +181,7 @@ describe('Login Component', () => {
       fireEvent.click(screen.getByTestId('login-button'));
       
       await waitFor(() => {
-        expect(mockedAuthService.login).toHaveBeenCalledWith('john@example.com', 'wrongpassword');
+        expect(mockedAuthService.login).toHaveBeenCalledWith({ email: 'john@example.com', password: 'wrongpassword' });
       });
 
       await waitFor(() => {
