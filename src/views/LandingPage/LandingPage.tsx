@@ -1,9 +1,10 @@
 import ContactUs from "../../components/LandingPage/ContactUs";
 import Media from "../../components/LandingPage/Media";
-import Hero from "../../components/LandingPage/Hero";
 import ClientLogos from "../../components/LandingPage/ClientLogos";
-import ProblemStatement from "../../components/LandingPage/ProblemStatement";
-import Solution from "../../components/LandingPage/Solution";
+import { TopBanner } from "../../components/LandingPage/TopBanner";
+import { Navbar } from "../../components/LandingPage/Navbar";
+import { HeroSection } from "../../components/LandingPage/HeroSection";
+import { WhoWeHelp } from "../../components/LandingPage/WhoWeHelp";
 import BonusBenefits from "../../components/LandingPage/BonusBenefits";
 import HowItWorks from "../../components/LandingPage/HowItWorks";
 import TrustedLeaders from "../../components/LandingPage/TrustedLeaders";
@@ -18,10 +19,11 @@ const LandingPage = () => {
       data-testid="LandingPageID"
       style={{ backgroundColor: "#FAFAFA" }}
     >
-      <Hero />
+      <TopBanner />
+      <Navbar />
+      <HeroSection />
       <ClientLogos />
-      <ProblemStatement />
-      <Solution />
+      <WhoWeHelp />
       <BonusBenefits />
       <HowItWorks />
       <TrustedLeaders />

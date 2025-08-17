@@ -25,7 +25,8 @@ export function Login() {
     try {
       const result = await login(email, password);
       if (result.success) {
-        navigate('/'); // Redirect to home page after successful login
+        // Redirect to role selection after successful login
+        navigate('/role-selection');
       } else {
         setError(result.message || 'Login failed');
       }

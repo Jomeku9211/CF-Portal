@@ -1,28 +1,103 @@
-.Media_Main_Div{
+.Media_Main_Div {
   display: flex;
   flex-direction: column;
-  align-items: start;
-  margin-top: -1rem;
-  padding: 5rem;
+  align-items: center;
+  width: 100%;
+  padding: clamp(2rem, 6vw, 5rem);
+  background-color: #FAFAFA;
 }
 
-.Media_Heading p{
+.Media_Heading {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.Media_Heading p {
   color: black;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin: 0;
+  line-height: 1.2;
 }
 
 .Media_Partners {
-  margin-top: 2.5rem;
+  width: 100%;
+  max-width: 1200px;
 }
 
-.Media_Partners_Logos{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5rem;
+.Media_Partners_Logos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2rem, 4vw, 5rem);
+  flex-wrap: wrap;
 }
 
-.Media_Partners_Logos img{
-    width: 14%;
+.Media_Partners_Logos img {
+  width: clamp(80px, 15vw, 120px);
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.Media_Partners_Logos img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive Design - Mobile First Approach */
+@media (max-width: 1024px) {
+  .Media_Partners_Logos {
+    gap: clamp(1.5rem, 3vw, 3rem);
+  }
+  
+  .Media_Partners_Logos img {
+    width: clamp(70px, 12vw, 100px);
+  }
+}
+
+@media (max-width: 768px) {
+  .Media_Main_Div {
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
+  
+  .Media_Heading {
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+  }
+  
+  .Media_Partners_Logos {
+    gap: clamp(1rem, 2.5vw, 2rem);
+  }
+  
+  .Media_Partners_Logos img {
+    width: clamp(60px, 10vw, 80px);
+  }
+}
+
+@media (max-width: 480px) {
+  .Media_Main_Div {
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+  
+  .Media_Heading {
+    margin-bottom: clamp(0.8rem, 2.5vw, 1.5rem);
+  }
+  
+  .Media_Partners_Logos {
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+  }
+  
+  .Media_Partners_Logos img {
+    width: clamp(50px, 8vw, 70px);
+  }
+}
+
+@media (max-width: 360px) {
+  .Media_Partners_Logos {
+    gap: 0.8rem;
+  }
+  
+  .Media_Partners_Logos img {
+    width: 45px;
+  }
 }

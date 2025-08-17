@@ -1,26 +1,28 @@
 .client-logos-section {
   width: 100%;
-  height: 211.52px;
+  min-height: auto;
   background-color: #FAFAFA;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 64px 0;
+  padding: clamp(32px, 6vw, 64px) 0;
   border: 2px solid #e0e0e0;
-  margin: 20px 0;
+  margin: clamp(10px, 2vw, 20px) 0;
 }
 
 .client-logos-container {
-  width: 1280px;
-  height: 83.52px;
+  width: 100%;
+  max-width: 1280px;
+  min-height: 83.52px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 50px;
-  padding: 0 64px;
+  gap: clamp(25px, 4vw, 50px);
+  padding: clamp(16px, 3vw, 64px);
   background-color: #f8f8f8;
   border-radius: 8px;
+  margin: 0 auto;
 }
 
 .client-logo-item {
@@ -47,64 +49,50 @@
   right: -23px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 32px;
+  font-size: clamp(20px, 3vw, 32px);
   font-weight: 700;
   color: #EC1015;
-  line-height: 40px;
+  line-height: 1.2;
 }
 
-/* Individual logo sizing based on Figma data */
+/* Individual logo sizing based on Figma data - Responsive */
 .client-logo-item:nth-child(1) .client-logo {
-  width: 93.72px;
-  height: 65.28px;
+  width: clamp(60px, 8vw, 93.72px);
+  height: clamp(40px, 6vw, 65.28px);
 }
 
 .client-logo-item:nth-child(2) .client-logo {
-  width: 116.83px;
-  height: 43.73px;
+  width: clamp(75px, 10vw, 116.83px);
+  height: clamp(30px, 4vw, 43.73px);
 }
 
 .client-logo-item:nth-child(3) .client-logo {
-  width: 71.15px;
-  height: 72.18px;
+  width: clamp(45px, 6vw, 71.15px);
+  height: clamp(45px, 6vw, 72.18px);
 }
 
 .client-logo-item:nth-child(4) .client-logo {
-  width: 182.05px;
-  height: 83.52px;
+  width: clamp(110px, 15vw, 182.05px);
+  height: clamp(50px, 7vw, 83.52px);
 }
 
 .client-logo-item:nth-child(5) .client-logo {
-  width: 79.61px;
-  height: 83.07px;
+  width: clamp(50px, 7vw, 79.61px);
+  height: clamp(50px, 7vw, 83.07px);
 }
 
 .client-logo-item:nth-child(6) .client-logo {
-  width: 129.20px;
-  height: 65.90px;
+  width: clamp(80px, 11vw, 129.20px);
+  height: clamp(40px, 6vw, 65.90px);
 }
 
-/* Responsive Design */
-@media (max-width: 1280px) {
-  .client-logos-container {
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 40px;
-    gap: 40px;
-  }
-}
-
+/* Responsive Design - Mobile First Approach */
 @media (max-width: 1024px) {
-  .client-logos-section {
-    height: auto;
-    padding: 40px 0;
-  }
-  
   .client-logos-container {
     flex-wrap: wrap;
-    gap: 30px;
+    gap: clamp(20px, 3vw, 30px);
     justify-content: center;
-    height: auto;
+    padding: clamp(20px, 3vw, 40px);
   }
   
   .client-logo-item {
@@ -113,89 +101,46 @@
 }
 
 @media (max-width: 768px) {
+  .client-logos-section {
+    padding: clamp(24px, 4vw, 40px) 0;
+  }
+  
   .client-logos-container {
-    padding: 0 20px;
-    gap: 25px;
-  }
-  
-  .client-logo-item:nth-child(1) .client-logo {
-    width: 70px;
-    height: 50px;
-  }
-  
-  .client-logo-item:nth-child(2) .client-logo {
-    width: 90px;
-    height: 35px;
-  }
-  
-  .client-logo-item:nth-child(3) .client-logo {
-    width: 55px;
-    height: 55px;
-  }
-  
-  .client-logo-item:nth-child(4) .client-logo {
-    width: 140px;
-    height: 65px;
-  }
-  
-  .client-logo-item:nth-child(5) .client-logo {
-    width: 60px;
-    height: 65px;
-  }
-  
-  .client-logo-item:nth-child(6) .client-logo {
-    width: 100px;
-    height: 50px;
+    padding: clamp(16px, 2.5vw, 20px);
+    gap: clamp(16px, 2.5vw, 25px);
   }
   
   .logo-text {
-    font-size: 24px;
-    right: -18px;
+    font-size: clamp(18px, 2.5vw, 24px);
+    right: clamp(-15px, -2vw, -18px);
   }
 }
 
 @media (max-width: 480px) {
   .client-logos-section {
-    padding: 30px 0;
+    padding: clamp(20px, 3vw, 30px) 0;
+    margin: clamp(8px, 1.5vw, 16px) 0;
   }
   
   .client-logos-container {
-    padding: 0 16px;
-    gap: 20px;
-  }
-  
-  .client-logo-item:nth-child(1) .client-logo {
-    width: 60px;
-    height: 40px;
-  }
-  
-  .client-logo-item:nth-child(2) .client-logo {
-    width: 75px;
-    height: 30px;
-  }
-  
-  .client-logo-item:nth-child(3) .client-logo {
-    width: 45px;
-    height: 45px;
-  }
-  
-  .client-logo-item:nth-child(4) .client-logo {
-    width: 110px;
-    height: 50px;
-  }
-  
-  .client-logo-item:nth-child(5) .client-logo {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .client-logo-item:nth-child(6) .client-logo {
-    width: 80px;
-    height: 40px;
+    padding: clamp(12px, 2vw, 16px);
+    gap: clamp(12px, 2vw, 20px);
   }
   
   .logo-text {
-    font-size: 20px;
-    right: -15px;
+    font-size: clamp(16px, 2vw, 20px);
+    right: clamp(-12px, -1.5vw, -15px);
+  }
+}
+
+@media (max-width: 360px) {
+  .client-logos-container {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .logo-text {
+    font-size: 14px;
+    right: -10px;
   }
 }

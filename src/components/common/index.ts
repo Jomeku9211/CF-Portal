@@ -11,4 +11,6 @@ export { AuthInput } from './AuthInput';
 export { AuthButton } from './AuthButton';
 export { GoogleAuthButton } from './GoogleAuthButton';
 export { AuthDivider } from './AuthDivider';
+export { Checkbox } from './Checkbox';
+export { ProtectedRoute } from './ProtectedRoute';
 

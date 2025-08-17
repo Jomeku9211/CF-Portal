@@ -6,6 +6,10 @@ import { Login } from "./components/Auth/Login";
 import { Signup } from "./components/Auth/Signup";
 import { ForgotPassword } from "./components/Auth/ForgotPassword";
 import { OnboardingFlow } from "./components/onboarding/OnboardingFlow";
+import { RoleSelection } from "./components/onboarding/RoleSelection";
+import { ProtectedRoute } from "./components/common/ProtectedRoute";
+import PrivacyPolicy from "./views/PrivacyPolicy/PrivacyPolicy";
+import ContentHubPage from "./views/ContentHub/ContentHub";
 
 const appRouter = createBrowserRouter([
   {
@@ -33,8 +37,28 @@ const appRouter = createBrowserRouter([
         element: <ForgotPassword />,
       },
       {
+        path: "role-selection",
+        element: (
+          <ProtectedRoute>
+            <RoleSelection />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "onboarding",
-        element: <OnboardingFlow />,
+        element: (
+          <ProtectedRoute>
+            <OnboardingFlow />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "content-hub",
+        element: <ContentHubPage />,
       },
     ],
   },
