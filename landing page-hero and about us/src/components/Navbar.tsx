@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRightIcon } from 'lucide-react';
+import CFLogo from '../assets/CFLogo.png';
+
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -20,14 +22,11 @@ export function Navbar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <div className="text-2xl font-bold text-blue-900">
-              <span className="text-blue-700">CODER</span>
-              <span className="text-orange-500">FARM</span>
-            </div>
+            <img src={CFLogo} alt="CoderFarm Logo" className="h-10 w-auto" />
           </div>
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#about" className="text-gray-700 hover:text-blue-700">
+            <a href="/about" className="text-gray-700 hover:text-blue-700">
               About
             </a>
             <a href="#contact" className="text-gray-700 hover:text-blue-700">
@@ -50,7 +49,7 @@ export function Navbar() {
         </div>
         {/* Mobile Navigation */}
         {isMobileMenuOpen && <nav className="md:hidden mt-4 space-y-4 pb-4">
-            <a href="#about" className="block text-gray-700 hover:text-blue-700">
+            <a href="/about" className="block text-gray-700 hover:text-blue-700">
               About
             </a>
             <a href="#contact" className="block text-gray-700 hover:text-blue-700">

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Users2Icon, BuildingIcon, CodeIcon, UserIcon, BriefcaseIcon, HeartHandshakeIcon, BarChart4Icon, ClipboardCheckIcon, UsersIcon, CalendarClockIcon, GlobeIcon, LineChartIcon } from 'lucide-react';
+import { Users2Icon, BuildingIcon, CodeIcon, UserIcon, BriefcaseIcon, HeartHandshakeIcon, BarChart4Icon, ClipboardCheckIcon, UsersIcon, CalendarClockIcon, GlobeIcon, LineChartIcon, ArrowLeftIcon } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+
 export function AboutUsSection() {
   const [activeTab, setActiveTab] = useState('founders');
+  const location = useLocation();
+  const isStandalonePage = location.pathname === '/about';
   const whoWeHelpData = {
     founders: {
       icon: <BuildingIcon className="h-8 w-8 text-blue-700" />,
@@ -60,6 +64,15 @@ export function AboutUsSection() {
   }];
   return <section id="about" className="w-full bg-white py-16 md:py-24">
       <div className="container mx-auto px-4">
+        {/* Back Button for Standalone Page */}
+        {isStandalonePage && (
+          <div className="mb-8">
+            <a href="/" className="inline-flex items-center text-blue-700 hover:text-blue-900 transition-colors">
+              <ArrowLeftIcon className="h-5 w-5 mr-2" />
+              Back to Home
+            </a>
+          </div>
+        )}
         {/* Headline Section */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

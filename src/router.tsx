@@ -10,6 +10,7 @@ import { RoleSelection } from "./components/onboarding/RoleSelection";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import PrivacyPolicy from "./views/PrivacyPolicy/PrivacyPolicy";
 import ContentHubPage from "./views/ContentHub/ContentHub";
+import { AboutUsSection } from "./components/AboutUsSection";
 
 const appRouter = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const appRouter = createBrowserRouter([
       {
         path: "content-hub",
         element: <ContentHubPage />,
+      },
+      {
+        path: "about",
+        element: <AboutUsSection />,
       },
     ],
   },

@@ -1,15 +1,19 @@
-import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../../../contexts/AuthContext';
 import { authService } from '../../../services/authService';
+import { emailService } from '../../../services/emailService';
 
 // Mock the authService
 jest.mock('../../../services/authService');
 const mockedAuthService = authService as jest.Mocked<typeof authService>;
 
+// Mock the emailService
+jest.mock('../../../services/emailService');
+const mockedEmailService = emailService as jest.Mocked<typeof emailService>;
+
 // Test component to access context
 const TestComponent = () => {
-  const { user, isAuthenticated, isLoading, signup, login, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, signup, login, logout, sendWelcomeEmail } = useAuth();
   
   return (
     <div>
@@ -31,6 +35,12 @@ const TestComponent = () => {
       <button data-testid="logout-btn" onClick={logout}>
         Logout
       </button>
+      <button 
+        data-testid="welcome-email-btn" 
+        onClick={() => sendWelcomeEmail('John Doe', 'john@example.com')}
+      >
+        Send Welcome Email
+      </button>
     </div>
   );
 };
@@ -51,8 +61,10 @@ describe('AuthContext', () => {
   });
 
   describe('Initial State', () => {
-    it('starts with loading state true', () => {
+    it('starts with loading state true', async () => {
       renderWithAuth();
+      
+      // The loading state should be true initially
       expect(screen.getByTestId('is-loading')).toHaveTextContent('true');
     });
 
@@ -144,7 +156,11 @@ describe('AuthContext', () => {
         screen.getByTestId('signup-btn').click();
       });
 
-      expect(mockedAuthService.signup).toHaveBeenCalledWith('John Doe', 'john@example.com', 'password123');
+      expect(mockedAuthService.signup).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password123'
+      });
       
       // Wait for state update
       await act(async () => {
@@ -169,7 +185,11 @@ describe('AuthContext', () => {
         screen.getByTestId('signup-btn').click();
       });
 
-      expect(mockedAuthService.signup).toHaveBeenCalledWith('John Doe', 'john@example.com', 'password123');
+      expect(mockedAuthService.signup).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password123'
+      });
       
       // Wait for state update
       await act(async () => {
@@ -190,7 +210,11 @@ describe('AuthContext', () => {
         screen.getByTestId('signup-btn').click();
       });
 
-      expect(mockedAuthService.signup).toHaveBeenCalledWith('John Doe', 'john@example.com', 'password123');
+      expect(mockedAuthService.signup).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password123'
+      });
       
       // Wait for state update
       await act(async () => {
@@ -220,7 +244,10 @@ describe('AuthContext', () => {
         screen.getByTestId('login-btn').click();
       });
 
-      expect(mockedAuthService.login).toHaveBeenCalledWith('john@example.com', 'password123');
+      expect(mockedAuthService.login).toHaveBeenCalledWith({
+        email: 'john@example.com',
+        password: 'password123'
+      });
       
       // Wait for state update
       await act(async () => {
@@ -245,7 +272,10 @@ describe('AuthContext', () => {
         screen.getByTestId('login-btn').click();
       });
 
-      expect(mockedAuthService.login).toHaveBeenCalledWith('john@example.com', 'password123');
+      expect(mockedAuthService.login).toHaveBeenCalledWith({
+        email: 'john@example.com',
+        password: 'password123'
+      });
       
       // Wait for state update
       await act(async () => {
@@ -325,4 +355,117 @@ describe('AuthContext', () => {
       consoleSpy.mockRestore();
     });
   });
+
+  describe('Email Functionality', () => {
+    beforeEach(() => {
+      // Mock successful email responses
+      mockedEmailService.sendThankYouEmail.mockResolvedValue({
+        success: true,
+        message: 'Thank you email sent successfully',
+        emailId: 'email-123'
+      });
+      
+      mockedEmailService.sendWelcomeEmail.mockResolvedValue({
+        success: true,
+        message: 'Welcome email sent successfully',
+        emailId: 'welcome-456'
+      });
+    });
+
+    it('sends thank you email after successful signup', async () => {
+      const mockUser = { id: '1', name: 'John Doe', email: 'john@example.com' };
+      const mockResponse = {
+        success: true,
+        user: mockUser,
+        token: 'mock-token'
+      };
+
+      mockedAuthService.signup.mockResolvedValue(mockResponse);
+
+      renderWithAuth();
+
+      await act(async () => {
+        screen.getByTestId('signup-btn').click();
+      });
+
+      // Wait for signup to complete
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      expect(mockedEmailService.sendThankYouEmail).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com'
+      });
+    });
+
+    it('sends welcome email when requested', async () => {
+      renderWithAuth();
+
+      await act(async () => {
+        screen.getByTestId('welcome-email-btn').click();
+      });
+
+      expect(mockedEmailService.sendWelcomeEmail).toHaveBeenCalledWith(
+        'John Doe',
+        'john@example.com'
+      );
+    });
+
+    it('handles email sending failure gracefully during signup', async () => {
+      const mockUser = { id: '1', name: 'John Doe', email: 'john@example.com' };
+      const mockResponse = {
+        success: true,
+        user: mockUser,
+        token: 'mock-token'
+      };
+
+      mockedAuthService.signup.mockResolvedValue(mockResponse);
+      mockedEmailService.sendThankYouEmail.mockRejectedValue(new Error('Email service down'));
+
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      renderWithAuth();
+
+      await act(async () => {
+        screen.getByTestId('signup-btn').click();
+      });
+
+      // Wait for signup to complete
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      expect(mockedEmailService.sendThankYouEmail).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com'
+      });
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to send thank you email:', expect.any(Error));
+      
+      // Signup should still succeed even if email fails
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('handles welcome email sending failure gracefully', async () => {
+      mockedEmailService.sendWelcomeEmail.mockResolvedValue({
+        success: false,
+        message: 'Email service unavailable'
+      });
+
+      renderWithAuth();
+
+      await act(async () => {
+        screen.getByTestId('welcome-email-btn').click();
+      });
+
+      // The function should handle the failure gracefully
+      expect(mockedEmailService.sendWelcomeEmail).toHaveBeenCalledWith(
+        'John Doe',
+        'john@example.com'
+      );
+    });
+  });
 });
+

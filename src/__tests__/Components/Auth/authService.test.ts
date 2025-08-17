@@ -277,7 +277,16 @@ describe('AuthService', () => {
 
       const result = await authService.getCurrentUser();
 
-      expect(mockedFetch).not.toHaveBeenCalled();
+      // The service should still call fetch but with no auth header
+      expect(mockedFetch).toHaveBeenCalledWith(
+        'https://x8ki-letl-twmt.n7.xano.io/api:uvT-ex56/auth/me',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       expect(result).toBeNull();
     });
   });
@@ -349,3 +358,4 @@ describe('AuthService', () => {
     });
   });
 });
+

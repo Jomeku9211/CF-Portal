@@ -1,13 +1,17 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Signup } from '../../../components/Auth/Signup';
 import { AuthProvider } from '../../../contexts/AuthContext';
 import { authService } from '../../../services/authService';
+import { emailService } from '../../../services/emailService';
 
 // Mock the authService
 jest.mock('../../../services/authService');
 const mockedAuthService = authService as jest.Mocked<typeof authService>;
+
+// Mock the emailService
+jest.mock('../../../services/emailService');
+const mockedEmailService = emailService as jest.Mocked<typeof emailService>;
 
 // Mock react-router-dom
 const mockNavigate = jest.fn();
@@ -46,7 +50,7 @@ jest.mock('../../../components/common/AuthInput', () => ({
 }));
 
 jest.mock('../../../components/common/AuthButton', () => ({
-  AuthButton: ({ children, type, fullWidth, disabled }: any) => (
+  AuthButton: ({ children, type, disabled }: any) => (
     <button
       type={type}
       disabled={disabled}
@@ -164,7 +168,11 @@ describe('Signup Component', () => {
       fireEvent.click(screen.getByTestId('signup-button'));
       
       await waitFor(() => {
-        expect(mockedAuthService.signup).toHaveBeenCalledWith('John Doe', 'john@example.com', 'password123');
+        expect(mockedAuthService.signup).toHaveBeenCalledWith({
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'password123'
+        });
       });
     });
   });
@@ -191,7 +199,11 @@ describe('Signup Component', () => {
       fireEvent.click(screen.getByTestId('signup-button'));
       
       await waitFor(() => {
-        expect(mockedAuthService.signup).toHaveBeenCalledWith('John Doe', 'john@example.com', 'password123');
+        expect(mockedAuthService.signup).toHaveBeenCalledWith({
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'password123'
+        });
       });
     });
 
@@ -229,6 +241,13 @@ describe('Signup Component', () => {
         token: 'mock-token'
       });
 
+      // Mock successful email sending
+      mockedEmailService.sendThankYouEmail.mockResolvedValue({
+        success: true,
+        message: 'Thank you email sent successfully',
+        emailId: 'email-123'
+      });
+
       renderSignup();
       
       // Fill in form fields
@@ -244,6 +263,12 @@ describe('Signup Component', () => {
       
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith('/role-selection');
+      });
+
+      // Verify that thank you email was sent
+      expect(mockedEmailService.sendThankYouEmail).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com'
       });
     });
   });
@@ -316,6 +341,41 @@ describe('Signup Component', () => {
         expect(screen.getByText('Signup failed')).toBeInTheDocument();
       });
     });
+
+    it('signup succeeds even when thank you email fails', async () => {
+      mockedAuthService.signup.mockResolvedValue({
+        success: true,
+        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
+        token: 'mock-token'
+      });
+
+      // Mock email sending failure
+      mockedEmailService.sendThankYouEmail.mockRejectedValue(new Error('Email service down'));
+
+      renderSignup();
+      
+      // Fill in form fields
+      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
+      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
+      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      
+      // Accept privacy policy
+      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
+      
+      // Submit form
+      fireEvent.click(screen.getByTestId('signup-button'));
+      
+      // Signup should still succeed and navigate to role selection
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith('/role-selection');
+      });
+
+      // Verify that email service was called but failed
+      expect(mockedEmailService.sendThankYouEmail).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com'
+      });
+    });
   });
 
   describe('User Interactions', () => {
@@ -380,3 +440,4 @@ describe('Signup Component', () => {
     });
   });
 });
+

@@ -1,26 +1,15 @@
 import React, { useState } from 'react';
 import { ArrowRightIcon, MicIcon, UserIcon, BriefcaseIcon, CodeIcon, CheckIcon, ThumbsUpIcon } from 'lucide-react';
-import { TopBanner } from './TopBanner';
-import { Navbar } from './Navbar';
-
-export function ContentHub() {
+export function App() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = e => {
     e.preventDefault();
     setIsFormSubmitted(true);
     window.scrollTo(0, 0);
   };
-
-  return (
-    <div className="w-full bg-white font-sans">
-      {/* Header Section */}
-      <TopBanner />
-      <Navbar />
-      
-      {!isFormSubmitted ? (
-        <>
+  return <div className="w-full bg-white font-sans">
+      {!isFormSubmitted ? <>
           {/* Hero Section */}
           <section className="bg-[#f5f8ff] py-16 px-6 md:py-24">
             <div className="max-w-5xl mx-auto">
@@ -363,10 +352,9 @@ export function ContentHub() {
               </form>
             </div>
           </section>
-        </>
-      ) : (
-        // Thank You State
-        <section className="bg-[#f5f8ff] min-h-screen flex items-center justify-center px-6 py-16">
+        </> :
+    // Thank You State
+    <section className="bg-[#f5f8ff] min-h-screen flex items-center justify-center px-6 py-16">
           <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md">
             <h1 className="text-3xl md:text-4xl font-bold text-[#1e335f] mb-6">
               🎉 Thank you for reaching out!
@@ -396,9 +384,6 @@ export function ContentHub() {
               </a>
             </div>
           </div>
-        </section>
-      )}
-    </div>
-  );
+        </section>}
+    </div>;
 }
-
