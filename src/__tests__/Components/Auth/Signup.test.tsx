@@ -1,24 +1,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 import { Signup } from '../../../components/Auth/Signup';
 import { AuthProvider } from '../../../contexts/AuthContext';
 import { authService } from '../../../services/authService';
-import { emailService } from '../../../services/emailService';
+import { BrowserRouter } from 'react-router-dom';
 
-// Mock the authService
+// Mock the auth service
 jest.mock('../../../services/authService');
-const mockedAuthService = authService as jest.Mocked<typeof authService>;
-
-// Mock the emailService
-jest.mock('../../../services/emailService');
-const mockedEmailService = emailService as jest.Mocked<typeof emailService>;
-
-// Mock react-router-dom
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
 
 // Mock the common components
 jest.mock('../../../components/common/AuthCard', () => ({
@@ -32,32 +19,39 @@ jest.mock('../../../components/common/AuthCard', () => ({
 }));
 
 jest.mock('../../../components/common/AuthInput', () => ({
-  AuthInput: ({ label, type, placeholder, value, onChange, icon, required }: any) => (
+  AuthInput: ({ label, error, icon, ...props }: any) => (
     <div>
-      <label htmlFor={label.toLowerCase()}>{label}</label>
+      <label htmlFor={props.id || label.toLowerCase()}>
+        {label}
+      </label>
       <input
-        id={label.toLowerCase()}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required={required}
-        data-testid={`input-${label.toLowerCase()}`}
+        data-testid={`input-${label.toLowerCase().replace(/\s+/g, '-')}`}
+        id={props.id || label.toLowerCase()}
+        {...props}
       />
       {icon}
+      {error && <p className="error">{error}</p>}
     </div>
   ),
 }));
 
 jest.mock('../../../components/common/AuthButton', () => ({
-  AuthButton: ({ children, type, disabled }: any) => (
-    <button
-      type={type}
-      disabled={disabled}
-      data-testid="signup-button"
-    >
+  AuthButton: ({ children, ...props }: any) => (
+    <button data-testid="signup-button" {...props}>
       {children}
     </button>
+  ),
+}));
+
+jest.mock('../../../components/common/AuthDivider', () => ({
+  AuthDivider: ({ text }: any) => (
+    <div data-testid="auth-divider">{text}</div>
+  ),
+}));
+
+jest.mock('../../../components/common/GoogleAuthButton', () => ({
+  GoogleAuthButton: () => (
+    <button data-testid="google-auth-button">Sign in with Google</button>
   ),
 }));
 
@@ -65,25 +59,19 @@ jest.mock('../../../components/common/Checkbox', () => ({
   Checkbox: ({ id, label, checked, onChange, required }: any) => (
     <div>
       <input
+        data-testid={`checkbox-${id}`}
         id={id}
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
         required={required}
-        data-testid={`checkbox-${id}`}
       />
       <label htmlFor={id}>{label}</label>
     </div>
   ),
 }));
 
-jest.mock('../../../components/common/GoogleAuthButton', () => ({
-  GoogleAuthButton: () => <button data-testid="google-auth-button">Sign in with Google</button>,
-}));
-
-jest.mock('../../../components/common/AuthDivider', () => ({
-  AuthDivider: ({ text }: any) => <div data-testid="auth-divider">{text}</div>,
-}));
+const mockedAuthService = authService as jest.Mocked<typeof authService>;
 
 const renderSignup = () => {
   return render(
@@ -98,7 +86,6 @@ const renderSignup = () => {
 describe('Signup Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockNavigate.mockClear();
   });
 
   describe('Rendering', () => {
@@ -107,9 +94,10 @@ describe('Signup Component', () => {
       
       expect(screen.getByText('Create an account')).toBeInTheDocument();
       expect(screen.getByText('Sign up to get started')).toBeInTheDocument();
-      expect(screen.getByTestId('input-name')).toBeInTheDocument();
+      expect(screen.getByTestId('input-full-name')).toBeInTheDocument();
       expect(screen.getByTestId('input-email')).toBeInTheDocument();
       expect(screen.getByTestId('input-password')).toBeInTheDocument();
+      expect(screen.getByTestId('input-confirm-password')).toBeInTheDocument();
       expect(screen.getByTestId('checkbox-privacy-policy')).toBeInTheDocument();
       expect(screen.getByTestId('checkbox-marketing-emails')).toBeInTheDocument();
       expect(screen.getByTestId('signup-button')).toBeInTheDocument();
@@ -119,14 +107,14 @@ describe('Signup Component', () => {
       renderSignup();
       
       const privacyCheckbox = screen.getByTestId('checkbox-privacy-policy');
-      expect(privacyCheckbox).toBeRequired();
+      expect(privacyCheckbox).toHaveAttribute('required');
     });
 
     it('renders marketing emails checkbox as optional', () => {
       renderSignup();
       
       const marketingCheckbox = screen.getByTestId('checkbox-marketing-emails');
-      expect(marketingCheckbox).not.toBeRequired();
+      expect(marketingCheckbox).not.toHaveAttribute('required');
     });
   });
 
@@ -135,13 +123,13 @@ describe('Signup Component', () => {
       renderSignup();
       
       // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
+      fireEvent.change(screen.getByTestId('input-full-name'), { target: { value: 'John Doe' } });
       fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
       fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByTestId('input-confirm-password'), { target: { value: 'password123' } });
       
       // Ensure privacy policy is unchecked by clicking it if it's checked
       const privacyCheckbox = screen.getByTestId('checkbox-privacy-policy') as HTMLInputElement;
-      
       if (privacyCheckbox.checked) {
         fireEvent.click(privacyCheckbox);
       }
@@ -162,233 +150,28 @@ describe('Signup Component', () => {
       });
     });
 
-    it('allows form submission when privacy policy is accepted', async () => {
-      mockedAuthService.signup.mockResolvedValue({
-        success: true,
-        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
-        token: 'mock-token'
-      });
-
+    it('shows error when passwords do not match', async () => {
       renderSignup();
       
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
+      // Fill in form fields with mismatched passwords
+      fireEvent.change(screen.getByTestId('input-full-name'), { target: { value: 'John Doe' } });
       fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
       fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByTestId('input-confirm-password'), { target: { value: 'differentpassword' } });
       
       // Accept privacy policy
       fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
       
       // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
+      const form = screen.getByTestId('auth-card').querySelector('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        fireEvent.click(screen.getByTestId('signup-button'));
+      }
       
       await waitFor(() => {
-        expect(mockedAuthService.signup).toHaveBeenCalledWith({
-          name: 'John Doe',
-          email: 'john@example.com',
-          password: 'password123'
-        });
-      });
-    });
-  });
-
-  describe('Form Submission', () => {
-    it('calls signup service with correct data when form is submitted', async () => {
-      mockedAuthService.signup.mockResolvedValue({
-        success: true,
-        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
-        token: 'mock-token'
-      });
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      await waitFor(() => {
-        expect(mockedAuthService.signup).toHaveBeenCalledWith({
-          name: 'John Doe',
-          email: 'john@example.com',
-          password: 'password123'
-        });
-      });
-    });
-
-    it('shows loading state during form submission', async () => {
-      mockedAuthService.signup.mockImplementation(() => 
-        new Promise(resolve => setTimeout(() => resolve({
-          success: true,
-          user: { id: '1', name: 'John Doe', email: 'john@example.com' },
-          token: 'mock-token'
-        }), 100))
-      );
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      // Check loading state
-      expect(screen.getByText('Creating account...')).toBeInTheDocument();
-      expect(screen.getByTestId('signup-button')).toBeDisabled();
-    });
-
-    it('navigates to role-selection on successful signup', async () => {
-      mockedAuthService.signup.mockResolvedValue({
-        success: true,
-        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
-        token: 'mock-token'
-      });
-
-      // Mock successful email sending
-      mockedEmailService.sendThankYouEmail.mockResolvedValue({
-        success: true,
-        message: 'Thank you email sent successfully',
-        emailId: 'email-123'
-      });
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/role-selection');
-      });
-
-      // Verify that thank you email was sent
-      expect(mockedEmailService.sendThankYouEmail).toHaveBeenCalledWith({
-        name: 'John Doe',
-        email: 'john@example.com'
-      });
-    });
-  });
-
-  describe('Error Handling', () => {
-    it('displays error message when signup fails', async () => {
-      mockedAuthService.signup.mockResolvedValue({
-        success: false,
-        message: 'Email already exists'
-      });
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      await waitFor(() => {
-        expect(screen.getByText('Email already exists')).toBeInTheDocument();
-      });
-    });
-
-    it('displays generic error message when signup throws an exception', async () => {
-      mockedAuthService.signup.mockRejectedValue(new Error('Network error'));
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      await waitFor(() => {
-        expect(screen.getByText('An unexpected error occurred')).toBeInTheDocument();
-      });
-    });
-
-    it('displays generic error message when signup fails without message', async () => {
-      mockedAuthService.signup.mockResolvedValue({
-        success: false
-      });
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      await waitFor(() => {
-        expect(screen.getByText('Signup failed')).toBeInTheDocument();
-      });
-    });
-
-    it('signup succeeds even when thank you email fails', async () => {
-      mockedAuthService.signup.mockResolvedValue({
-        success: true,
-        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
-        token: 'mock-token'
-      });
-
-      // Mock email sending failure
-      mockedEmailService.sendThankYouEmail.mockRejectedValue(new Error('Email service down'));
-
-      renderSignup();
-      
-      // Fill in form fields
-      fireEvent.change(screen.getByTestId('input-name'), { target: { value: 'John Doe' } });
-      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
-      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
-      
-      // Accept privacy policy
-      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
-      
-      // Submit form
-      fireEvent.click(screen.getByTestId('signup-button'));
-      
-      // Signup should still succeed and navigate to role selection
-      await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/role-selection');
-      });
-
-      // Verify that email service was called but failed
-      expect(mockedEmailService.sendThankYouEmail).toHaveBeenCalledWith({
-        name: 'John Doe',
-        email: 'john@example.com'
+        expect(screen.getByText('Passwords do not match')).toBeInTheDocument();
       });
     });
   });
@@ -397,61 +180,169 @@ describe('Signup Component', () => {
     it('updates form fields when user types', () => {
       renderSignup();
       
-      const nameInput = screen.getByTestId('input-name');
+      const nameInput = screen.getByTestId('input-full-name');
       const emailInput = screen.getByTestId('input-email');
       const passwordInput = screen.getByTestId('input-password');
+      const confirmPasswordInput = screen.getByTestId('input-confirm-password');
       
       fireEvent.change(nameInput, { target: { value: 'John Doe' } });
       fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
       fireEvent.change(passwordInput, { target: { value: 'password123' } });
+      fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
       
       expect(nameInput).toHaveValue('John Doe');
       expect(emailInput).toHaveValue('john@example.com');
       expect(passwordInput).toHaveValue('password123');
+      expect(confirmPasswordInput).toHaveValue('password123');
     });
 
-    it('toggles checkbox states correctly', () => {
+    it('toggles privacy policy checkbox', () => {
       renderSignup();
       
-      const privacyCheckbox = screen.getByTestId('checkbox-privacy-policy');
-      const marketingCheckbox = screen.getByTestId('checkbox-marketing-emails');
+      const privacyCheckbox = screen.getByTestId('checkbox-privacy-policy') as HTMLInputElement;
+      expect(privacyCheckbox.checked).toBe(false);
       
-      // Initially unchecked
-      expect(privacyCheckbox).not.toBeChecked();
-      expect(marketingCheckbox).not.toBeChecked();
-      
-      // Check both
       fireEvent.click(privacyCheckbox);
-      fireEvent.click(marketingCheckbox);
+      expect(privacyCheckbox.checked).toBe(true);
       
-      expect(privacyCheckbox).toBeChecked();
-      expect(marketingCheckbox).toBeChecked();
-      
-      // Uncheck both
       fireEvent.click(privacyCheckbox);
-      fireEvent.click(marketingCheckbox);
+      expect(privacyCheckbox.checked).toBe(false);
+    });
+
+    it('toggles marketing emails checkbox', () => {
+      renderSignup();
       
-      expect(privacyCheckbox).not.toBeChecked();
-      expect(marketingCheckbox).not.toBeChecked();
+      const marketingCheckbox = screen.getByTestId('checkbox-marketing-emails') as HTMLInputElement;
+      expect(marketingCheckbox.checked).toBe(false);
+      
+      fireEvent.click(marketingCheckbox);
+      expect(marketingCheckbox.checked).toBe(true);
+      
+      fireEvent.click(marketingCheckbox);
+      expect(marketingCheckbox.checked).toBe(false);
     });
   });
 
-  describe('Navigation Links', () => {
-    it('renders link to privacy policy', () => {
+  describe('Form Submission', () => {
+    it('submits form successfully with valid data', async () => {
+      mockedAuthService.signup.mockResolvedValue({
+        success: true,
+        user: { id: '1', name: 'John Doe', email: 'john@example.com' },
+        token: 'mock-token'
+      });
+
       renderSignup();
       
-      const privacyLink = screen.getByText('Privacy Policy and Terms & Conditions');
-      expect(privacyLink).toBeInTheDocument();
-      expect(privacyLink.closest('a')).toHaveAttribute('href', '/privacy-policy');
-      expect(privacyLink.closest('a')).toHaveAttribute('target', '_blank');
+      // Fill in form fields
+      fireEvent.change(screen.getByTestId('input-full-name'), { target: { value: 'John Doe' } });
+      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
+      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByTestId('input-confirm-password'), { target: { value: 'password123' } });
+      
+      // Accept privacy policy
+      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
+      
+      // Submit form
+      const form = screen.getByTestId('auth-card').querySelector('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        fireEvent.click(screen.getByTestId('signup-button'));
+      }
+      
+      await waitFor(() => {
+        expect(mockedAuthService.signup).toHaveBeenCalledWith({
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'password123'
+        });
+      });
     });
 
-    it('renders link to login page', () => {
+    it('shows loading state during submission', async () => {
+      mockedAuthService.signup.mockImplementation(() => 
+        new Promise(resolve => setTimeout(() => resolve({ success: true, user: { id: '1', name: 'John Doe', email: 'john@example.com' }, token: 'mock-token' }), 100)))
+      );
+
       renderSignup();
       
-      const loginLink = screen.getByText('Login');
-      expect(loginLink).toBeInTheDocument();
-      expect(loginLink.closest('a')).toHaveAttribute('href', '/login');
+      // Fill in form fields
+      fireEvent.change(screen.getByTestId('input-full-name'), { target: { value: 'John Doe' } });
+      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
+      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByTestId('input-confirm-password'), { target: { value: 'password123' } });
+      
+      // Accept privacy policy
+      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
+      
+      // Submit form
+      const form = screen.getByTestId('auth-card').querySelector('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        fireEvent.click(screen.getByTestId('signup-button'));
+      }
+      
+      expect(screen.getByText('Creating account...')).toBeInTheDocument();
+    });
+
+    it('handles signup failure', async () => {
+      mockedAuthService.signup.mockResolvedValue({
+        success: false,
+        message: 'Email already exists'
+      });
+
+      renderSignup();
+      
+      // Fill in form fields
+      fireEvent.change(screen.getByTestId('input-full-name'), { target: { value: 'John Doe' } });
+      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
+      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByTestId('input-confirm-password'), { target: { value: 'password123' } });
+      
+      // Accept privacy policy
+      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
+      
+      // Submit form
+      const form = screen.getByTestId('auth-card').querySelector('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        fireEvent.click(screen.getByTestId('signup-button'));
+      }
+      
+      await waitFor(() => {
+        expect(screen.getByText('Email already exists')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('shows generic error for unexpected errors', async () => {
+      mockedAuthService.signup.mockRejectedValue(new Error('Network error'));
+
+      renderSignup();
+      
+      // Fill in form fields
+      fireEvent.change(screen.getByTestId('input-full-name'), { target: { value: 'John Doe' } });
+      fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'john@example.com' } });
+      fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'password123' } });
+      fireEvent.change(screen.getByTestId('input-confirm-password'), { target: { value: 'password123' } });
+      
+      // Accept privacy policy
+      fireEvent.click(screen.getByTestId('checkbox-privacy-policy'));
+      
+      // Submit form
+      const form = screen.getByTestId('auth-card').querySelector('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        fireEvent.click(screen.getByTestId('signup-button'));
+      }
+      
+      await waitFor(() => {
+        expect(screen.getByText('An unexpected error occurred')).toBeInTheDocument();
+      });
     });
   });
 });

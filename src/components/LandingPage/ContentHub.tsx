@@ -6,11 +6,65 @@ import { Navbar } from './Navbar';
 export function ContentHub() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    linkedin: '',
+    whatCanIDo: '',
+    subscribe: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsFormSubmitted(true);
-    window.scrollTo(0, 0);
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('https://api.airtable.com/v0/apphFz0ba6KTb85DE/tblFrz1vPGsvZ0yzt', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer patFClficxpGIUnJF.be5a51a7e3fabe7337cd2cb13dc3f10234fc52d8a1f60e012eb68be7b2fcc982',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          records: [{
+            fields: {
+              'First Name': formData.firstName,
+              'Last Name': formData.lastName,
+              'Email': formData.email,
+              'Phone': formData.phone || '',
+              'LinkedIn URL': formData.linkedin || '',
+              'What can I do for you in return?': formData.whatCanIDo,
+              'Subscribe to updates': formData.subscribe
+            }
+          }]
+        })
+      });
+
+      if (response.ok) {
+        setIsFormSubmitted(true);
+        window.scrollTo(0, 0);
+      } else {
+        throw new Error('Failed to submit form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting your form. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -320,33 +374,59 @@ export function ContentHub() {
               </h2>
               <form onSubmit={handleFormSubmit} className="bg-white p-8 rounded-lg shadow-md">
                 <div className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-lg font-medium text-[#1e335f] mb-2">
-                      Name *
-                    </label>
-                    <input type="text" id="name" required className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="firstName" className="block text-lg font-medium text-[#1e335f] mb-2">
+                        First Name *
+                      </label>
+                      <input type="text" id="firstName" name="firstName" required value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
+                    </div>
+                    <div>
+                      <label htmlFor="lastName" className="block text-lg font-medium text-[#1e335f] mb-2">
+                        Last Name *
+                      </label>
+                      <input type="text" id="lastName" name="lastName" required value={formData.lastName} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-[#ff7043]" />
+                    </div>
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-lg font-medium text-[#1e335f] mb-2">
                       Email *
                     </label>
-                    <input type="email" id="email" required className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
+                    <input type="email" id="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
                   </div>
                   <div>
                     <label htmlFor="phone" className="block text-lg font-medium text-[#1e335f] mb-2">
                       Phone No. (optional)
                     </label>
-                    <input type="tel" id="phone" className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
+                    <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
                   </div>
                   <div>
                     <label htmlFor="linkedin" className="block text-lg font-medium text-[#1e335f] mb-2">
                       LinkedIn URL (optional)
                     </label>
-                    <input type="url" id="linkedin" className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
+                    <input type="url" id="linkedin" name="linkedin" value={formData.linkedin} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff7043]" />
+                  </div>
+                  <div>
+                    <label htmlFor="whatCanIDo" className="block text-lg font-medium text-[#1e335f] mb-2">
+                      What can I (Dheeraj / Coderfarm) do for you in return? *
+                    </label>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Dheeraj - I really appreciate your time. If there's anything I can do to support you — like sharing your work, helping you find talent, or just spreading the word — let me know here. Happy to return the favour!
+                    </p>
+                    <textarea 
+                      id="whatCanIDo" 
+                      name="whatCanIDo" 
+                      required 
+                      value={formData.whatCanIDo} 
+                      onChange={handleInputChange} 
+                      rows={4} 
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-[#ff7043] resize-none" 
+                      placeholder="Let me know how I can help you..."
+                    />
                   </div>
                   <div className="pt-4">
                     <div className="flex items-center mb-4">
-                      <input id="subscribe" type="checkbox" checked={isSubscribed} onChange={() => setIsSubscribed(!isSubscribed)} className="h-5 w-5 text-[#ff7043] focus:ring-[#ff7043] border-gray-300 rounded" />
+                      <input id="subscribe" type="checkbox" name="subscribe" checked={formData.subscribe} onChange={handleInputChange} className="h-5 w-5 text-[#ff7043] focus:ring-[#ff7043] border-gray-300 rounded" />
                       <label htmlFor="subscribe" className="ml-3 text-gray-700">
                         Subscribe to podcast updates & newsletter
                       </label>
@@ -354,13 +434,15 @@ export function ContentHub() {
                     <p className="text-sm text-gray-500 mb-6">
                       By submitting, you agree to our Terms & Conditions
                     </p>
-                    <button type="submit" className="w-full flex justify-center items-center bg-[#1e335f] text-white px-6 py-3 rounded-md font-medium text-lg hover:bg-[#162548] transition-colors">
-                      ➡️ Apply to Be a Guest
+                    <button type="submit" disabled={isSubmitting} className="w-full flex justify-center items-center bg-[#1e335f] text-white px-6 py-3 rounded-md font-medium text-lg hover:bg-[#162548] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                      {isSubmitting ? 'Submitting...' : '➡️ Apply to Be a Guest'}
                       <ArrowRightIcon className="ml-2 h-5 w-5" />
                     </button>
                   </div>
                 </div>
               </form>
+
+
             </div>
           </section>
         </>
@@ -379,7 +461,7 @@ export function ContentHub() {
               In the meantime, check your inbox for a confirmation email.
             </p>
             <div className="flex items-center mb-8">
-              <input id="subscribe-thanks" type="checkbox" checked={isSubscribed} onChange={() => setIsSubscribed(!isSubscribed)} className="h-5 w-5 text-[#ff7043] focus:ring-[#ff7043] border-gray-300 rounded" />
+              <input id="subscribe-thanks" type="checkbox" checked={formData.subscribe} onChange={() => setFormData(prev => ({ ...prev, subscribe: !prev.subscribe }))} className="h-5 w-5 text-[#ff7043] focus:ring-[#ff7043] border-gray-300 rounded" />
               <label htmlFor="subscribe-thanks" className="ml-3 text-gray-700">
                 Subscribe to podcast updates & newsletter
               </label>
