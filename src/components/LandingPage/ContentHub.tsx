@@ -5,7 +5,7 @@ import { Navbar } from './Navbar';
 
 export function ContentHub() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',

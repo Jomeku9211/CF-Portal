@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../../../contexts/AuthContext';
 import { authService } from '../../../services/authService';
 import { emailService } from '../../../services/emailService';

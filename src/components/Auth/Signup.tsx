@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, CheckIcon, XIcon } from 'lucide-react';
+import { UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, XIcon } from 'lucide-react';
 import { AuthCard } from '../common/AuthCard';
 import { AuthInput } from '../common/AuthInput';
 import { AuthButton } from '../common/AuthButton';
