@@ -1,192 +1,524 @@
 import React, { useState } from 'react';
-import { Users2Icon, BuildingIcon, CodeIcon, UserIcon, BriefcaseIcon, ClockIcon, DollarSignIcon, HeartIcon, UsersIcon, PuzzleIcon, ClipboardIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ClockIcon, PuzzleIcon, BrainIcon, UsersIcon, CodeIcon, BuildingIcon, UserIcon, DollarSignIcon } from 'lucide-react';
 
-type TabKey = 'founders' | 'hr' | 'techLeads' | 'developers' | 'agencies';
+type PersonaTab = 'founders' | 'teamLeads' | 'developers' | 'agencies';
 
-interface WhoWeHelpItem {
-  icon: React.ReactElement;
+export function WhoWeHelp() {
+  const [activeTab, setActiveTab] = useState<PersonaTab>('founders');
+  
+  const handleTabClick = (tab: PersonaTab) => {
+    setActiveTab(tab);
+  };
+
+  return (
+    <section className="w-full bg-gray-50 py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Who We Help
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            We match the right people with the right opportunities based on
+            skills, culture, and purpose alignment.
+          </p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-100">
+            <TabButton label="Founders" isActive={activeTab === 'founders'} onClick={() => handleTabClick('founders')} />
+            <TabButton label="Team Leads" isActive={activeTab === 'teamLeads'} onClick={() => handleTabClick('teamLeads')} />
+            <TabButton label="Developers" isActive={activeTab === 'developers'} onClick={() => handleTabClick('developers')} />
+            <TabButton label="Agencies" isActive={activeTab === 'agencies'} onClick={() => handleTabClick('agencies')} />
+          </div>
+          <div className="p-6 md:p-10">
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={activeTab} 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                exit={{ opacity: 0, y: -20 }} 
+                transition={{ duration: 0.3 }}
+              >
+                {activeTab === 'founders' && <FounderContent />}
+                {activeTab === 'teamLeads' && <TeamLeadContent />}
+                {activeTab === 'developers' && <DeveloperContent />}
+                {activeTab === 'agencies' && <AgencyContent />}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+interface TabButtonProps {
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+function TabButton({ label, isActive, onClick }: TabButtonProps) {
+  return (
+    <button 
+      className={`relative py-5 px-8 text-base font-medium transition-colors duration-200 whitespace-nowrap focus:outline-none
+        ${isActive ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`} 
+      onClick={onClick}
+    >
+      {label}
+      {isActive && (
+        <motion.div 
+          layoutId="activeTab" 
+          className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" 
+          transition={{ type: 'spring', duration: 0.5 }} 
+        />
+      )}
+    </button>
+  );
+}
+
+// Founder Content Component
+function FounderContent() {
+  return (
+    <div>
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <SectionHeading>
+            Hiring shouldn't feel like gambling with your startup's future.
+          </SectionHeading>
+          <p className="text-lg text-gray-700 mt-6">
+            As a founder, every hire is mission-critical. The wrong developer
+            doesn't just cost salary—it slows down your roadmap, drains your
+            runway, and distracts you from growth.
+          </p>
+          <div className="mt-10">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              The Problem
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">Endless trial-and-error hires.</p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Culture mismatches that disrupt your small, tight-knit team.
+                </p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Burnout from managing recruitment when you should be focused
+                  on building.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-blue-50 rounded-xl p-8 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <ProblemCard icon={<ClockIcon />} title="Time Drain" description="Hours spent reviewing similar resumes and conducting interviews" color="blue" />
+            <ProblemCard icon={<PuzzleIcon />} title="Culture Mismatch" description="Finding developers who align with your vision and work style" color="purple" />
+            <ProblemCard icon={<BrainIcon />} title="Focus Loss" description="Distracting you from product and growth priorities" color="orange" />
+            <div className="relative sm:col-span-2 bg-white rounded-lg p-6 shadow-sm">
+              <div className="flex items-center justify-center h-full">
+                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Startup team collaborating" className="rounded-lg h-48 w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-16">
+        <div className="bg-white rounded-xl p-8 border border-gray-100">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            The Solution – Coderfarm
+          </h3>
+          <p className="text-lg text-gray-700">
+            We help founders hire developers who fit your domain, culture, and
+            ways of working—so they're productive from day one.
+          </p>
+          <div className="mt-10">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              How it works:
+            </h4>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <ProcessStep number="01" title="Job Persona Builder" description="Turn vague job descriptions into crystal-clear hiring blueprints." />
+              <ProcessStep number="02" title="Top 10 Best-Fit Matches" description="See only pre-verified, culture-aligned candidates." />
+              <ProcessStep number="03" title="Reputation Score" description="Hire with confidence using data on reliability, collaboration, and behavior." />
+              <ProcessStep number="04" title="Onboarding Support" description="Smooth goal-setting and expectation alignment for faster ramp-up." />
+            </div>
+          </div>
+          <div className="mt-12">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              Benefits for You
+            </h4>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <BenefitItem>
+                Save months of wasted runway on bad hires
+              </BenefitItem>
+              <BenefitItem>
+                Build a team that grows with your vision
+              </BenefitItem>
+              <BenefitItem>
+                Focus on scaling, not firefighting recruitment
+              </BenefitItem>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Team Lead Content Component
+function TeamLeadContent() {
+  return (
+    <div>
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <SectionHeading>
+            Build teams that deliver consistently, not just when you're watching.
+          </SectionHeading>
+          <p className="text-lg text-gray-700 mt-6">
+            As a tech lead, you need developers who can work independently,
+            collaborate effectively, and maintain quality standards. The wrong
+            hire means more code reviews, slower delivery, and team friction.
+          </p>
+          <div className="mt-10">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              The Problem
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">Developers who need constant supervision.</p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Skill gaps that slow down the entire team.
+                </p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Communication breakdowns during critical phases.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-blue-50 rounded-xl p-8 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <ProblemCard icon={<UsersIcon />} title="Team Friction" description="Personality clashes and communication issues" color="red" />
+            <ProblemCard icon={<CodeIcon />} title="Skill Gaps" description="Developers who can't contribute to complex projects" color="orange" />
+            <ProblemCard icon={<ClockIcon />} title="Delivery Delays" description="Projects slowed by inexperienced team members" color="blue" />
+            <div className="relative sm:col-span-2 bg-white rounded-lg p-6 shadow-sm">
+              <div className="flex items-center justify-center h-full">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" alt="Team collaboration" className="rounded-lg h-48 w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-16">
+        <div className="bg-white rounded-xl p-8 border border-gray-100">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            The Solution – Coderfarm
+          </h3>
+          <p className="text-lg text-gray-700">
+            We help you find developers who can hit the ground running,
+            collaborate effectively, and maintain your team's high standards.
+          </p>
+          <div className="mt-10">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              How it works:
+            </h4>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <ProcessStep number="01" title="Technical Assessment" description="Verify skills through practical coding challenges." />
+              <ProcessStep number="02" title="Team Compatibility" description="Match developers with your team's communication style." />
+              <ProcessStep number="03" title="Work Style Alignment" description="Find developers who thrive in your development process." />
+              <ProcessStep number="04" title="Quality Assurance" description="Ensure candidates meet your code quality standards." />
+            </div>
+          </div>
+          <div className="mt-12">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              Benefits for You
+            </h4>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <BenefitItem>
+                Reduce time spent on code reviews and mentoring
+              </BenefitItem>
+              <BenefitItem>
+                Maintain consistent delivery timelines
+              </BenefitItem>
+              <BenefitItem>
+                Build a cohesive, high-performing team
+              </BenefitItem>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Developer Content Component
+function DeveloperContent() {
+  return (
+    <div>
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <SectionHeading>
+            Find opportunities where you can grow, contribute, and belong.
+          </SectionHeading>
+          <p className="text-lg text-gray-700 mt-6">
+            As a developer, you want to work on meaningful projects with
+            teams that value your skills and support your growth. Traditional
+            hiring often misses what matters most: culture fit and long-term
+            potential.
+          </p>
+          <div className="mt-10">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              The Problem
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">Interviews that don't showcase your real abilities.</p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Companies that only care about technical skills.
+                </p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Short-term gigs instead of meaningful long-term roles.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-blue-50 rounded-xl p-8 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <ProblemCard icon={<UserIcon />} title="Misrepresentation" description="Companies that don't match their job descriptions" color="red" />
+            <ProblemCard icon={<ClockIcon />} title="Short-term Focus" description="Roles that don't offer growth opportunities" color="orange" />
+                         <ProblemCard icon={<PuzzleIcon />} title="Culture Mismatch" description="Teams where you don't feel you belong" color="purple" />
+            <div className="relative sm:col-span-2 bg-white rounded-lg p-6 shadow-sm">
+              <div className="flex items-center justify-center h-full">
+                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Developer at work" className="rounded-lg h-48 w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-16">
+        <div className="bg-white rounded-xl p-8 border border-gray-100">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            The Solution – Coderfarm
+          </h3>
+          <p className="text-lg text-gray-700">
+            We help you find companies that value your skills, support your
+            growth, and offer opportunities where you can truly thrive.
+          </p>
+          <div className="mt-10">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              How it works:
+            </h4>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <ProcessStep number="01" title="Profile Creation" description="Build a comprehensive profile showcasing your skills and values." />
+              <ProcessStep number="02" title="Culture Matching" description="Connect with companies that align with your work style." />
+              <ProcessStep number="03" title="Skill Validation" description="Demonstrate your abilities through practical assessments." />
+              <ProcessStep number="04" title="Long-term Focus" description="Find opportunities for growth and career development." />
+            </div>
+          </div>
+          <div className="mt-12">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              Benefits for You
+            </h4>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <BenefitItem>
+                Work with teams that value your contributions
+              </BenefitItem>
+              <BenefitItem>
+                Find opportunities for long-term growth
+              </BenefitItem>
+              <BenefitItem>
+                Build meaningful, lasting relationships
+              </BenefitItem>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Agency Content Component
+function AgencyContent() {
+  return (
+    <div>
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <SectionHeading>
+            Place top tech talent faster and build lasting client relationships.
+          </SectionHeading>
+          <p className="text-lg text-gray-700 mt-6">
+            As an agency, you need to quickly identify and place qualified
+            developers while maintaining high client satisfaction. Traditional
+            recruitment methods are slow and often result in poor matches.
+          </p>
+          <div className="mt-10">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              The Problem
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">Slow candidate sourcing and screening.</p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  Poor matches that damage client relationships.
+                </p>
+              </div>
+              <div className="flex items-start">
+                <span className="text-red-500 mr-2 mt-1">•</span>
+                <p className="text-gray-700">
+                  High costs from repeated recruitment efforts.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-blue-50 rounded-xl p-8 h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <ProblemCard icon={<ClockIcon />} title="Slow Process" description="Weeks spent finding and screening candidates" color="red" />
+            <ProblemCard icon={<BuildingIcon />} title="Poor Matches" description="Candidates who don't fit client needs" color="orange" />
+            <ProblemCard icon={<DollarSignIcon />} title="High Costs" description="Expensive recruitment cycles and replacements" color="purple" />
+            <div className="relative sm:col-span-2 bg-white rounded-lg p-6 shadow-sm">
+              <div className="flex items-center justify-center h-full">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Agency team" className="rounded-lg h-48 w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-16">
+        <div className="bg-white rounded-xl p-8 border border-gray-100">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            The Solution – Coderfarm
+          </h3>
+          <p className="text-lg text-gray-700">
+            We help agencies quickly identify and place qualified developers,
+            reducing time-to-hire and improving client satisfaction.
+          </p>
+          <div className="mt-10">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              How it works:
+            </h4>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <ProcessStep number="01" title="Quick Matching" description="Access pre-verified candidates within hours." />
+              <ProcessStep number="02" title="Quality Assurance" description="Ensure candidates meet high standards." />
+              <ProcessStep number="03" title="Client Alignment" description="Match candidates with specific client needs." />
+              <ProcessStep number="04" title="Ongoing Support" description="Provide support throughout the placement process." />
+            </div>
+          </div>
+          <div className="mt-12">
+            <h4 className="text-xl font-semibold text-gray-900 mb-6">
+              Benefits for You
+            </h4>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <BenefitItem>
+                Reduce time-to-hire by 70%
+              </BenefitItem>
+              <BenefitItem>
+                Improve client satisfaction and retention
+              </BenefitItem>
+              <BenefitItem>
+                Lower recruitment costs and overhead
+              </BenefitItem>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// UI Components
+interface SectionHeadingProps {
+  children: React.ReactNode;
+}
+
+function SectionHeading({ children }: SectionHeadingProps) {
+  return (
+    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+      {children}
+    </h2>
+  );
+}
+
+interface ProblemCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  color: 'blue' | 'purple' | 'green' | 'orange' | 'amber' | 'red' | 'indigo';
+}
+
+function ProblemCard({ icon, title, description, color }: ProblemCardProps) {
+  const colorMap = {
+    blue: 'bg-blue-100 text-blue-600',
+    purple: 'bg-purple-100 text-purple-600',
+    green: 'bg-green-100 text-green-600',
+    orange: 'bg-orange-100 text-orange-600',
+    amber: 'bg-amber-100 text-amber-600',
+    red: 'bg-red-100 text-red-600',
+    indigo: 'bg-indigo-100 text-indigo-600'
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className={`w-12 h-12 rounded-full ${colorMap[color]} flex items-center justify-center mb-4`}>
+        <div className="w-6 h-6">{icon}</div>
+      </div>
+      <h4 className="text-lg font-semibold text-gray-900 mb-2">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
+    </div>
+  );
+}
+
+interface ProcessStepProps {
+  number: string;
   title: string;
   description: string;
 }
 
-export function WhoWeHelp() {
-  const [activeTab, setActiveTab] = useState<TabKey>('founders');
-  
-  const whoWeHelpData: Record<TabKey, WhoWeHelpItem> = {
-    founders: {
-      icon: <BuildingIcon className="h-8 w-8 text-blue-700" />,
-      title: 'Startup Founders',
-      description: ''
-    },
-    hr: {
-      icon: <Users2Icon className="h-8 w-8 text-orange-500" />,
-      title: 'HR & Talent Leaders',
-      description: 'Shorten time-to-hire, reduce attrition, and build trust.'
-    },
-    techLeads: {
-      icon: <CodeIcon className="h-8 w-8 text-blue-900" />,
-      title: 'Tech Leads & Managers',
-      description: 'Align fast-growing teams with the right talent.'
-    },
-    developers: {
-      icon: <UserIcon className="h-8 w-8 text-green-600" />,
-      title: 'Developers',
-      description: 'Find meaningful, long-term opportunities where you truly belong.'
-    },
-    agencies: {
-      icon: <BriefcaseIcon className="h-8 w-8 text-purple-600" />,
-      title: 'Agencies',
-      description: 'Showcase and place top tech talent more effectively.'
-    }
-  };
-
+function ProcessStep({ number, title, description }: ProcessStepProps) {
   return (
-    <section className="w-full bg-white py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-            Who We Help
-          </h3>
-        </div>
-        <div className="bg-gray-50 rounded-2xl p-0">
-          <div className="flex flex-col md:flex-row justify-center items-center mb-6 gap-2 md:gap-1 px-4 py-4">
-            {(Object.keys(whoWeHelpData) as TabKey[]).map(key => (
-              <button 
-                key={key} 
-                className={`w-full md:w-[17%] min-w-[120px] px-1 py-2 text-sm rounded transition ${
-                  activeTab === key 
-                    ? 'bg-blue-700 text-white' 
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`} 
-                onClick={() => setActiveTab(key)}
-              >
-                {whoWeHelpData[key].title}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Founder's Problem Solution Section - Only show when founders tab is active */}
-        {activeTab === 'founders' && (
-          <div className="mt-16">
-            <div className="flex flex-col md:flex-row items-center gap-12">
-              {/* Left Content - Visual */}
-              <div className="w-full md:w-2/5">
-                <div className="relative bg-blue-50 rounded-2xl p-6 shadow-lg">
-                  <img src="https://img.freepik.com/free-vector/deadline-concept-illustration_114360-6311.jpg" alt="Founder juggling tasks and deadlines" className="w-full h-auto rounded-xl" />
-                  <div className="absolute -top-4 -right-4 bg-orange-100 rounded-full p-4 shadow-md">
-                    <ClockIcon className="text-orange-500 h-8 w-8" />
-                  </div>
-                  <div className="absolute -bottom-4 -left-4 bg-blue-100 rounded-full p-4 shadow-md">
-                    <DollarSignIcon className="text-blue-700 h-8 w-8" />
-                  </div>
-                  <div className="absolute top-1/2 -right-4 bg-red-100 rounded-full p-4 shadow-md">
-                    <HeartIcon className="text-red-500 h-8 w-8" />
-                  </div>
-                </div>
-              </div>
-              {/* Right Content - Text */}
-              <div className="w-full md:w-3/5">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                  The Founder's Challenge
-                </h2>
-                <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                  As a bootstrapped startup founder, every hire feels like a bet.
-                  Mis-hires cost time, money, and morale. Resumes look the same,
-                  interviews drain hours, and "gut hiring" often leads to regret.
-                  You don't just need skills—you need people who share your vision,
-                  thrive in your team culture, and stay committed.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-blue-50 rounded-xl p-5 shadow-sm">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-2">Time Drain</h3>
-                    <p className="text-gray-700">
-                      Hours spent reviewing similar resumes and conducting
-                      interviews
-                    </p>
-                  </div>
-                  <div className="bg-orange-50 rounded-xl p-5 shadow-sm">
-                    <h3 className="text-lg font-semibold text-orange-700 mb-2">
-                      Financial Risk
-                    </h3>
-                    <p className="text-gray-700">
-                      Mis-hires can cost up to 3x a developer's annual salary
-                    </p>
-                  </div>
-                  <div className="bg-red-50 rounded-xl p-5 shadow-sm">
-                    <h3 className="text-lg font-semibold text-red-700 mb-2">Team Morale</h3>
-                    <p className="text-gray-700">
-                      Poor cultural fits drain team energy and productivity
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* HR Problem Solution Section - Only show when HR tab is active */}
-        {activeTab === 'hr' && (
-          <div className="mt-16">
-            <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-              {/* Right Content - Visual */}
-              <div className="w-full md:w-2/5">
-                <div className="relative bg-blue-50 rounded-2xl p-6 shadow-lg">
-                  <img src="https://img.freepik.com/free-vector/hr-management-concept-illustration_114360-13358.jpg" alt="HR professional with stacks of resumes" className="w-full h-auto rounded-xl" />
-                  <div className="absolute -top-4 -left-4 bg-orange-100 rounded-full p-4 shadow-md">
-                    <UsersIcon className="text-blue-700 h-8 w-8" />
-                  </div>
-                  <div className="absolute -bottom-4 -right-4 bg-green-100 rounded-full p-4 shadow-md">
-                    <PuzzleIcon className="text-green-600 h-8 w-8" />
-                  </div>
-                  <div className="absolute top-1/2 -left-4 bg-purple-100 rounded-full p-4 shadow-md">
-                    <ClipboardIcon className="text-purple-600 h-8 w-8" />
-                  </div>
-                </div>
-              </div>
-              {/* Left Content - Text */}
-              <div className="w-full md:w-3/5">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                  The HR Struggle
-                </h2>
-                <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                  HR teams juggle pressure from leadership and employees alike.
-                  Endless interviews, unclear role definitions, and hiring based
-                  only on skills lead to high turnover. Traditional hiring tools
-                  don't capture what really matters: culture, behavior, and
-                  long-term fit.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-blue-50 rounded-xl p-5 shadow-sm">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                      Pressure Cooker
-                    </h3>
-                    <p className="text-gray-700">
-                      Balancing expectations from leadership and candidates
-                    </p>
-                  </div>
-                  <div className="bg-green-50 rounded-xl p-5 shadow-md">
-                    <h3 className="text-lg font-semibold text-green-700 mb-2">
-                      Cultural Mismatch
-                    </h3>
-                    <p className="text-gray-700">
-                      Skills-only hiring leads to poor team integration
-                    </p>
-                  </div>
-                  <div className="bg-purple-50 rounded-xl p-5 shadow-sm">
-                    <h3 className="text-lg font-semibold text-purple-700 mb-2">
-                      High Turnover
-                    </h3>
-                    <p className="text-gray-700">
-                      Misaligned expectations lead to quick departures
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+    <div className="text-center">
+      <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-lg">
+        {number}
       </div>
-    </section>
+      <h4 className="text-lg font-semibold text-gray-900 mb-2">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
+    </div>
+  );
+}
+
+interface BenefitItemProps {
+  children: React.ReactNode;
+}
+
+function BenefitItem({ children }: BenefitItemProps) {
+  return (
+    <div className="bg-blue-50 rounded-lg p-4 text-center">
+      <p className="text-gray-700 font-medium">{children}</p>
+    </div>
   );
 }
