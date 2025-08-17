@@ -1,4 +1,10 @@
 import '../../styles/LandingPage/ClientLogos.css';
+import tedxLogo from '../../assets/LandingPage/Auto Slider Images/tedx.png';
+import indorecityLogo from '../../assets/LandingPage/Auto Slider Images/indorecity.png';
+import canvassLogo from '../../assets/LandingPage/canvass.png';
+import lyftedEdibleLogo from '../../assets/LandingPage/Auto Slider Images/LyftedEdible.png';
+import smartdataLogo from '../../assets/LandingPage/Auto Slider Images/Smartdata.png';
+import iitrLogo from '../../assets/LandingPage/Auto Slider Images/IITR.png';
 
 const ClientLogos = () => {
   return (
@@ -7,7 +13,7 @@ const ClientLogos = () => {
         <div className="client-logo-item">
           <div className="logo-wrapper">
             <img 
-              src="/src/assets/LandingPage/Auto%20Slider%20Images/tedx.png" 
+              src={tedxLogo}
               alt="TEDx" 
               className="client-logo"
             />
@@ -17,7 +23,7 @@ const ClientLogos = () => {
         
         <div className="client-logo-item">
           <img 
-            src="/src/assets/LandingPage/Auto%20Slider%20Images/indorecity.png" 
+            src={indorecityLogo}
             alt="Indore City" 
             className="client-logo"
           />
@@ -25,7 +31,7 @@ const ClientLogos = () => {
         
         <div className="client-logo-item">
           <img 
-            src="/src/assets/LandingPage/canvass.png" 
+            src={canvassLogo}
             alt="Canvass" 
             className="client-logo"
           />
@@ -33,7 +39,7 @@ const ClientLogos = () => {
         
         <div className="client-logo-item">
           <img 
-            src="/src/assets/LandingPage/Auto%20Slider%20Images/LyftedEdible.png" 
+            src={lyftedEdibleLogo}
             alt="Lyfted Edible" 
             className="client-logo"
           />
@@ -41,7 +47,7 @@ const ClientLogos = () => {
         
         <div className="client-logo-item">
           <img 
-            src="/src/assets/LandingPage/Auto%20Slider%20Images/Smartdata.png" 
+            src={smartdataLogo}
             alt="Smart Data" 
             className="client-logo"
           />
@@ -49,7 +55,7 @@ const ClientLogos = () => {
         
         <div className="client-logo-item">
           <img 
-            src="/src/assets/LandingPage/Auto%20Slider%20Images/IITR.png" 
+            src={iitrLogo}
             alt="IITR" 
             className="client-logo"
           />

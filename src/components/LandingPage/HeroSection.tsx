@@ -1,4 +1,5 @@
 import { ArrowRightIcon } from 'lucide-react';
+import profileImage from '../../assets/LandingPage/profile.png';
 
 export function HeroSection() {
   return (
@@ -40,7 +41,7 @@ export function HeroSection() {
                 {/* Main Image - profile.png with exact positioning from Figma */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img 
-                    src="/src/assets/LandingPage/profile.png" 
+                    src={profileImage}
                     alt="Profile image" 
                     className="w-[359px] h-[441px] object-cover rounded-lg"
                   />
