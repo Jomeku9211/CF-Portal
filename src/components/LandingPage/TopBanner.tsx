@@ -1,4 +1,3 @@
-import React from 'react';
 import { CalendarIcon, PhoneIcon, MailIcon, ArrowRightIcon } from 'lucide-react';
 
 export function TopBanner() {

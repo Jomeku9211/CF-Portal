@@ -19,14 +19,6 @@ export interface EmailResponse {
 }
 
 class EmailService {
-  private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('authToken');
-    return {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-    };
-  }
-
   async sendThankYouEmail(userData: ThankYouEmailData): Promise<EmailResponse> {
     try {
       const emailContent = this.generateThankYouEmail(userData);

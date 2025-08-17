@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Users, Code, Building2, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BuildingIcon, UsersIcon, UserIcon, ArrowRightIcon, CheckCircle } from 'lucide-react';
 
 type Role = 'client' | 'freelancer' | 'agency' | null;
 
@@ -55,7 +55,7 @@ export function RoleSelection() {
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Users size={24} className="text-blue-400" />
+                    <UsersIcon size={24} className="text-blue-400" />
                   </div>
                   {selectedRole === 'client' && <CheckCircle size={20} className="text-blue-500" />}
                 </div>
@@ -84,7 +84,7 @@ export function RoleSelection() {
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Code size={24} className="text-blue-400" />
+                    <UserIcon size={24} className="text-blue-400" />
                   </div>
                   {selectedRole === 'freelancer' && <CheckCircle size={20} className="text-blue-500" />}
                 </div>
@@ -113,7 +113,7 @@ export function RoleSelection() {
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Building2 size={24} className="text-blue-400" />
+                    <BuildingIcon size={24} className="text-blue-400" />
                   </div>
                   {selectedRole === 'agency' && <CheckCircle size={20} className="text-blue-500" />}
                 </div>

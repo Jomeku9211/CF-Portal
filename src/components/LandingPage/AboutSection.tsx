@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { BuildingIcon, HeartHandshakeIcon, BarChart4Icon, ClipboardCheckIcon, UsersIcon, CalendarClockIcon, GlobeIcon, LineChartIcon } from 'lucide-react';
 
 export function AboutSection() {
