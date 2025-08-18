@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { organizationService } from '../../services/organizationService';
 import { OrganizationWelcomeStep } from './steps/OrganizationWelcomeStep';
 import { OrganizationBasicInfoStep } from './steps/OrganizationBasicInfoStep';
 import { FinancialSnapshotStep } from './steps/FinancialSnapshotStep';
@@ -174,10 +175,37 @@ export function OnboardingFlow() {
         setCurrentSubStep(currentSubStep + 1);
         window.scrollTo(0, 0);
       } else {
-        // Move to next main step
-        setCurrentMainStep(2);
-        setCurrentSubStep(0);
-        window.scrollTo(0, 0);
+        // Finalize organization onboarding → create organization in backend
+        const basic = formData.organizationOnboarding.basicInfo;
+        const fin = formData.organizationOnboarding.financials;
+        const pur = formData.organizationOnboarding.purpose;
+
+        const payload = {
+          name: (basic.name || '').trim(),
+          industry: basic.industry || '',
+          website_url: basic.website || '',
+          organization_size: basic.size || '',
+          current_funding_status: fin.fundingStatus || '',
+          key_investors_backers: fin.investors || '',
+          revenue_status: fin.revenueStatus || '',
+          profitability_status: fin.profitabilityStatus || '',
+          why_statement: pur.whyStatement || '',
+          origin_story: pur.originStory || '',
+          core_beliefs_principles: Array.isArray(pur.coreBeliefs) ? pur.coreBeliefs.join('; ') : (pur.coreBeliefs || ''),
+          how_we_live_purpose: Array.isArray(pur.practices) ? pur.practices.join('; ') : (pur.practices || ''),
+        };
+
+        (async () => {
+          const res = await organizationService.createOrganization(payload);
+          if (!res.success) {
+            alert(res.message || 'Failed to create organization');
+            return;
+          }
+          // Move to next main step after successful creation
+          setCurrentMainStep(2);
+          setCurrentSubStep(0);
+          window.scrollTo(0, 0);
+        })();
       }
     } else if (currentMainStep === 2) {
       // Team onboarding - handled by TeamOnboarding component
@@ -287,14 +315,13 @@ export function OnboardingFlow() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-r from-[#0f172a] to-[#2d1e3a]">
       <div className="max-w-4xl mx-auto p-4 md:p-8 min-h-screen flex flex-col">
-        <header className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            Coderfarm
-          </h1>
-          <p className="text-gray-300">
-            Founder-aligned, fit-first hiring for startups
-          </p>
-        </header>
+        <div className="mb-6">
+          <div className="text-sm text-gray-400">
+            <span className="hover:text-blue-400 cursor-pointer" onClick={() => window.history.back()}>Select Role</span>
+            <span className="mx-2">/</span>
+            <span className="text-gray-300">Onboarding</span>
+          </div>
+        </div>
         
         {/* Main Progress Bar - 4 Main Steps */}
         <div className="mb-8 w-full">

@@ -8,11 +8,15 @@ export function AuthInput({
   label,
   error,
   icon,
+  id,
   ...props
 }: InputProps) {
+  // Generate a unique ID if none provided
+  const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+      <label htmlFor={inputId} className="block text-sm font-medium text-gray-300 mb-1.5">
         {label}
       </label>
       <div className="relative">
@@ -22,6 +26,7 @@ export function AuthInput({
           </div>
         )}
         <input 
+          id={inputId}
           className={`w-full rounded-md bg-[#232939] border ${
             error ? 'border-red-500' : 'border-gray-700'
           } px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${

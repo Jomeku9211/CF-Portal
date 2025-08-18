@@ -23,7 +23,8 @@ export function Login() {
     setIsLoading(true);
 
     try {
-      const result = await login(email, password);
+      const normalizedEmail = email.trim().toLowerCase();
+      const result = await login(normalizedEmail, password);
       if (result.success) {
         // Redirect to role selection after successful login
         navigate('/role-selection');

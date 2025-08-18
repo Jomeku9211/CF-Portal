@@ -11,6 +11,7 @@ import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import PrivacyPolicy from "./views/PrivacyPolicy/PrivacyPolicy";
 import ContentHubPage from "./views/ContentHub/ContentHub";
 import { AboutUsSection } from "./components/AboutUsSection";
+import { GuestRoute } from "./components/common/GuestRoute";
 
 const appRouter = createBrowserRouter([
   {
@@ -23,19 +24,35 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "auth",
-        element: <AuthPage />,
+        element: (
+          <GuestRoute>
+            <AuthPage />
+          </GuestRoute>
+        ),
       },
       {
         path: "login",
-        element: <Login />,
+        element: (
+          <GuestRoute>
+            <Login />
+          </GuestRoute>
+        ),
       },
       {
         path: "signup",
-        element: <Signup />,
+        element: (
+          <GuestRoute>
+            <Signup />
+          </GuestRoute>
+        ),
       },
       {
         path: "forgot-password",
-        element: <ForgotPassword />,
+        element: (
+          <GuestRoute>
+            <ForgotPassword />
+          </GuestRoute>
+        ),
       },
       {
         path: "role-selection",

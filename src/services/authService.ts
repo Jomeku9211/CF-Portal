@@ -44,19 +44,31 @@ class AuthService {
         body: JSON.stringify(credentials),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
-      if (response.ok && data.token) {
-        localStorage.setItem('authToken', data.token);
+      // Accept multiple token/user shapes
+      const token = data.token || data.authToken || data.jwt || data.access_token || null;
+      const user = data.user || data.data?.user || (data.id && data.email ? { id: data.id, name: data.name, email: data.email } : null);
+
+      if (response.ok && (token || user)) {
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
         return {
           success: true,
-          token: data.token,
-          user: data.user,
+          token: token || undefined,
+          user: user || undefined,
         };
       } else {
+        // Log details for debugging real API failures
+        console.error('Login failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          data,
+        });
         return {
           success: false,
-          message: data.message || 'Login failed',
+          message: data.message || data.error || 'Login failed',
         };
       }
     } catch (error) {
@@ -80,17 +92,23 @@ class AuthService {
 
       const data = await response.json();
 
-      if (response.ok && data.token) {
-        localStorage.setItem('authToken', data.token);
+      // Accept a variety of token/user shapes from backend
+      const token = data.token || data.authToken || data.jwt || data.access_token || null;
+      const user = data.user || data.data?.user || (data.id && data.email ? { id: data.id, name: data.name, email: data.email } : null);
+
+      if (response.ok && (token || user)) {
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
         return {
           success: true,
-          token: data.token,
-          user: data.user,
+          token: token || undefined,
+          user: user || undefined,
         };
       } else {
         return {
           success: false,
-          message: data.message || 'Signup failed',
+          message: data.message || data.error || 'Signup failed',
         };
       }
     } catch (error) {

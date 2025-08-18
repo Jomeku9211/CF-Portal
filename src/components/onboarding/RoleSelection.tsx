@@ -24,14 +24,14 @@ export function RoleSelection() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-r from-[#0f172a] to-[#2d1e3a]">
       <div className="max-w-4xl mx-auto p-4 md:p-8 min-h-screen flex flex-col">
-        <header className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            Coderfarm
-          </h1>
-          <p className="text-gray-300">
-            Founder-aligned, fit-first hiring for startups
-          </p>
-        </header>
+        <div className="mb-6">
+          <button 
+            onClick={() => navigate('/')} 
+            className="text-sm text-gray-400 hover:text-blue-400 flex items-center gap-1"
+          >
+            ← Back to Home
+          </button>
+        </div>
         
         <div className="flex-grow bg-[#1a2234] rounded-xl shadow-md p-6 md:p-8 transition-all duration-300 ease-out border border-[#2a3344]">
           <div className="max-w-4xl mx-auto">
@@ -43,10 +43,10 @@ export function RoleSelection() {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
               {/* Client Role Card */}
               <div 
-                className={`bg-[#171c33] border-2 rounded-xl p-6 cursor-pointer transition-all ${
+                className={`bg-[#171c33] border-2 rounded-xl p-6 pb-8 cursor-pointer transition-all min-h-[320px] h-full flex flex-col ${
                   selectedRole === 'client' 
                     ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
                     : 'border-gray-700 hover:border-gray-500'
@@ -64,7 +64,7 @@ export function RoleSelection() {
                   I'm an IT founder or HR looking to hire developers for my company or
                   team.
                 </p>
-                <button className={`w-full py-2 px-4 rounded-md text-sm font-medium ${
+                <button className={`w-full h-11 inline-flex items-center justify-center px-4 rounded-md text-sm font-medium mt-auto ${
                   selectedRole === 'client' 
                     ? 'bg-blue-500 text-white' 
                     : 'bg-[#2a3344] text-gray-300'
@@ -75,7 +75,7 @@ export function RoleSelection() {
 
               {/* Freelancer Role Card */}
               <div 
-                className={`bg-[#171c33] border-2 rounded-xl p-6 cursor-pointer transition-all ${
+                className={`bg-[#171c33] border-2 rounded-xl p-6 pb-8 cursor-pointer transition-all min-h-[320px] h-full flex flex-col ${
                   selectedRole === 'freelancer' 
                     ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
                     : 'border-gray-700 hover:border-gray-500'
@@ -93,7 +93,7 @@ export function RoleSelection() {
                   I'm a developer who wants to list myself and get hired by startups
                   and companies.
                 </p>
-                <button className={`w-full py-2 px-4 rounded-md text-sm font-medium ${
+                <button className={`w-full h-11 inline-flex items-center justify-center px-4 rounded-md text-sm font-medium mt-auto ${
                   selectedRole === 'freelancer' 
                     ? 'bg-blue-500 text-white' 
                     : 'bg-[#2a3344] text-gray-300'
@@ -104,7 +104,7 @@ export function RoleSelection() {
 
               {/* Agency Owner Role Card */}
               <div 
-                className={`bg-[#171c33] border-2 rounded-xl p-6 cursor-pointer transition-all ${
+                className={`bg-[#171c33] border-2 rounded-xl p-6 pb-8 cursor-pointer transition-all min-h-[320px] h-full flex flex-col ${
                   selectedRole === 'agency' 
                     ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
                     : 'border-gray-700 hover:border-gray-500'
@@ -122,7 +122,7 @@ export function RoleSelection() {
                   I run a team or agency and want to list my employees for outsourced
                   projects.
                 </p>
-                <button className={`w-full py-2 px-4 rounded-md text-sm font-medium ${
+                <button className={`w-full h-11 inline-flex items-center justify-center px-4 rounded-md text-sm font-medium mt-auto ${
                   selectedRole === 'agency' 
                     ? 'bg-blue-500 text-white' 
                     : 'bg-[#2a3344] text-gray-300'
@@ -143,13 +143,6 @@ export function RoleSelection() {
                 }`}
               >
                 Continue
-              </button>
-              
-              <button 
-                onClick={() => navigate('/')} 
-                className="text-sm text-gray-400 hover:text-blue-400 flex items-center gap-1"
-              >
-                Back to Home
               </button>
             </div>
           </div>

@@ -54,8 +54,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       const response = await authService.login({ email, password });
-      if (response.success && response.user) {
-        setUser(response.user);
+      if (response.success) {
+        if (response.user) {
+          setUser(response.user);
+        } else {
+          // If only token present, fetch current user
+          try {
+            const currentUser = await authService.getCurrentUser();
+            if (currentUser) setUser(currentUser);
+          } catch (e) {
+            // ignore fetch user failure; keep token for subsequent authed routes
+          }
+        }
         return { success: true };
       } else {
         return { success: false, message: response.message };
@@ -69,8 +79,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (name: string, email: string, password: string) => {
     try {
       const response = await authService.signup({ name, email, password });
-      if (response.success && response.user) {
-        setUser(response.user);
+      if (response.success && (response.user || response.token)) {
+        if (response.user) {
+          setUser(response.user);
+        } else {
+          // If no user is returned, try fetching current user
+          try {
+            const currentUser = await authService.getCurrentUser();
+            if (currentUser) setUser(currentUser);
+          } catch (e) {
+            // ignore
+          }
+        }
         
         // Send thank you email after successful signup
         try {

@@ -41,6 +41,13 @@ export function Signup() {
     feedback: '',
     color: 'text-gray-400'
   });
+  // Track whether a field has been interacted with
+  const [touched, setTouched] = useState<{ name: boolean; email: boolean; password: boolean; confirmPassword: boolean }>({
+    name: false,
+    email: false,
+    password: false,
+    confirmPassword: false
+  });
 
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -48,22 +55,22 @@ export function Signup() {
   // Password strength validation
   const validatePassword = (password: string): PasswordStrength => {
     let score = 0;
-    const feedback = [];
+    const feedback = [] as string[];
 
     if (password.length >= 8) score++;
-    else feedback.push('At least 8 characters');
+    else if (password.length > 0) feedback.push('At least 8 characters');
 
     if (/[a-z]/.test(password)) score++;
-    else feedback.push('Lowercase letter');
+    else if (password.length > 0) feedback.push('Lowercase letter');
 
     if (/[A-Z]/.test(password)) score++;
-    else feedback.push('Uppercase letter');
+    else if (password.length > 0) feedback.push('Uppercase letter');
 
     if (/[0-9]/.test(password)) score++;
-    else feedback.push('Number');
+    else if (password.length > 0) feedback.push('Number');
 
     if (/[^A-Za-z0-9]/.test(password)) score++;
-    else feedback.push('Special character');
+    else if (password.length > 0) feedback.push('Special character');
 
     let color = 'text-red-500';
     if (score >= 4) color = 'text-green-500';
@@ -77,12 +84,12 @@ export function Signup() {
     };
   };
 
-  // Real-time validation
+  // Real-time validation (do not set errors for empty fields)
   useEffect(() => {
     const errors: ValidationErrors = {};
 
     // Name validation
-    if (formData.name.trim().length < 2) {
+    if (formData.name.trim() !== '' && formData.name.trim().length < 2) {
       errors.name = 'Name must be at least 2 characters long';
     } else if (formData.name.trim().length > 50) {
       errors.name = 'Name must be less than 50 characters';
@@ -90,12 +97,12 @@ export function Signup() {
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if (formData.email !== '' && !emailRegex.test(formData.email)) {
       errors.email = 'Please enter a valid email address';
     }
 
     // Password validation
-    if (formData.password.length < 8) {
+    if (formData.password !== '' && formData.password.length < 8) {
       errors.password = 'Password must be at least 8 characters long';
     }
 
@@ -118,41 +125,76 @@ export function Signup() {
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Mark as touched when user changes
+    setTouched(prev => ({ ...prev, [field]: true }));
     // Clear field-specific error when user starts typing
     if (validationErrors[field]) {
       setValidationErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
+  const handleBlur = (field: keyof typeof formData) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
-    // Final validation check
-    if (Object.keys(validationErrors).length > 0) {
+
+    // Normalize inputs for validation and submission
+    const normalizedName = formData.name.trim().replace(/\s+/g, ' ');
+    const normalizedEmail = formData.email.trim().toLowerCase();
+
+    // Final validation check on submit (including empty fields)
+    const submitErrors: ValidationErrors = {};
+    if (normalizedName.length < 2) {
+      submitErrors.name = 'Name must be at least 2 characters long';
+    } else if (normalizedName.length > 50) {
+      submitErrors.name = 'Name must be less than 50 characters';
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      submitErrors.email = 'Please enter a valid email address';
+    }
+
+    if (formData.password.length < 8) {
+      submitErrors.password = 'Password must be at least 8 characters long';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      submitErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (!privacyPolicyAccepted) {
+      setError('You must accept the Privacy Policy and Terms & Conditions to continue');
+      if (Object.keys(submitErrors).length > 0) {
+        setValidationErrors(submitErrors);
+      }
+      return;
+    }
+
+    if (Object.keys(submitErrors).length > 0) {
+      setValidationErrors(submitErrors);
       setError('Please fix the validation errors above');
       return;
     }
-    
-    if (!privacyPolicyAccepted) {
-      setError('You must accept the Privacy Policy and Terms & Conditions to continue');
-      return;
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    
+
     setIsLoading(true);
 
     try {
-      const result = await signup(formData.name, formData.email, formData.password);
+      const result = await signup(normalizedName, normalizedEmail, formData.password);
       if (result.success) {
         // User is automatically logged in after signup, redirect to role selection
         navigate('/role-selection');
       } else {
         setError(result.message || 'Signup failed');
+        // If backend indicates the email already exists, show it under the Email field
+        const msg = (result.message || '').toLowerCase();
+        if (msg.includes('exist')) {
+          setValidationErrors(prev => ({ ...prev, email: result.message }));
+          setTouched(prev => ({ ...prev, email: true }));
+        }
       }
     } catch (error) {
       setError('An unexpected error occurred');
@@ -179,9 +221,10 @@ export function Signup() {
           placeholder="Enter your full name" 
           value={formData.name} 
           onChange={e => handleInputChange('name', e.target.value)} 
+          onBlur={() => handleBlur('name')}
           icon={<UserIcon size={18} />} 
           required 
-          error={validationErrors.name}
+          error={touched.name ? validationErrors.name : undefined}
         />
         
         <AuthInput 
@@ -190,11 +233,16 @@ export function Signup() {
           placeholder="Enter your email" 
           value={formData.email} 
           onChange={e => handleInputChange('email', e.target.value)} 
+          onBlur={() => handleBlur('email')}
           icon={<MailIcon size={18} />} 
           required 
-          error={validationErrors.email}
+          error={touched.email ? validationErrors.email : undefined}
         />
         
+        {validationErrors.email && (
+          <p className="text-xs text-red-500 mt-1">{validationErrors.email}</p>
+        )}
+
         <div className="space-y-2">
           <div className="relative">
             <AuthInput 
@@ -203,9 +251,10 @@ export function Signup() {
               placeholder="Create a password" 
               value={formData.password} 
               onChange={e => handleInputChange('password', e.target.value)} 
+              onBlur={() => handleBlur('password')}
               icon={<LockIcon size={18} />} 
               required 
-              error={validationErrors.password}
+              error={touched.password ? validationErrors.password : undefined}
             />
             <button
               type="button"
@@ -252,9 +301,10 @@ export function Signup() {
             placeholder="Confirm your password" 
             value={formData.confirmPassword} 
             onChange={e => handleInputChange('confirmPassword', e.target.value)} 
+            onBlur={() => handleBlur('confirmPassword')}
             icon={<LockIcon size={18} />} 
             required 
-            error={validationErrors.confirmPassword}
+            error={touched.confirmPassword ? validationErrors.confirmPassword : undefined}
           />
           <button
             type="button"
