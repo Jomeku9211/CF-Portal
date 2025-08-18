@@ -71,6 +71,11 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
     }
   };
   const handleSubmit = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert('Please log in before submitting your organization.');
+      return;
+    }
     const payload = buildXanoPayloadFromOrgProfile(formData as any);
     const validation = validateXanoPayload(payload);
     console.log('Organization submit dry run (mapped payload):', payload);
@@ -86,6 +91,8 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
       alert(result.message || 'Failed to create organization');
       return;
     }
+    console.log('Organization created successfully:', result.organization);
+    alert('Organization created successfully');
     if (onSubmitSuccess) onSubmitSuccess();
   };
   return <div className="w-full m-0 p-0">
