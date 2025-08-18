@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { QuickSetup } from './OrganizationProfileSteps/QuickSetup';
+import QuickSetup from './OrganizationProfileSteps/QuickSetup';
 import { PurposeStory } from './OrganizationProfileSteps/PurposeStory';
 import { GrowthSuccess } from './OrganizationProfileSteps/GrowthSuccess';
 import { CultureValues } from './OrganizationProfileSteps/CultureValues';
@@ -100,7 +100,7 @@ export function OrganizationProfile() {
         </div>
       </div>
       {/* Step content */}
-      <div className="w-full bg-gradient-to-b from-[#1e293b] to-[#111827] rounded-xl p-0 md:p-0 mb-0 shadow-none transition-none">
+      <div className="w-full bg-gradient-to-b from-[#1e293b] to-[#111827] rounded-xl p-6 md:p-8 mb-0 shadow-lg transition-all duration-300 ease-in-out hover:shadow-[#3b82f6]/10">
         {currentStep === 'quick-setup' && <QuickSetup formData={formData} updateFormData={updateFormData} />}
         {currentStep === 'purpose-story' && <PurposeStory formData={formData} updateFormData={updateFormData} />}
         {currentStep === 'growth-success' && <GrowthSuccess formData={formData} updateFormData={updateFormData} />}

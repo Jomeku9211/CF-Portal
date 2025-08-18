@@ -22,7 +22,7 @@ export function CultureValues({
           Define what makes your organisation's culture unique.
         </p>
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
           <StarIcon className="mr-2 text-[#60a5fa]" size={20} />
           Core Values
@@ -101,7 +101,7 @@ export function CultureValues({
         }} placeholder="Add custom value and press Enter..." helperText={`${formData.coreValuesAspirations.length}/3 values selected`} maxTags={3 - formData.coreValuesAspirations.filter((v: string) => predefinedValues.includes(v)).length} className="md:max-w-2xl" />
           </div>}
       </div>
-      <div className="bg-gradient-to-r from-[#4f46e5]/20 to-[#8b5cf6]/10 p-8 rounded-xl border border-[#8b5cf6]/30 shadow-lg">
+      <div className="bg-gradient-to-r from-[#4f46e5]/20 to-[#8b5cf6]/10 p-8 rounded-xl border border-[#8b5cf6]/30 shadow-lg mb-6">
         <div className="flex items-center mb-4">
           <div className="bg-[#8b5cf6]/20 p-2 rounded-full mr-4">
             <UsersIcon className="text-[#a78bfa]" size={24} />

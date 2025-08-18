@@ -106,7 +106,7 @@ export function QuickSetup({
           Let's start with the basics about your organisation.
         </p>
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
           <BuildingIcon className="mr-2 text-[#60a5fa]" size={20} />
           Basic Information
@@ -120,7 +120,7 @@ export function QuickSetup({
         })} className="bg-[#111827] border-[#374151] text-white placeholder-gray-500" />
         </div>
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
           <UsersIcon className="mr-2 text-[#60a5fa]" size={20} />
           Organisation Size
@@ -129,7 +129,7 @@ export function QuickSetup({
         size: value
       })} helperText="How many people currently work at your organisation?" />
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
           <DollarSignIcon className="mr-2 text-[#60a5fa]" size={20} />
           Business Details
@@ -143,7 +143,7 @@ export function QuickSetup({
         })} placeholder="Select company function" helperText="What best describes your business model?" />
         </div>
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
           <BarChartIcon className="mr-2 text-[#60a5fa]" size={20} />
           Revenue Status
@@ -155,11 +155,18 @@ export function QuickSetup({
       <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
           <TrendingUpIcon className="mr-2 text-[#60a5fa]" size={20} />
-          Key Investors
+          Key Investors (optional)
         </h3>
-        <TagInput value={formData.keyInvestors} onChange={value => updateFormData({
-        keyInvestors: value
-      })} placeholder="Add investor and press Enter..." helperText="Add your key investors or leave blank if not applicable" maxTags={5} />
+        <TagInput
+          value={formData.keyInvestors}
+          onChange={(value) => updateFormData({ keyInvestors: value })}
+          placeholder="Add investor and press Enter..."
+          helperText="Add your key investors or leave blank if not applicable"
+          maxTags={5}
+          className="w-full"
+        />
       </div>
     </div>;
 }
+
+export default QuickSetup;

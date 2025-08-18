@@ -1,7 +1,9 @@
 import React from 'react';
 import { TextArea } from '../../ui/TextArea';
 import { Input } from '../../ui/Input';
-import { TagInput } from '../../ui/TagInput';
+// Use host app's MultiLineListInput for consistent UX
+// eslint-disable-next-line import/no-relative-packages
+import { MultiLineListInput } from '../../../../../src/components/common/MultiLineListInput';
 import { RocketIcon, EyeIcon, UsersIcon, MessageCircleIcon, StarIcon } from 'lucide-react';
 interface PurposeStoryProps {
   formData: any;
@@ -21,7 +23,7 @@ export function PurposeStory({
           Tell us about your organisation's purpose and journey.
         </p>
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <div className="flex items-start mb-3">
           <MessageCircleIcon className="text-[#60a5fa] mr-3 mt-1" size={20} />
           <h3 className="text-lg font-medium text-white">
@@ -32,7 +34,7 @@ export function PurposeStory({
         originStory: e.target.value
       })} className="md:max-w-2xl" />
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <div className="flex items-start mb-3">
           <StarIcon className="text-[#60a5fa] mr-3 mt-1" size={20} />
           <h3 className="text-lg font-medium text-white">What We Do</h3>
@@ -46,12 +48,17 @@ export function PurposeStory({
           <UsersIcon className="text-[#60a5fa] mr-3 mt-1" size={20} />
           <h3 className="text-lg font-medium text-white">Who We Serve</h3>
         </div>
-        <TagInput value={formData.whoWeServe} onChange={value => updateFormData({
-        whoWeServe: value
-      })} placeholder="Add audience and press Enter..." helperText="Who are your primary customers or users?" className="md:max-w-2xl" />
+        <MultiLineListInput
+          label=""
+          value={formData.whoWeServe}
+          onChange={(value) => updateFormData({ whoWeServe: value })}
+          placeholder="Add audience and press Enter..."
+          maxItems={10}
+          className=""
+        />
       </div>
       {/* Enhanced Vision for the Future section */}
-      <div className="bg-gradient-to-r from-[#1e3a8a]/30 to-[#3b82f6]/10 p-8 rounded-xl border border-[#3b82f6]/30 shadow-lg">
+      <div className="bg-gradient-to-r from-[#1e3a8a]/30 to-[#3b82f6]/10 p-8 rounded-xl border border-[#3b82f6]/30 shadow-lg mb-6">
         <div className="flex items-center mb-4">
           <div className="bg-[#3b82f6]/20 p-2 rounded-full mr-4">
             <EyeIcon className="text-[#60a5fa]" size={24} />
@@ -72,7 +79,7 @@ export function PurposeStory({
           your long-term goals.
         </p>
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <div className="flex items-start mb-3">
           <RocketIcon className="text-[#60a5fa] mr-3 mt-1" size={20} />
           <h3 className="text-lg font-medium text-white">Why Join Us</h3>

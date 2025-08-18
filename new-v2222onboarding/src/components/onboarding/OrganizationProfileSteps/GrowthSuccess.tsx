@@ -20,7 +20,7 @@ export function GrowthSuccess({
           Share your organisation's growth plans and how you measure success.
         </p>
       </div>
-      <div className="bg-gradient-to-r from-[#065f46]/30 to-[#10b981]/10 p-8 rounded-xl border border-[#10b981]/30 shadow-lg">
+      <div className="bg-gradient-to-r from-[#065f46]/30 to-[#10b981]/10 p-8 rounded-xl border border-[#10b981]/30 shadow-lg mb-6">
         <div className="flex items-center mb-4">
           <div className="bg-[#10b981]/20 p-2 rounded-full mr-4">
             <TrendingUpIcon className="text-[#34d399]" size={24} />
@@ -34,7 +34,7 @@ export function GrowthSuccess({
         growthPlans: e.target.value
       })} helperText="Be specific about what success looks like for your organization" className="border-[#10b981]/30 focus:border-[#10b981] focus:ring-[#10b981] bg-[#111827]/70" />
       </div>
-      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151]">
+      <div className="bg-[#111827]/50 p-6 rounded-lg border border-[#374151] mb-6">
         <div className="flex items-start mb-3">
           <BarChartIcon className="text-[#60a5fa] mr-3 mt-1" size={20} />
           <h3 className="text-lg font-medium text-white">
