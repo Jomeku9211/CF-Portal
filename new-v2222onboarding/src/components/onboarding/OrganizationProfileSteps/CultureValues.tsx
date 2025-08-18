@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TagInput } from '../../ui/TagInput';
 import { TextArea } from '../../ui/TextArea';
-import { HeartIcon, UsersIcon, StarIcon, ArrowRightIcon } from 'lucide-react';
+import { HeartIcon, UsersIcon, StarIcon } from 'lucide-react';
 interface CultureValuesProps {
   formData: any;
   updateFormData: (data: any) => void;

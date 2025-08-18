@@ -9,16 +9,16 @@ const LIVE = process.env.LIVE_API === '1' || process.env.LIVE_API === 'true';
 const AUTH_TOKEN = process.env.AUTH_TOKEN || '';
 
 describe('organizationService LIVE smoke', () => {
-  const originalLocalStorage = global.localStorage;
-  const originalFetch = (global as any).fetch;
+  let originalLocalStorage: any;
+  let originalFetch: any;
 
   beforeAll(() => {
     if (!LIVE) return;
     // Inject token into localStorage shim
     // @ts-expect-error
     const store: Record<string, string> = {};
-    // @ts-expect-error
-    global.localStorage = {
+    originalLocalStorage = (global as any).localStorage;
+    (global as any).localStorage = {
       getItem: (k: string) => (k in store ? store[k] : null),
       setItem: (k: string, v: string) => { store[k] = v; },
       removeItem: (k: string) => { delete store[k]; },
@@ -29,14 +29,14 @@ describe('organizationService LIVE smoke', () => {
     localStorage.setItem('authToken', AUTH_TOKEN);
     // Provide global fetch from node-fetch for Node environment
     // eslint-disable-next-line @typescript-eslint/no-var-requires
+    originalFetch = (global as any).fetch;
     (global as any).fetch = require('node-fetch');
   });
 
   afterAll(() => {
     if (!LIVE) return;
-    // @ts-expect-error
-    global.localStorage = originalLocalStorage;
-    (global as any).fetch = originalFetch;
+    if (originalLocalStorage) (global as any).localStorage = originalLocalStorage;
+    if (originalFetch) (global as any).fetch = originalFetch;
   });
 
   (LIVE ? it : it.skip)('creates an organization with minimal valid payload', async () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 import { Button } from '../ui/Button';
 import QuickSetup from './OrganizationProfileSteps/QuickSetup';
