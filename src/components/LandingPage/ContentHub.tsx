@@ -27,40 +27,71 @@ export function ContentHub() {
     }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.whatCanIDo) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
     setIsSubmitting(true);
     
+    console.log('🚀 Starting form submission...');
+    console.log('📝 Form data:', formData);
+    
     try {
+      const payload = {
+        records: [{
+          fields: {
+            'Name': formData.firstName,
+            'Last Name': formData.lastName,
+            'Email': formData.email,
+            'Phone': formData.phone || '',
+            'Linkedin Url': formData.linkedin || '',
+            'What can I do for you in return?': formData.whatCanIDo,
+            'Subscribe to updates': formData.subscribe
+          }
+        }]
+      };
+      
+      console.log('📤 Sending payload to Airtable:', payload);
+      
       const response = await fetch('https://api.airtable.com/v0/apphFz0ba6KTb85DE/tblFrz1vPGsvZ0yzt', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer patFClficxpGIUnJF.be5a51a7e3fabe7337cd2cb13dc3f10234fc52d8a1f60e012eb68be7b2fcc982',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          records: [{
-            fields: {
-              'First Name': formData.firstName,
-              'Last Name': formData.lastName,
-              'Email': formData.email,
-              'Phone': formData.phone || '',
-              'LinkedIn URL': formData.linkedin || '',
-              'What can I do for you in return?': formData.whatCanIDo,
-              'Subscribe to updates': formData.subscribe
-            }
-          }]
-        })
+        body: JSON.stringify(payload)
       });
 
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response headers:', response.headers);
+      
       if (response.ok) {
+        console.log('✅ Form submitted successfully to Airtable!');
         setIsFormSubmitted(true);
         window.scrollTo(0, 0);
       } else {
-        throw new Error('Failed to submit form');
+        const errorData = await response.json();
+        console.error('❌ Airtable API error:', errorData);
+        console.error('❌ Response status:', response.status);
+        console.error('❌ Response status text:', response.statusText);
+        
+        // Log the exact error details from Airtable
+        if (errorData.error) {
+          console.error('❌ Airtable error details:', {
+            type: errorData.error.type,
+            message: errorData.error.message,
+            details: errorData.error.details
+          });
+        }
+        
+        throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('💥 Error submitting form:', error);
       alert('There was an error submitting your form. Please try again.');
     } finally {
       setIsSubmitting(false);
