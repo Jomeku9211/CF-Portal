@@ -16,6 +16,12 @@ export interface Organization {
   core_beliefs_principles: string;
   how_we_live_purpose: string;
   creator: string;
+  // Additional comprehensive fields
+  vision?: string;
+  growth_plans?: string;
+  success_metrics?: string;
+  who_we_serve?: string;
+  core_values_aspirations?: string;
 }
 
 export interface CreateOrganizationData {
@@ -32,6 +38,12 @@ export interface CreateOrganizationData {
   origin_story?: string;
   core_beliefs_principles?: string;
   how_we_live_purpose?: string;
+  // Additional comprehensive fields
+  vision?: string;
+  growth_plans?: string;
+  success_metrics?: string;
+  who_we_serve?: string;
+  core_values_aspirations?: string;
 }
 
 export interface OrganizationResponse {

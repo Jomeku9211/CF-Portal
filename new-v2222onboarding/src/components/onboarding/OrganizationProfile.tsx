@@ -78,10 +78,7 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
       alert('Please log in before submitting your organization.');
       return;
     }
-    const payload = buildXanoPayloadFromOrgProfile(formData as any);
-    if (user?.id) {
-      (payload as any).creator = String(user.id);
-    }
+    const payload = buildXanoPayloadFromOrgProfile(formData as any, user?.id ? String(user.id) : undefined);
     const validation = validateXanoPayload(payload);
     console.log('Organization submit dry run (mapped payload):', payload);
     console.log('Missing required fields:', validation.missingRequired);
