@@ -10,6 +10,7 @@ const AUTH_TOKEN = process.env.AUTH_TOKEN || '';
 
 describe('organizationService LIVE smoke', () => {
   const originalLocalStorage = global.localStorage;
+  const originalFetch = (global as any).fetch;
 
   beforeAll(() => {
     if (!LIVE) return;
@@ -26,12 +27,16 @@ describe('organizationService LIVE smoke', () => {
       length: 0,
     } as any;
     localStorage.setItem('authToken', AUTH_TOKEN);
+    // Provide global fetch from node-fetch for Node environment
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    (global as any).fetch = require('node-fetch');
   });
 
   afterAll(() => {
     if (!LIVE) return;
     // @ts-expect-error
     global.localStorage = originalLocalStorage;
+    (global as any).fetch = originalFetch;
   });
 
   (LIVE ? it : it.skip)('creates an organization with minimal valid payload', async () => {

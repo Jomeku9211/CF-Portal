@@ -49,8 +49,8 @@ export function TagInput({
             </div>)}
         </div>
         <div className="flex">
-          <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder={maxTags && value.length >= maxTags ? `Maximum ${maxTags} tags` : placeholder} disabled={maxTags && value.length >= maxTags} className="flex-1 outline-none bg-transparent text-white placeholder-gray-500 text-sm py-1" />
-          <button type="button" onClick={handleAddTag} disabled={maxTags && value.length >= maxTags} className="text-gray-400 hover:text-white focus:outline-none disabled:opacity-50 transition-colors duration-200">
+          <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder={maxTags && value.length >= maxTags ? `Maximum ${maxTags} tags` : placeholder} disabled={!!maxTags && value.length >= (maxTags || 0)} className="flex-1 outline-none bg-transparent text-white placeholder-gray-500 text-sm py-1" />
+          <button type="button" onClick={handleAddTag} disabled={!!maxTags && value.length >= (maxTags || 0)} className="text-gray-400 hover:text-white focus:outline-none disabled:opacity-50 transition-colors duration-200">
             <PlusIcon size={18} />
           </button>
         </div>

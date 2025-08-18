@@ -14,7 +14,7 @@ export default function OnboardingNew() {
           </div>
         </div>
         <div className="flex-grow bg-[#1a2234] rounded-xl shadow-md p-6 md:p-8 border border-[#2a3344]">
-          <OrganizationProfile onCompleted={() => { /* stay on page after completion */ }} />
+          <OrganizationProfile onSubmitSuccess={() => { /* stay on page after completion */ }} />
         </div>
       </div>
     </div>
