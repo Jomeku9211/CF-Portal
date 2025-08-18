@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { TextArea } from '../../ui/TextArea';
 import { Input } from '../../ui/Input';
 import { TagInput } from '../../ui/TagInput';

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { TextArea } from '../../ui/TextArea';
 import { TagInput } from '../../ui/TagInput';
 import { BarChartIcon, TrendingUpIcon } from 'lucide-react';

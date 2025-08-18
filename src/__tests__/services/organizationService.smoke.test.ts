@@ -15,7 +15,6 @@ describe('organizationService LIVE smoke', () => {
   beforeAll(() => {
     if (!LIVE) return;
     // Inject token into localStorage shim
-    // @ts-expect-error
     const store: Record<string, string> = {};
     originalLocalStorage = (global as any).localStorage;
     (global as any).localStorage = {
