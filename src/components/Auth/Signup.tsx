@@ -244,26 +244,20 @@ export function Signup() {
         )}
 
         <div className="space-y-2">
-          <div className="relative">
-            <AuthInput 
-              label="Password" 
-              type={showPassword ? "text" : "password"} 
-              placeholder="Create a password" 
-              value={formData.password} 
-              onChange={e => handleInputChange('password', e.target.value)} 
-              onBlur={() => handleBlur('password')}
-              icon={<LockIcon size={18} />} 
-              required 
-              error={touched.password ? validationErrors.password : undefined}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-            </button>
-          </div>
+          <AuthInput 
+            label="Password" 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Create a password" 
+            value={formData.password} 
+            onChange={e => handleInputChange('password', e.target.value)} 
+            onBlur={() => handleBlur('password')}
+            icon={<LockIcon size={18} />} 
+            rightIcon={showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+            onRightIconClick={() => setShowPassword(!showPassword)}
+            rightIconAriaLabel="Toggle password visibility"
+            required 
+            error={touched.password ? validationErrors.password : undefined}
+          />
           
           {/* Password strength indicator */}
           {formData.password && (
@@ -294,26 +288,20 @@ export function Signup() {
           )}
         </div>
         
-        <div className="relative">
-          <AuthInput 
-            label="Confirm Password" 
-            type={showConfirmPassword ? "text" : "password"} 
-            placeholder="Confirm your password" 
-            value={formData.confirmPassword} 
-            onChange={e => handleInputChange('confirmPassword', e.target.value)} 
-            onBlur={() => handleBlur('confirmPassword')}
-            icon={<LockIcon size={18} />} 
-            required 
-            error={touched.confirmPassword ? validationErrors.confirmPassword : undefined}
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-          >
-            {showConfirmPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-          </button>
-        </div>
+        <AuthInput 
+          label="Confirm Password" 
+          type={showConfirmPassword ? "text" : "password"} 
+          placeholder="Confirm your password" 
+          value={formData.confirmPassword} 
+          onChange={e => handleInputChange('confirmPassword', e.target.value)} 
+          onBlur={() => handleBlur('confirmPassword')}
+          icon={<LockIcon size={18} />} 
+          rightIcon={showConfirmPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+          onRightIconClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          rightIconAriaLabel="Toggle confirm password visibility"
+          required 
+          error={touched.confirmPassword ? validationErrors.confirmPassword : undefined}
+        />
         
         <div className="mt-6 space-y-4">
           <Checkbox

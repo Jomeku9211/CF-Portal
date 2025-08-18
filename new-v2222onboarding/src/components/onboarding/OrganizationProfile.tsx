@@ -6,9 +6,9 @@ import { PurposeStory } from './OrganizationProfileSteps/PurposeStory';
 import { GrowthSuccess } from './OrganizationProfileSteps/GrowthSuccess';
 import { CultureValues } from './OrganizationProfileSteps/CultureValues';
 // eslint-disable-next-line import/no-relative-packages
-import { buildXanoPayloadFromOrgProfile, validateXanoPayload } from '../../../../../src/services/organizationMapper';
+import { buildXanoPayloadFromOrgProfile, validateXanoPayload } from '/src/services/organizationMapper';
 // eslint-disable-next-line import/no-relative-packages
-import { organizationService } from '../../../../../src/services/organizationService';
+import { organizationService } from '/src/services/organizationService';
 // Removed completion screen per host app requirements
 type OrganizationProfileStep = 'quick-setup' | 'purpose-story' | 'growth-success' | 'culture-values';
 export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {

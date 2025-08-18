@@ -232,6 +232,17 @@
   .Header_Main {
     padding: 12px clamp(12px, 3vw, 20px);
     position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Ensure logo doesn't stretch and menu button sticks to the far right */
+  .Header_Main_Logo {
+    flex: 0 0 auto;
+  }
+  .mobile-menu-button {
+    display: block;
+    margin-left: auto;
   }
   
   .Header_Main_Components {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MailIcon, LockIcon } from 'lucide-react';
+import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
 import { AuthCard } from '../common/AuthCard';
 import { AuthInput } from '../common/AuthInput';
 import { AuthButton } from '../common/AuthButton';
@@ -11,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
@@ -52,11 +53,14 @@ export function Login() {
         />
         <AuthInput 
           label="Password" 
-          type="password" 
+          type={showPassword ? 'text' : 'password'} 
           placeholder="Enter your password" 
           value={password} 
           onChange={e => setPassword(e.target.value)} 
           icon={<LockIcon size={18} />} 
+          rightIcon={showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+          onRightIconClick={() => setShowPassword(v => !v)}
+          rightIconAriaLabel="Toggle password visibility"
           required 
         />
         <div className="flex justify-end mb-6">

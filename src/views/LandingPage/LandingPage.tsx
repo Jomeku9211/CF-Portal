@@ -1,4 +1,3 @@
-import ContactUs from "../../components/LandingPage/ContactUs";
 import Media from "../../components/LandingPage/Media";
 import ClientLogos from "../../components/LandingPage/ClientLogos";
 import { HeroSection } from "../../components/LandingPage/HeroSection";
@@ -8,7 +7,6 @@ import HowItWorks from "../../components/LandingPage/HowItWorks";
 import TrustedLeaders from "../../components/LandingPage/TrustedLeaders";
 import Features from "../../components/LandingPage/Features";
 import FAQ from "../../components/LandingPage/FAQ";
-import ScheduleAppointment from "../../components/LandingPage/ScheduleAppointment";
 
 const LandingPage = () => {
   return (
@@ -26,8 +24,6 @@ const LandingPage = () => {
       <Features />
       <Media />
       <FAQ />
-      <ScheduleAppointment />
-      <ContactUs />
     </div>
   );
 };
