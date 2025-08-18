@@ -209,7 +209,11 @@ export function OnboardingFlow() {
   const renderCurrentContent = () => {
     if (currentMainStep === 1) {
       // New Organization Onboarding UI (self-contained)
-      return <OrgProfileV2 />;
+      return <OrgProfileV2 onSubmitSuccess={() => {
+        setCurrentMainStep(2);
+        setCurrentSubStep(0);
+        window.scrollTo(0, 0);
+      }} />;
     } else if (currentMainStep === 2) {
       return (
         <TeamOnboarding

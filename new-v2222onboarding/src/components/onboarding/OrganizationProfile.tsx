@@ -5,9 +5,13 @@ import QuickSetup from './OrganizationProfileSteps/QuickSetup';
 import { PurposeStory } from './OrganizationProfileSteps/PurposeStory';
 import { GrowthSuccess } from './OrganizationProfileSteps/GrowthSuccess';
 import { CultureValues } from './OrganizationProfileSteps/CultureValues';
+// eslint-disable-next-line import/no-relative-packages
+import { buildXanoPayloadFromOrgProfile, validateXanoPayload } from '../../../../../src/services/organizationMapper';
+// eslint-disable-next-line import/no-relative-packages
+import { organizationService } from '../../../../../src/services/organizationService';
 // Removed completion screen per host app requirements
 type OrganizationProfileStep = 'quick-setup' | 'purpose-story' | 'growth-success' | 'culture-values';
-export function OrganizationProfile() {
+export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
   const [currentStep, setCurrentStep] = useState<OrganizationProfileStep>('quick-setup');
   const [formData, setFormData] = useState({
     // Quick Setup
@@ -66,6 +70,24 @@ export function OrganizationProfile() {
       window.scrollTo(0, 0);
     }
   };
+  const handleSubmit = async () => {
+    const payload = buildXanoPayloadFromOrgProfile(formData as any);
+    const validation = validateXanoPayload(payload);
+    console.log('Organization submit dry run (mapped payload):', payload);
+    console.log('Missing required fields:', validation.missingRequired);
+    console.log('Known unmapped fields from UI:', validation.knownUnmappedFromUI);
+    if (validation.missingRequired.length > 0) {
+      alert(`Please fill required fields: ${validation.missingRequired.join(', ')}`);
+      return;
+    }
+    const result = await organizationService.createOrganization(payload);
+    if (!result.success) {
+      console.error('Organization creation failed', result);
+      alert(result.message || 'Failed to create organization');
+      return;
+    }
+    if (onSubmitSuccess) onSubmitSuccess();
+  };
   return <div className="w-full m-0 p-0">
       {/* Mini-stepper similar to TeamOnboarding */}
       <div className="mb-6">
@@ -111,9 +133,15 @@ export function OrganizationProfile() {
         <Button variant="outline" onClick={goToPreviousStep} disabled={currentStepIndex === 0} icon={<ArrowLeftIcon size={16} />} iconPosition="left" className="border-[#374151] text-white hover:bg-[#374151] transition-all duration-200">
           Back
         </Button>
-        <Button onClick={goToNextStep} disabled={currentStepIndex === steps.length - 1} icon={<ArrowRightIcon size={16} />} iconPosition="right" className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] hover:from-[#2563eb] hover:to-[#1d4ed8] transition-all duration-200 shadow-md hover:shadow-lg">
-          Next
-        </Button>
+        {currentStepIndex < steps.length - 1 ? (
+          <Button onClick={goToNextStep} icon={<ArrowRightIcon size={16} />} iconPosition="right" className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] hover:from-[#2563eb] hover:to-[#1d4ed8] transition-all duration-200 shadow-md hover:shadow-lg">
+            Next
+          </Button>
+        ) : (
+          <Button onClick={handleSubmit} icon={<ArrowRightIcon size={16} />} iconPosition="right" className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] hover:from-[#2563eb] hover:to-[#1d4ed8] transition-all duration-200 shadow-md hover:shadow-lg">
+            Submit
+          </Button>
+        )}
       </div>
     </div>;
 }

@@ -1,9 +1,7 @@
 import React from 'react';
 import { TextArea } from '../../ui/TextArea';
 import { Input } from '../../ui/Input';
-// Use host app's MultiLineListInput for consistent UX
-// eslint-disable-next-line import/no-relative-packages
-import { MultiLineListInput } from '../../../../../src/components/common/MultiLineListInput';
+import { TagInput } from '../../ui/TagInput';
 import { RocketIcon, EyeIcon, UsersIcon, MessageCircleIcon, StarIcon } from 'lucide-react';
 interface PurposeStoryProps {
   formData: any;
@@ -48,13 +46,13 @@ export function PurposeStory({
           <UsersIcon className="text-[#60a5fa] mr-3 mt-1" size={20} />
           <h3 className="text-lg font-medium text-white">Who We Serve</h3>
         </div>
-        <MultiLineListInput
-          label=""
+        <TagInput
           value={formData.whoWeServe}
           onChange={(value) => updateFormData({ whoWeServe: value })}
           placeholder="Add audience and press Enter..."
-          maxItems={10}
-          className=""
+          helperText="Add up to 10 audiences"
+          maxTags={10}
+          className="w-full"
         />
       </div>
       {/* Enhanced Vision for the Future section */}
