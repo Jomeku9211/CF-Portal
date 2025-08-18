@@ -9,9 +9,11 @@ import { CultureValues } from './OrganizationProfileSteps/CultureValues';
 import { buildXanoPayloadFromOrgProfile, validateXanoPayload } from '/src/services/organizationMapper';
 // eslint-disable-next-line import/no-relative-packages
 import { organizationService } from '/src/services/organizationService';
+import { useAuth } from '/src/contexts/AuthContext';
 // Removed completion screen per host app requirements
 type OrganizationProfileStep = 'quick-setup' | 'purpose-story' | 'growth-success' | 'culture-values';
 export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<OrganizationProfileStep>('quick-setup');
   const [formData, setFormData] = useState({
     // Quick Setup
@@ -77,6 +79,9 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
       return;
     }
     const payload = buildXanoPayloadFromOrgProfile(formData as any);
+    if (user?.id) {
+      (payload as any).creator = String(user.id);
+    }
     const validation = validateXanoPayload(payload);
     console.log('Organization submit dry run (mapped payload):', payload);
     console.log('Missing required fields:', validation.missingRequired);

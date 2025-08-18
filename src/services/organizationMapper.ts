@@ -27,6 +27,7 @@ export type XanoOrganizationPayload = {
   industry: string; // Not present in new UI -> will be empty string
   website_url: string;
   organization_size: string;
+  creator?: string;
   current_funding_status: string;
   key_investors_backers: string;
   revenue_status: string;

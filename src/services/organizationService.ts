@@ -23,6 +23,7 @@ export interface CreateOrganizationData {
   industry: string;
   website_url: string;
   organization_size: string;
+  creator?: string;
   current_funding_status?: string;
   key_investors_backers?: string;
   revenue_status?: string;
