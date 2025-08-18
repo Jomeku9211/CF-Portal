@@ -113,16 +113,46 @@ export function Navbar() {
             )}
           </nav>
           
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-gray-700" 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+          {/* Mobile Right Controls: menu + (if logged in) account icon on the far right */}
+          <div className="md:hidden flex items-center space-x-3">
+            <button 
+              className="text-gray-700" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            {isAuthenticated && (
+              <div className="relative" ref={accountMenuRef}>
+                <button
+                  onClick={() => setIsAccountMenuOpen(v => !v)}
+                  className="text-gray-700 hover:text-blue-700 transition-colors flex items-center"
+                  aria-label="Account menu"
+                >
+                  <UserCircle2 size={24} />
+                </button>
+                {isAccountMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                    <Link
+                      to="/onboarding"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsAccountMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Mobile Navigation */}
