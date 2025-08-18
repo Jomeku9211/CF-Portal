@@ -24,7 +24,7 @@ export function WhoWeHelp() {
           </p>
         </div>
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-100">
+          <div className="flex flex-col md:flex-row md:overflow-x-auto scrollbar-hide border-b border-gray-100">
             <TabButton label="Founders" isActive={activeTab === 'founders'} onClick={() => handleTabClick('founders')} />
             <TabButton label="Team Leads" isActive={activeTab === 'teamLeads'} onClick={() => handleTabClick('teamLeads')} />
             <TabButton label="Developers" isActive={activeTab === 'developers'} onClick={() => handleTabClick('developers')} />
@@ -60,17 +60,17 @@ interface TabButtonProps {
 
 function TabButton({ label, isActive, onClick }: TabButtonProps) {
   return (
-    <button 
-      className={`relative py-5 px-8 text-base font-medium transition-colors duration-200 whitespace-nowrap focus:outline-none
-        ${isActive ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`} 
+    <button
+      className={`relative py-4 px-4 md:px-8 text-base font-medium transition-colors duration-200 focus:outline-none w-full text-left md:w-auto md:text-center border-b border-gray-100 md:border-b-0
+        ${isActive ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
       onClick={onClick}
     >
       {label}
       {isActive && (
-        <motion.div 
-          layoutId="activeTab" 
-          className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" 
-          transition={{ type: 'spring', duration: 0.5 }} 
+        <motion.div
+          layoutId="activeTab"
+          className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 md:w-auto md:h-0.5 md:left-0 md:right-0 md:top-auto md:bottom-0"
+          transition={{ type: 'spring', duration: 0.5 }}
         />
       )}
     </button>

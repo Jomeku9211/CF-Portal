@@ -29,9 +29,9 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
     <AuthProvider>
       {children}
-    </AuthProvider>
-  </BrowserRouter>
-);
+      </AuthProvider>
+    </BrowserRouter>
+  );
 
 describe('Signup Component', () => {
   beforeEach(() => {
@@ -42,10 +42,10 @@ describe('Signup Component', () => {
 
   test('renders signup form with all required fields', () => {
     render(<Signup />, { wrapper: TestWrapper });
-    
+      
     // Check if main form elements are rendered
-    expect(screen.getByText('Create an account')).toBeInTheDocument();
-    expect(screen.getByText('Sign up to get started')).toBeInTheDocument();
+      expect(screen.getByText('Create an account')).toBeInTheDocument();
+      expect(screen.getByText('Sign up to get started')).toBeInTheDocument();
     
     // Check form fields
     expect(screen.getByLabelText('Full Name')).toBeInTheDocument();
@@ -200,13 +200,13 @@ describe('Signup Component', () => {
     // Accept privacy policy
     const privacyCheckbox = screen.getByLabelText(/I agree to the Privacy Policy/);
     await user.click(privacyCheckbox);
-    
-    // Submit form
+      
+      // Submit form
     const submitButton = screen.getByRole('button', { name: /Sign up/i });
     await user.click(submitButton);
     
     // Check if API was called with correct data
-    await waitFor(() => {
+      await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
         'https://x8ki-letl-twmt.n7.xano.io/api:uvT-ex56/auth/signup',
         {
@@ -251,13 +251,13 @@ describe('Signup Component', () => {
     // Accept privacy policy
     const privacyCheckbox = screen.getByLabelText(/I agree to the Privacy Policy/);
     await user.click(privacyCheckbox);
-    
-    // Submit form
+      
+      // Submit form
     const submitButton = screen.getByRole('button', { name: /Sign up/i });
     await user.click(submitButton);
     
     // Check if error is displayed
-    await waitFor(() => {
+      await waitFor(() => {
       expect(screen.getByText('Email already exists')).toBeInTheDocument();
     });
     
@@ -278,17 +278,17 @@ describe('Signup Component', () => {
     await user.type(screen.getByLabelText('Email'), 'test@example.com');
     await user.type(screen.getByLabelText('Password'), 'Password123!');
     await user.type(screen.getByLabelText('Confirm Password'), 'Password123!');
-    
-    // Accept privacy policy
+      
+      // Accept privacy policy
     const privacyCheckbox = screen.getByLabelText(/I agree to the Privacy Policy/);
     await user.click(privacyCheckbox);
-    
-    // Submit form
+      
+      // Submit form
     const submitButton = screen.getByRole('button', { name: /Sign up/i });
     await user.click(submitButton);
     
     // Check if generic error is displayed
-    await waitFor(() => {
+      await waitFor(() => {
       expect(screen.getByText('An unexpected error occurred')).toBeInTheDocument();
     });
   });
@@ -308,17 +308,17 @@ describe('Signup Component', () => {
     await user.type(screen.getByLabelText('Email'), 'test@example.com');
     await user.type(screen.getByLabelText('Password'), 'Password123!');
     await user.type(screen.getByLabelText('Confirm Password'), 'Password123!');
-    
-    // Accept privacy policy
+      
+      // Accept privacy policy
     const privacyCheckbox = screen.getByLabelText(/I agree to the Privacy Policy/);
     await user.click(privacyCheckbox);
-    
-    // Submit form
+      
+      // Submit form
     const submitButton = screen.getByRole('button', { name: /Sign up/i });
     await user.click(submitButton);
     
     // Check if button shows loading state
-    expect(screen.getByText('Creating account...')).toBeInTheDocument();
+      expect(screen.getByText('Creating account...')).toBeInTheDocument();
     expect(submitButton).toBeDisabled();
   });
 
@@ -371,13 +371,13 @@ describe('Signup Component', () => {
     // Don't check marketing emails (optional)
     const marketingCheckbox = screen.getByLabelText(/I consent to receive updates/);
     expect(marketingCheckbox).not.toBeChecked();
-    
-    // Submit form
+      
+      // Submit form
     const submitButton = screen.getByRole('button', { name: /Sign up/i });
     await user.click(submitButton);
     
     // Should still work without marketing emails checked
-    await waitFor(() => {
+      await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled();
     });
   });
