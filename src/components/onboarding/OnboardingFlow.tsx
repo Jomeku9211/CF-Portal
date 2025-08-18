@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { organizationService } from '../../services/organizationService';
-import { OrganizationWelcomeStep } from './steps/OrganizationWelcomeStep';
-import { OrganizationBasicInfoStep } from './steps/OrganizationBasicInfoStep';
-import { FinancialSnapshotStep } from './steps/FinancialSnapshotStep';
-import { PurposeIdentityStep } from './steps/PurposeIdentityStep';
-import { OrganizationSuccessStep } from './steps/OrganizationSuccessStep';
+// Replace legacy organization onboarding with the new consolidated UI
+// Use latest external Organization Profile UI
+import { OrganizationProfile as OrgProfileV2 } from '../../../new-v2222onboarding/src/components/onboarding/OrganizationProfile';
+import { Button } from '../common';
 import { TeamOnboarding } from './TeamOnboarding';
 import { HiringIntent } from './HiringIntent';
 import { JobPersonaCreation } from './JobPersonaCreation';
@@ -127,11 +126,8 @@ export function OnboardingFlow() {
   // Define sub-steps for each main step
   const subSteps = {
     organization: [
-      { id: 'welcome', title: 'Welcome', component: OrganizationWelcomeStep },
-      { id: 'basicInfo', title: 'Basic Information', component: OrganizationBasicInfoStep },
-      { id: 'financials', title: 'Financial Snapshot', component: FinancialSnapshotStep },
-      { id: 'purpose', title: 'Purpose & Identity', component: PurposeIdentityStep },
-      { id: 'success', title: 'All Set!', component: OrganizationSuccessStep }
+      // Single consolidated step for the new Organization Profile UI
+      { id: 'orgProfile', title: 'Organization Profile', component: OrgProfileV2 },
     ],
     team: [
       { id: 'team', title: 'Team Building', component: TeamOnboarding }
@@ -180,20 +176,98 @@ export function OnboardingFlow() {
         const fin = formData.organizationOnboarding.financials;
         const pur = formData.organizationOnboarding.purpose;
 
-        const payload = {
-          name: (basic.name || '').trim(),
-          industry: basic.industry || '',
-          website_url: basic.website || '',
-          organization_size: basic.size || '',
-          current_funding_status: fin.fundingStatus || '',
-          key_investors_backers: fin.investors || '',
-          revenue_status: fin.revenueStatus || '',
-          profitability_status: fin.profitabilityStatus || '',
-          why_statement: pur.whyStatement || '',
-          origin_story: pur.originStory || '',
-          core_beliefs_principles: Array.isArray(pur.coreBeliefs) ? pur.coreBeliefs.join('; ') : (pur.coreBeliefs || ''),
-          how_we_live_purpose: Array.isArray(pur.practices) ? pur.practices.join('; ') : (pur.practices || ''),
+        console.log('Form data before creating payload:', {
+          basic,
+          fin,
+          pur
+        });
+
+        // Validate required fields
+        if (!basic.name?.trim()) {
+          alert('Organization name is required');
+          return;
+        }
+        if (!basic.industry) {
+          alert('Industry is required');
+          return;
+        }
+        if (!basic.website) {
+          alert('Website is required');
+          return;
+        }
+        if (!basic.size) {
+          alert('Organization size is required');
+          return;
+        }
+        if (!fin.fundingStatus) {
+          alert('Funding status is required');
+          return;
+        }
+        if (!fin.revenueStatus) {
+          alert('Revenue status is required');
+          return;
+        }
+        if (!fin.profitabilityStatus) {
+          alert('Profitability status is required');
+          return;
+        }
+        if (!pur.whyStatement?.trim()) {
+          alert('Why statement is required');
+          return;
+        }
+        if (!pur.originStory?.trim()) {
+          alert('Origin story is required');
+          return;
+        }
+        if (!pur.coreBeliefs?.length) {
+          alert('At least one core belief is required');
+          return;
+        }
+        if (!pur.practices?.length) {
+          alert('At least one key practice is required');
+          return;
+        }
+
+        // Map UI values to API-enum friendly values expected by Xano
+        const fundingMap: Record<string, string> = {
+          'bootstrapped': 'Bootstrapped',
+          'seed': 'Seed Stage',
+          'series-a': 'Series A',
+          'series-b': 'Series B',
+          'series-c': 'Series C+',
+          'public': 'Public Company',
+          'profitable': 'Profitable',
         };
+        const revenueMap: Record<string, string> = {
+          'pre-revenue': 'Pre-revenue',
+          'early-revenue': 'Early Revenue',
+          'growing': 'Growing Revenue',
+          'established': 'Established Revenue',
+          'scaled': 'Scaled Revenue',
+        };
+        const profitabilityMap: Record<string, string> = {
+          'not-profitable': 'Not Profitable',
+          'breakeven': 'Breakeven',
+          'profitable': 'Profitable',
+          'highly-profitable': 'Highly Profitable',
+        };
+
+        const payload = {
+          name: basic.name.trim(),
+          industry: basic.industry,
+          website_url: basic.website,
+          organization_size: basic.size,
+          current_funding_status: fundingMap[fin.fundingStatus] || fin.fundingStatus,
+          key_investors_backers: fin.investors || '',
+          revenue_status: revenueMap[fin.revenueStatus] || fin.revenueStatus,
+          profitability_status: profitabilityMap[fin.profitabilityStatus] || fin.profitabilityStatus,
+          why_statement: pur.whyStatement.trim(),
+          origin_story: pur.originStory.trim(),
+          core_beliefs_principles: pur.coreBeliefs.join('; '),
+          how_we_live_purpose: pur.practices.join('; '),
+        };
+
+        console.log('Creating organization with payload:', payload);
 
         (async () => {
           const res = await organizationService.createOrganization(payload);
@@ -255,6 +329,11 @@ export function OnboardingFlow() {
           formData={formData} 
           updateFormData={updateFormData}
           onComplete={() => {}}
+          onCompleted={() => {
+            setCurrentMainStep(2);
+            setCurrentSubStep(0);
+            window.scrollTo(0, 0);
+          }}
           onNext={() => {
             if (currentSubStep < currentSubSteps.length - 1) {
               setCurrentSubStep(currentSubStep + 1);
@@ -332,8 +411,8 @@ export function OnboardingFlow() {
           />
         </div>
 
-        {/* Sub Progress Bar - Only show for organization onboarding */}
-        {currentMainStep === 1 && (
+        {/* Sub Progress Bar - Only show for organization onboarding when multiple sub-steps exist */}
+        {currentMainStep === 1 && currentSubSteps.length > 1 && (
           <div className="mb-8 w-full">
             <div className="flex items-center justify-between border-b border-gray-700 pb-4">
               <div className="flex items-center">
@@ -377,8 +456,8 @@ export function OnboardingFlow() {
           {renderCurrentContent()}
         </div>
         
-        {/* Navigation - Only show for organization onboarding */}
-        {currentMainStep === 1 && (
+        {/* Navigation - Only show for organization onboarding when multiple sub-steps exist */}
+        {currentMainStep === 1 && currentSubSteps.length > 1 && (
           <StepNavigation 
             currentStep={currentSubStep} 
             totalSteps={currentSubSteps.length} 

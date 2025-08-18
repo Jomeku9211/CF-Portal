@@ -25,15 +25,17 @@ export function SelectField({
   required = false, 
   className = '' 
 }: SelectFieldProps) {
+  const selectId = `${label.replace(/\s+/g, '-').toLowerCase()}-select`;
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-300">
+      <label htmlFor={selectId} className="block text-sm font-medium text-gray-300">
         {label}
         {required && <span className="text-red-400 ml-1">*</span>}
       </label>
       
       <div className="relative">
         <select
+          id={selectId}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required={required}

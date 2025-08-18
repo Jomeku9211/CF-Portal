@@ -11,7 +11,7 @@ export function TopBanner() {
         </div>
         <div className="flex items-center mx-3">
           <PhoneIcon size={16} className="mr-1" />
-          <span>Call/WhatsApp: +91-7694046986</span>
+          <span>Call/WhatsApp: +91 7415877680</span>
         </div>
         <div className="flex items-center">
           <span>|</span>

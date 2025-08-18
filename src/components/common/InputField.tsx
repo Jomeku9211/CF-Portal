@@ -17,9 +17,10 @@ export function InputField({
   className?: string;
   [key: string]: any;
 }) {
+  const inputId = props.id || `${label.replace(/\s+/g, '-').toLowerCase()}-input`;
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-300">
+      <label htmlFor={inputId} className="block text-sm font-medium text-gray-300">
         {label}
         {required && <span className="text-red-400 ml-1">*</span>}
       </label>
@@ -29,6 +30,7 @@ export function InputField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
+        id={inputId}
         className="w-full px-4 py-3 bg-[#1e293b] border border-[#2a3344] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:border-transparent transition-all duration-200"
         {...props}
       />

@@ -1,7 +1,5 @@
 import { BuildingIcon, HeartHandshakeIcon, BarChart4Icon, ClipboardCheckIcon, UsersIcon, CalendarClockIcon, GlobeIcon, LineChartIcon, ArrowLeftIcon } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { TopBanner } from './LandingPage/TopBanner';
-import { Navbar } from './LandingPage/Navbar';
 
 export function AboutUsSection() {
   const location = useLocation();
@@ -47,9 +45,7 @@ export function AboutUsSection() {
 
   return (
     <div className="w-full bg-white font-sans">
-      {/* Header Section */}
-      <TopBanner />
-      <Navbar />
+      {/* Header is rendered globally in App.tsx */}
       
       <section id="about" className="w-full bg-white py-16 md:py-24">
         <div className="container mx-auto px-4">
@@ -78,8 +74,17 @@ export function AboutUsSection() {
           {/* Our Story Block */}
           <div className="flex flex-col md:flex-row items-center gap-12 mb-20">
             <div className="w-full md:w-2/5">
-              <div className="relative bg-blue-50 rounded-2xl p-6 shadow-lg">
-                <img src="https://img.freepik.com/free-vector/startup-life-concept-illustration_114360-1068.jpg" alt="Founders building Coderfarm from experience" className="w-full h-auto rounded-xl" />
+              <div className="relative rounded-2xl shadow-lg overflow-hidden">
+                <div className="relative w-full pt-[56.25%] bg-blue-50">
+                  <iframe
+                    className="absolute inset-0 w-full h-full"
+                    src="https://www.youtube.com/embed/sfmeY1FOpOw"
+                    title="Coderfarm - Our Story"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                </div>
                 <div className="absolute -top-4 -right-4 bg-blue-100 rounded-full p-4 shadow-md">
                   <BuildingIcon className="text-blue-700 h-8 w-8" />
                 </div>

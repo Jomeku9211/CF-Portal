@@ -19,6 +19,7 @@ export function MultiLineListInput({
   maxItems?: number;
 }) {
   const [inputValue, setInputValue] = useState('');
+  const inputId = `${label.replace(/\s+/g, '-').toLowerCase()}-input`;
 
   const addItem = () => {
     if (inputValue.trim() && value.length < maxItems) {
@@ -40,13 +41,14 @@ export function MultiLineListInput({
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <label className="block text-sm font-medium text-gray-300">
+      <label htmlFor={inputId} className="block text-sm font-medium text-gray-300">
         {label}
         {required && <span className="text-red-400 ml-1">*</span>}
       </label>
       
       <div className="flex space-x-2">
         <input
+          id={inputId}
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}

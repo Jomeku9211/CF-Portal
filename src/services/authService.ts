@@ -36,6 +36,8 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
+      console.log('Auth login → URL:', `${XANO_BASE_URL}/auth/login`);
+      console.log('Auth login → payload:', { email: credentials.email ? '[redacted]' : '', hasPassword: !!credentials.password });
       const response = await fetch(`${XANO_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -44,7 +46,14 @@ class AuthService {
         body: JSON.stringify(credentials),
       });
 
-      const data = await response.json().catch(() => ({}));
+      let data: any = {};
+      let rawBody = '';
+      try {
+        rawBody = await response.clone().text();
+      } catch {}
+      try {
+        data = await response.json();
+      } catch {}
 
       // Accept multiple token/user shapes
       const token = data.token || data.authToken || data.jwt || data.access_token || null;
@@ -65,10 +74,11 @@ class AuthService {
           status: response.status,
           statusText: response.statusText,
           data,
+          rawBody,
         });
         return {
           success: false,
-          message: data.message || data.error || 'Login failed',
+          message: data.message || data.error || (rawBody || 'Login failed'),
         };
       }
     } catch (error) {

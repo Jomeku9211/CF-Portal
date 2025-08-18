@@ -43,6 +43,7 @@ export interface OrganizationResponse {
 class OrganizationService {
   private getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('authToken');
+    console.log('Auth token for organization service:', token ? 'Present' : 'Missing');
     return {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
@@ -51,6 +52,10 @@ class OrganizationService {
 
   async createOrganization(data: CreateOrganizationData): Promise<OrganizationResponse> {
     try {
+      console.log('Sending request to:', `${XANO_BASE_URL}/organization`);
+      console.log('Request headers:', this.getAuthHeaders());
+      console.log('Request body:', JSON.stringify(data, null, 2));
+      
       const response = await fetch(`${XANO_BASE_URL}/organization`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
@@ -64,10 +69,31 @@ class OrganizationService {
           organization,
         };
       } else {
-        const errorData = await response.json();
+        // Safely gather as much error info as possible
+        let errorData: any = null;
+        let rawBody = '';
+        try {
+          rawBody = await response.clone().text();
+        } catch {}
+        try {
+          errorData = await response.json();
+        } catch {}
+        console.error('Organization creation failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorData,
+          rawBody,
+          requestPayload: data
+        });
+
+        const extractedMessage =
+          (errorData && (errorData.message || errorData.error || errorData.detail)) ||
+          (Array.isArray(errorData?.errors) ? errorData.errors.join(', ') : '') ||
+          (rawBody || '').slice(0, 300) ||
+          'Failed to create organization';
         return {
           success: false,
-          message: errorData.message || 'Failed to create organization',
+          message: `${extractedMessage} (${response.status})`,
         };
       }
     } catch (error) {

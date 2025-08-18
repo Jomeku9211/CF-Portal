@@ -24,7 +24,7 @@ export function HeroSection() {
               End costly mis-hires. Build high-performing teams that last.
             </p>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <a href="#book" className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md font-medium transition">
+              <a href="https://calendar.app.google/9fnYyjDxxicL1M1v8" className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md font-medium transition">
                 Book a Free Hiring Experiment
               </a>
               <a href="#learn" className="flex items-center text-blue-700 hover:text-blue-800 font-medium transition">

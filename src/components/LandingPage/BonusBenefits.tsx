@@ -60,14 +60,11 @@ const BonusBenefits = () => {
           </div>
         </div>
         
-        {/* CTA Button */}
+        {/* CTA Button - cloned from hero section */}
         <div className="cta-section">
-          <button className="cta-button">
-            <span className="cta-text">Start Your 30-Day Risk-Free Trial</span>
-            <svg className="cta-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M5.25 5.25L18.75 5.25M18.75 5.25L18.75 18.75M18.75 5.25L5.25 18.75" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+          <a href="https://calendar.app.google/9fnYyjDxxicL1M1v8" className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md font-medium transition">
+            Book a Free Hiring Experiment
+          </a>
         </div>
       </div>
     </section>

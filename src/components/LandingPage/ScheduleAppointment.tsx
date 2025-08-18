@@ -2,7 +2,7 @@ import '../../styles/LandingPage/ScheduleAppointment.css';
 
 const ScheduleAppointment = () => {
   return (
-    <section className="schedule-section">
+    <section id="book" className="schedule-section">
       <div className="schedule-container">
         {/* Left side - Meeting Details */}
         <div className="meeting-details">

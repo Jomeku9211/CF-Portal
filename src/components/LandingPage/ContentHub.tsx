@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRightIcon, MicIcon, UserIcon, BriefcaseIcon, CodeIcon, CheckIcon, ThumbsUpIcon } from 'lucide-react';
-import { TopBanner } from './TopBanner';
-import { Navbar } from './Navbar';
+// Removed TopBanner and Navbar here; they are rendered globally in App.tsx
 
 export function ContentHub() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -100,9 +99,7 @@ export function ContentHub() {
 
   return (
     <div className="w-full bg-white font-sans">
-      {/* Header Section */}
-      <TopBanner />
-      <Navbar />
+      {/* Header is rendered globally in App.tsx */}
       
       {!isFormSubmitted ? (
         <>
