@@ -25,6 +25,7 @@ jest.mock('../../../contexts/AuthContext', () => ({
 describe('OnboardingFlow - Organization Creation API', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    try { localStorage.setItem('authToken', 'test-token'); } catch {}
     // Mock successful organization creation
     mockOrganizationService.createOrganization.mockResolvedValue({
       success: true,
@@ -49,154 +50,106 @@ describe('OnboardingFlow - Organization Creation API', () => {
   });
 
   const fillBasicInfo = async (user: any) => {
-    // Fill organization name
-    const nameInput = screen.getByLabelText(/Organization Name/i);
+    // Name and website
+    const nameInput = screen.getByPlaceholderText(/Acme Inc/i);
     await user.type(nameInput, 'Test Organization');
-
-    // Select industry
-    const industrySelect = screen.getByLabelText(/Industry/i);
-    await user.selectOptions(industrySelect, 'technology');
-
-    // Fill website
-    const websiteInput = screen.getByLabelText(/Website/i);
+    const websiteInput = screen.getByPlaceholderText(/acme\.com/i);
     await user.type(websiteInput, 'https://test.com');
 
-    // Select company size
-    const sizeSelect = screen.getByLabelText(/Company Size/i);
-    await user.selectOptions(sizeSelect, '1-10');
+    // Company size pill (click the label text to avoid duplicate radio matches)
+    await user.click(screen.getByText(/^1–10$/));
+
+    // Business Details -> Funding then Industry
+    const fundingBtn = screen.getByRole('button', { name: /Select funding status/i });
+    await user.click(fundingBtn);
+    await user.click(screen.getByText(/Bootstrapped/i));
+    // Industry
+    const industryBtn = screen.getByRole('button', { name: /Select industry/i });
+    await user.click(industryBtn);
+    await user.click(screen.getByText(/SaaS/i));
+
+    // Revenue Status stepper
+    await user.click(screen.getByText(/Pre-Revenue/i));
   };
 
-  const fillFinancials = async (user: any) => {
-    // Select funding status
-    const fundingSelect = screen.getByLabelText(/Funding Status/i);
-    await user.selectOptions(fundingSelect, 'bootstrapped');
-
-    // Fill investors (optional)
-    const investorsInput = screen.getByLabelText(/Key Investors/i);
-    await user.type(investorsInput, 'Self-funded');
-
-    // Select revenue status
-    const revenueSelect = screen.getByLabelText(/Revenue Status/i);
-    await user.selectOptions(revenueSelect, 'pre-revenue');
-
-    // Select profitability status
-    const profitSelect = screen.getByLabelText(/Profitability Status/i);
-    await user.selectOptions(profitSelect, 'not-profitable');
-  };
-
+  // Purpose step: only origin story is required for submission
   const fillPurpose = async (user: any) => {
-    // Fill why statement
-    const whyInput = screen.getByLabelText(/Why Statement/i);
-    await user.type(whyInput, 'To solve problems');
-
-    // Fill origin story
-    const originInput = screen.getByLabelText(/Origin Story/i);
-    await user.type(originInput, 'Started as a side project');
-
-    // Add core beliefs
-    const beliefsInput = screen.getByLabelText(/Core Beliefs/i);
-    await user.type(beliefsInput, 'Innovation');
-    await user.keyboard('{Enter}');
-    await user.type(beliefsInput, 'Quality');
-    await user.keyboard('{Enter}');
-
-    // Add key practices
-    const practicesInput = screen.getByLabelText(/Key Practices/i);
-    await user.type(practicesInput, 'Customer first');
-    await user.keyboard('{Enter}');
-    await user.type(practicesInput, 'Agile');
-    await user.keyboard('{Enter}');
+    const originTextarea = screen.getByPlaceholderText(/sparked your journey/i);
+    await user.type(originTextarea, 'Started as a side project');
   };
+  
 
   test('successfully creates organization and moves to next step', async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
 
     // First, we should see the welcome step
-    expect(screen.getByText('Organization Onboarding')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Organization')).toBeInTheDocument();
     
-    // Click next to go to basic info step
-    const nextButton = screen.getByRole('button', { name: /next/i });
-    await user.click(nextButton);
-
-    // Now we should be on the basic info step
+    // Quick Setup visible
     await waitFor(() => {
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Acme Inc/i)).toBeInTheDocument();
     });
 
     // Fill all required fields
     await fillBasicInfo(user);
-    
-    // Click next to go to financials
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    // Now we should be on the financials step
-    await waitFor(() => {
-      expect(screen.getByText('Financial Snapshot')).toBeInTheDocument();
-    });
-
-    await fillFinancials(user);
     
     // Click next to go to purpose
     await user.click(screen.getByRole('button', { name: /next/i }));
 
     // Now we should be on the purpose step
     await waitFor(() => {
-      expect(screen.getByText('Purpose & Identity')).toBeInTheDocument();
+      expect(screen.getByText(/Purpose & Story/i)).toBeInTheDocument();
     });
 
     await fillPurpose(user);
     
-    // Click next to complete organization creation
-    await user.click(screen.getByRole('button', { name: /next/i }));
+    // Proceed to final step and submit
+    await user.click(screen.getByRole('button', { name: /next/i })); // to Growth & Success
+    await waitFor(() => expect(screen.getByText(/Growth & Success/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: /next/i })); // to Culture & Values
+    await waitFor(() => expect(screen.getByText(/Culture & Values/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    // Wait for the API call and success
+    // Wait for the API call and success (allow objectContaining since mapper adds many fields)
     await waitFor(() => {
-      expect(mockOrganizationService.createOrganization).toHaveBeenCalledWith({
-        name: 'Test Organization',
-        industry: 'technology',
-        website_url: 'https://test.com',
-        organization_size: '1-10',
-        current_funding_status: 'bootstrapped',
-        key_investors_backers: 'Self-funded',
-        revenue_status: 'pre-revenue',
-        profitability_status: 'not-profitable',
-        why_statement: 'To solve problems',
-        origin_story: 'Started as a side project',
-        core_beliefs_principles: 'Innovation; Quality',
-        how_we_live_purpose: 'Customer first; Agile',
-      });
+      expect(mockOrganizationService.createOrganization).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Test Organization',
+          industry: 'saas',
+          website_url: 'https://test.com',
+          organization_size: '1-10',
+        })
+      );
     });
 
     // Should move to next main step (team onboarding)
     await waitFor(() => {
-      expect(screen.getByText('Team Onboarding')).toBeInTheDocument();
+      expect(screen.getByText('Onboarding Team')).toBeInTheDocument();
     });
   });
 
-  test('shows validation errors for missing required fields', async () => {
+  test('shows validation alert for missing required fields', async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
 
     // First, we should see the welcome step
-    expect(screen.getByText('Organization Onboarding')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Organization')).toBeInTheDocument();
     
-    // Click next to go to basic info step
-    const nextButton = screen.getByRole('button', { name: /next/i });
-    await user.click(nextButton);
-
-    // Now we should be on the basic info step
     await waitFor(() => {
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Acme Inc/i)).toBeInTheDocument();
     });
 
-    // Try to proceed without filling required fields
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    // Should show validation error for organization name
+    // Navigate through steps without filling and attempt submit
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    await user.click(screen.getByRole('button', { name: /next/i })); // Purpose & Story
+    await user.click(screen.getByRole('button', { name: /next/i })); // Growth & Success
+    await user.click(screen.getByRole('button', { name: /next/i })); // Culture & Values
+    await user.click(screen.getByRole('button', { name: /^submit$/i }));
     await waitFor(() => {
-      expect(screen.getByText('Organization name is required')).toBeInTheDocument();
+      expect(alertSpy).toHaveBeenCalled();
     });
+    alertSpy.mockRestore();
   });
 
   test('handles API failure gracefully', async () => {
@@ -210,47 +163,36 @@ describe('OnboardingFlow - Organization Creation API', () => {
     render(<OnboardingFlow />);
 
     // First, we should see the welcome step
-    expect(screen.getByText('Organization Onboarding')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Organization')).toBeInTheDocument();
     
-    // Click next to go to basic info step
-    const nextButton = screen.getByRole('button', { name: /next/i });
-    await user.click(nextButton);
-
-    // Now we should be on the basic info step
     await waitFor(() => {
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
+      expect(screen.getByText(/Organisation Profile/i)).toBeInTheDocument();
     });
 
     // Fill all required fields
     await fillBasicInfo(user);
-    
-    // Click next to go to financials
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    // Now we should be on the financials step
-    await waitFor(() => {
-      expect(screen.getByText('Financial Snapshot')).toBeInTheDocument();
-    });
-
-    await fillFinancials(user);
     
     // Click next to go to purpose
     await user.click(screen.getByRole('button', { name: /next/i }));
 
     // Now we should be on the purpose step
     await waitFor(() => {
-      expect(screen.getByText('Purpose & Identity')).toBeInTheDocument();
+      expect(screen.getByText(/Purpose & Story/i)).toBeInTheDocument();
     });
 
     await fillPurpose(user);
     
-    // Click next to complete organization creation
-    await user.click(screen.getByText('Continue'));
+    // Proceed to submit
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Growth & Success/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Culture & Values/i)).toBeInTheDocument());
+    const alertSpy1 = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    // Should show error message
-    await waitFor(() => {
-      expect(screen.getByText('Organization creation failed')).toBeInTheDocument();
-    });
+    // Should show error via alert
+    await waitFor(() => expect(alertSpy1).toHaveBeenCalled());
+    alertSpy1.mockRestore();
 
     // Should not move to next step
     expect(screen.queryByText('Team Onboarding')).not.toBeInTheDocument();
@@ -266,47 +208,37 @@ describe('OnboardingFlow - Organization Creation API', () => {
     render(<OnboardingFlow />);
 
     // First, we should see the welcome step
-    expect(screen.getByText('Organization Onboarding')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Organization')).toBeInTheDocument();
     
-    // Click next to go to basic info step
-    const nextButton = screen.getByRole('button', { name: /next/i });
-    await user.click(nextButton);
-
-    // Now we should be on the basic info step
     await waitFor(() => {
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
+      expect(screen.getByText(/Organisation Profile/i)).toBeInTheDocument();
     });
 
     // Fill all required fields
     await fillBasicInfo(user);
     
-    // Click next to go to financials
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    // Now we should be on the financials step
-    await waitFor(() => {
-      expect(screen.getByText('Financial Snapshot')).toBeInTheDocument();
-    });
-
-    await fillFinancials(user);
-    
     // Click next to go to purpose
-    await user.click(screen.getByText('Continue'));
+    await user.click(screen.getByRole('button', { name: /next/i }));
 
     // Now we should be on the purpose step
     await waitFor(() => {
-      expect(screen.getByText('Purpose & Identity')).toBeInTheDocument();
+      expect(screen.getByText(/Purpose & Story/i)).toBeInTheDocument();
     });
 
     await fillPurpose(user);
     
-    // Click next to complete organization creation
-    await user.click(screen.getByText('Continue'));
+    // Proceed to submit
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Growth & Success/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Culture & Values/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    // Should show network error message
-    await waitFor(() => {
-      expect(screen.getByText('Network error occurred')).toBeInTheDocument();
-    });
+    // Should show network error via alert
+    const alertSpy2 = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    await waitFor(() => expect(alertSpy2).toHaveBeenCalled());
+    alertSpy2.mockRestore();
   });
 
   test('validates all required fields before submission', async () => {
@@ -314,28 +246,27 @@ describe('OnboardingFlow - Organization Creation API', () => {
     render(<OnboardingFlow />);
 
     // First, we should see the welcome step
-    expect(screen.getByText('Organization Onboarding')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Organization')).toBeInTheDocument();
     
-    // Click next to go to basic info step
-    const nextButton = screen.getByRole('button', { name: /next/i });
-    await user.click(nextButton);
-
-    // Now we should be on the basic info step
     await waitFor(() => {
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Acme Inc/i)).toBeInTheDocument();
     });
 
     // Fill only some fields
-    const nameInput = screen.getByLabelText('Organization Name');
+    const nameInput = screen.getByPlaceholderText(/Acme Inc/i);
     await user.type(nameInput, 'Test Organization');
 
-    // Try to proceed
+    // Attempt submit without completing
+    const alertSpy3 = jest.spyOn(window, 'alert').mockImplementation(() => {});
     await user.click(screen.getByRole('button', { name: /next/i }));
-
-    // Should show validation error for missing industry
-    await waitFor(() => {
-      expect(screen.getByText('Industry is required')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(screen.getByText(/Purpose & Story/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Growth & Success/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Culture & Values/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    await waitFor(() => expect(alertSpy3).toHaveBeenCalled());
+    alertSpy3.mockRestore();
   });
 
   test('sends correct payload structure to API', async () => {
@@ -343,42 +274,32 @@ describe('OnboardingFlow - Organization Creation API', () => {
     render(<OnboardingFlow />);
 
     // First, we should see the welcome step
-    expect(screen.getByText('Organization Onboarding')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Organization')).toBeInTheDocument();
     
-    // Click next to go to basic info step
-    const nextButton = screen.getByText('Continue');
-    await user.click(nextButton);
-
-    // Now we should be on the basic info step
+    // Quick Setup visible
     await waitFor(() => {
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Acme Inc/i)).toBeInTheDocument();
     });
 
     // Fill all required fields
     await fillBasicInfo(user);
     
-    // Click next to go to financials
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    // Now we should be on the financials step
-    await waitFor(() => {
-      expect(screen.getByText('Financial Snapshot')).toBeInTheDocument();
-    });
-
-    await fillFinancials(user);
-    
     // Click next to go to purpose
-    await user.click(screen.getByText('Continue'));
+    await user.click(screen.getByRole('button', { name: /next/i }));
 
     // Now we should be on the purpose step
     await waitFor(() => {
-      expect(screen.getByText('Purpose & Identity')).toBeInTheDocument();
+      expect(screen.getByText(/Purpose & Story/i)).toBeInTheDocument();
     });
 
     await fillPurpose(user);
     
-    // Click next to complete organization creation
-    await user.click(screen.getByText('Continue'));
+    // Proceed to submit
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Growth & Success/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: /next/i }));
+    await waitFor(() => expect(screen.getByText(/Culture & Values/i)).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     // Verify the exact payload structure
     await waitFor(() => {

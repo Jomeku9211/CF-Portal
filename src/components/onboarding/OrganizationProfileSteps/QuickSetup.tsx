@@ -23,6 +23,14 @@ export function QuickSetup({
     { value: 'public', label: 'Public', description: 'Publicly traded company' }
   ];
   const companyFunctions = [
+    { value: 'Idea Stage', label: 'Idea Stage', description: 'Conceptualizing the business idea' },
+    { value: 'MVP/Prototype', label: 'MVP/Prototype', description: 'Building minimum viable product' },
+    { value: 'Early Traction', label: 'Early Traction', description: 'Gaining initial customers/users' },
+    { value: 'Scaling', label: 'Scaling', description: 'Growing and expanding operations' },
+    { value: 'Established', label: 'Established', description: 'Well-established business' },
+    { value: 'Enterprise', label: 'Enterprise', description: 'Large enterprise-level company' }
+  ];
+  const industries = [
     { value: 'saas', label: 'SaaS', description: 'Software as a Service' },
     { value: 'ecommerce', label: 'E-commerce', description: 'Online retail and marketplaces' },
     { value: 'fintech', label: 'Fintech', description: 'Financial technology services' },
@@ -81,6 +89,11 @@ export function QuickSetup({
           <Dropdown label="Funding Status" options={fundingStatuses} value={formData.fundingStatus} onChange={value => updateFormData({
           fundingStatus: value
         })} placeholder="Select funding status" helperText="What stage of funding is your organisation at?" />
+          <Dropdown label="Industry" options={industries} value={formData.industry} onChange={value => updateFormData({
+          industry: value
+        })} placeholder="Select industry" helperText="What industry does your business operate in?" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <Dropdown label="Company Function" options={companyFunctions} value={formData.companyFunction} onChange={value => updateFormData({
           companyFunction: value
         })} placeholder="Select company function" helperText="What best describes your business model?" />

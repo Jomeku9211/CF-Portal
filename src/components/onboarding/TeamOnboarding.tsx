@@ -1,4 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { teamService } from '@/services/teamService';
+import { organizationService } from '@/services/organizationService';
+import { userService } from '@/services/userService';
+import { Dropdown } from '@/components/ui/Dropdown';
+import { useAuth } from '@/contexts/AuthContext';
 import { TeamBasics } from './steps/TeamBasics';
 import { TeamWorkstyle } from './steps/TeamWorkstyle';
 import { TeamCulture } from './steps/TeamCulture';
@@ -27,7 +32,8 @@ interface TeamOnboardingProps {
   onComplete: () => void;
 }
 
-export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingProps) {
+export function TeamOnboarding({ formData, updateFormData, onComplete }: TeamOnboardingProps) {
+  const { user } = useAuth();
   const [teamData, setTeamData] = useState<TeamFormData>({
     teamTitle: '',
     structurePreference: '',
@@ -49,6 +55,25 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const totalSteps = 3;
+
+  // Organization selection when org id not in localStorage (e.g., after logout/login)
+  const [selectedOrganizationId, setSelectedOrganizationId] = useState<string>('');
+  const [orgOptions, setOrgOptions] = useState<Array<{ value: string; label: string }>>([]);
+  const [orgLoading, setOrgLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const existingOrgId = localStorage.getItem('lastOrganizationId') || '';
+    if (!existingOrgId) {
+      setOrgLoading(true);
+      organizationService.getUserOrganizations()
+        .then(res => {
+          const opts = (res.organizations || []).map(org => ({ value: String(org.id), label: org.name || String(org.id) }));
+          setOrgOptions(opts);
+          if (opts.length === 1) setSelectedOrganizationId(opts[0].value);
+        })
+        .finally(() => setOrgLoading(false));
+    }
+  }, []);
 
   const handleChange = (field: string | number | symbol, value: string) => {
     setTeamData(prev => ({
@@ -76,16 +101,76 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateStep(currentStep)) {
       if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
         window.scrollTo(0, 0);
       } else {
         // Submit form when on last step
-        console.log('Team form submitted:', teamData);
         updateFormData('team', teamData);
-        setIsSubmitted(true);
+        // Create team via API
+        const orgId = localStorage.getItem('lastOrganizationId') || selectedOrganizationId || '';
+        if (!orgId) {
+          alert('Please complete Organization setup first. Missing organization id.');
+          return;
+        }
+        try {
+          const res = await teamService.createTeam({
+            organization_id: orgId,
+            name: teamData.teamTitle,
+            structure_preference: teamData.structurePreference,
+            pace_of_work: teamData.paceOfWork,
+            autonomy: teamData.autonomy,
+            initiative_level: teamData.initiativeLevel,
+            decision_making_style: teamData.decisionMakingStyle,
+            attention_to_detail: teamData.attentionToDetail,
+            team_age_composition: teamData.ageComposition,
+            team_gender_composition: teamData.genderComposition,
+            multitasking_ability: teamData.multitaskingAbility,
+            working_hours_energy_flow: teamData.workingHours,
+            preferred_communication_style: teamData.communicationStyle,
+            cultural_diversity_alignment: teamData.diversityAlignment,
+          });
+          if (res.success) {
+            setIsSubmitted(true);
+            // Update user onboarding stage to hiring_intent
+            if (user?.id) {
+              try {
+                await userService.updateUserById(String(user.id), { onboarding_stage: 'hiring_intent' });
+                
+                // Update local cache to reflect the change
+                try {
+                  const rawUser = localStorage.getItem('currentUser');
+                  if (rawUser) {
+                    const parsedUser = JSON.parse(rawUser);
+                    localStorage.setItem('currentUser', JSON.stringify({ 
+                      ...parsedUser, 
+                      onboarding_stage: 'hiring_intent' 
+                    }));
+                  }
+                } catch {}
+              } catch (error) {
+                console.error('Failed to update user onboarding stage', error);
+              }
+            }
+
+            // Persist team id for job_post linkage
+            try {
+              const createdTeam: any = (res as any).team;
+              const teamId = createdTeam?.id || createdTeam?.team?.id;
+              if (teamId) localStorage.setItem('lastTeamId', String(teamId));
+              // Store team name for display
+              if (teamData?.teamTitle) {
+                localStorage.setItem('teamName', teamData.teamTitle);
+              }
+            } catch {}
+          } else {
+            alert(res.message || 'Failed to create team');
+          }
+        } catch (e) {
+          alert('Failed to create team');
+        }
       }
     }
   };
@@ -110,8 +195,8 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
         </div>
         <h2 className="text-2xl font-bold mb-4 text-white">Team Created Successfully!</h2>
         <p className="text-gray-400 text-center mb-8">
-          Your team "{teamData.teamTitle}" has been created. Now let's create
-          your first job persona.
+          Your team "{teamData.teamTitle}" has been created. Now let's understand
+          your hiring intent and requirements.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
           <button 
@@ -183,6 +268,24 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
       </div>
       
       <form onSubmit={e => e.preventDefault()}>
+        {/* Organization display (read-only) */}
+        <div className="mb-6">
+          <h4 className="text-white mb-2">Organization</h4>
+          <div className="text-gray-300 bg-gray-800 px-4 py-3 rounded-md border border-gray-700">
+            {(() => {
+              const existingOrgId = localStorage.getItem('lastOrganizationId');
+              if (existingOrgId) {
+                // Try to get organization name from localStorage or show ID
+                const orgName = localStorage.getItem('organizationName') || `Organization ID: ${existingOrgId}`;
+                return orgName;
+              } else {
+                // If no org ID, show the selected organization name
+                const selectedOrg = orgOptions.find(org => org.value === selectedOrganizationId);
+                return selectedOrg ? selectedOrg.label : 'No organization selected';
+              }
+            })()}
+          </div>
+        </div>
         {/* Step content - only show current step */}
         <div className="transition-opacity duration-300">
           {currentStep === 1 && (

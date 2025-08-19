@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import LandingPage from "./views/LandingPage/LandingPage";
 import AuthPage from "./components/Auth/AuthPage";
@@ -65,12 +65,17 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "onboarding",
+        path: "clientOnboarding",
         element: (
           <ProtectedRoute>
             <OnboardingFlow />
           </ProtectedRoute>
         ),
+      },
+      // Backward compatibility: old URL
+      {
+        path: "onboarding",
+        element: <Navigate to="/clientOnboarding" replace />,
       },
       {
         path: "onboarding1",

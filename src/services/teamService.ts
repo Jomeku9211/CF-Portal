@@ -1,4 +1,97 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF';
+import { XANO_BASE_URL } from './apiConfig';
+
+// Team enum value mappings - update these based on backend database enum values
+const teamEnumMappings = {
+  structure_preference: {
+    'highly_structured': 'Highly structured',    // Database: "Highly structured"
+    'semi_structured': 'Semi-structured',        // Database: "Semi-structured" 
+    'flexible': 'Flexible'                       // Database: "Flexible"
+  },
+  pace_of_work: {
+    'fast': 'Fast',                          // Database: "Fast"
+    'balanced': 'Balanced',                  // Database: "Balanced"
+    'thoughtful': 'Thoughtful'               // Database: "Thoughtful"
+  },
+  autonomy: {
+    'independent': 'Independent',             // Database: "Independent"
+    'semi_collaborative': 'Semi_collaborative', // Database: "Semi_collaborative"
+    'collaborative': 'Collaborative'         // Database: "Collaborative"
+  },
+  initiative_level: {
+    'proactive': 'Proactive',                // Database: "Proactive"
+    'reactive': 'Reactive',                  // Database: "Reactive"
+    'instruction_led': 'Instruction_led'     // Database: "Instruction_led"
+  },
+  decision_making_style: {
+    'analytical': 'Analytical',              // Database: "Analytical"
+    'intuitive': 'Intuitive',                // Database: "Intuitive"
+    'mix': 'Mix'                             // Database: "Mix"
+  },
+  attention_to_detail: {
+    'detail_oriented': 'Detail_oriented',    // Database: "Detail_oriented"
+    'big_picture': 'Big-picture_thinkers',   // Database: "Big-picture_thinkers"
+    'balanced': 'Balanced'                   // Database: "Balanced"
+  },
+  team_age_composition: {
+    'gen_z': 'Mostly Gen Z (born 1997–2012)',      // Database: "Mostly Gen Z (born 1997–2012)"
+    'millennials': 'Mostly Millennials (1981–1996)', // Database: "Mostly Millennials (1981–1996)"
+    'gen_x': 'Mostly Gen X (1965–1980)',            // Database: "Mostly Gen X (1965–1980)"
+    'mixed': 'Mixed age group',                     // Database: "Mixed age group"
+    'prefer_not_to_say': 'Prefer not to say'        // Database: "Prefer not to say"
+  },
+  team_gender_composition: {
+    'mostly_male': 'Mostly male',            // Database: "Mostly male"
+    'mostly_female': 'Mostly female',        // Database: "Mostly female"
+    'mixed': 'Mixed gender',                 // Database: "Mixed gender"
+    'prefer_not_to_say': 'Prefer not to say' // Database: "Prefer not to say"
+  },
+  multitasking_ability: {
+    'single_task': 'Single-task',            // Database: "Single-task"
+    'multi_threaded': 'Multi-threaded'       // Database: "Multi-threaded"
+  },
+  working_hours_energy_flow: {
+    'morning': 'Morning-focused',            // Database: "Morning-focused"
+    'afternoon': 'Evening-focused',          // Database: "Evening-focused"
+    'evening': 'Flexible'                    // Database: "Flexible"
+  },
+  preferred_communication_style: {
+    'written': 'Written',                      // Database: "Written"
+    'verbal': 'Verbal',                        // Database: "Verbal"
+    'mixed': 'Mixed'                           // Database: "Mixed"
+  },
+  cultural_diversity_alignment: {
+    'thrives_in_diversity': 'thrives_in_diversity',    // Database: "thrives_in_diversity"
+    'respects_diversity': 'respects_diversity',         // Database: "respects_diversity"
+    'like_minded': 'like_minded'                        // Database: "like_minded"
+  },
+  stress_handling_style: {
+    'calm_under_pressure': 'calm_under_pressure',           // Database: "calm_under_pressure"
+    'needs_stability': 'need_stable_enviroment',             // Database: "need_stable_enviroment"
+    'performs_with_support': 'performs_well_with_support'    // Database: "performs_well_with_support"
+  }
+};
+
+// Function to map frontend values to backend enum values
+function mapTeamValuesToBackend(data: any): any {
+  const mappedData = { ...data };
+  
+  Object.keys(teamEnumMappings).forEach(field => {
+    if (data[field] && teamEnumMappings[field as keyof typeof teamEnumMappings]) {
+      const mapping = teamEnumMappings[field as keyof typeof teamEnumMappings];
+      const frontendValue = data[field];
+      const backendValue = mapping[frontendValue as keyof typeof mapping];
+      
+      if (backendValue) {
+        mappedData[field] = backendValue;
+        console.log(`Mapped ${field}: "${frontendValue}" -> "${backendValue}"`);
+      } else {
+        console.warn(`No mapping found for ${field}: "${frontendValue}"`);
+      }
+    }
+  });
+  
+  return mappedData;
+}
 
 export interface Team {
   id: string;
@@ -54,20 +147,41 @@ class TeamService {
 
   async createTeam(data: CreateTeamData): Promise<TeamResponse> {
     try {
+      console.log('=== CREATE TEAM DEBUG ===');
+      console.log('1. Original team data:', data);
+      
+      // Map frontend values to backend enum values
+      const mappedData = mapTeamValuesToBackend(data);
+      console.log('2. Mapped team data:', mappedData);
+      
       const response = await fetch(`${XANO_BASE_URL}/team`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
-        body: JSON.stringify(data),
+        body: JSON.stringify(mappedData),
       });
 
       if (response.ok) {
         const team = await response.json();
+        console.log('3. Team created successfully:', team);
         return {
           success: true,
           team,
         };
       } else {
         const errorData = await response.json();
+        console.error('4. Team creation failed:', errorData);
+        console.error('5. Response status:', response.status);
+        console.error('6. Response headers:', response.headers);
+        console.error('7. Full error response:', errorData);
+        
+        // Try to extract more error details
+        if (errorData.errors) {
+          console.error('8. Validation errors:', errorData.errors);
+        }
+        if (errorData.details) {
+          console.error('9. Error details:', errorData.details);
+        }
+        
         return {
           success: false,
           message: errorData.message || 'Failed to create team',

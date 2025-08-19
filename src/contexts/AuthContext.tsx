@@ -70,11 +70,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (response.success) {
         if (response.user) {
           setUser(response.user);
+          // Check onboarding stage and redirect accordingly
+          // await redirectBasedOnOnboardingStage(response.user); // Removed navigation
         } else {
           // If only token present, fetch current user
           try {
             const currentUser = await authService.getCurrentUser();
-            if (currentUser) setUser(currentUser);
+            if (currentUser) {
+              setUser(currentUser);
+              // Check onboarding stage and redirect accordingly
+              // await redirectBasedOnOnboardingStage(currentUser); // Removed navigation
+            }
           } catch (e) {
             // ignore fetch user failure; keep token for subsequent authed routes
           }
@@ -125,8 +131,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    authService.logout();
-    setUser(null);
+    console.log('=== AUTHCONTEXT LOGOUT DEBUG ===');
+    console.log('1. AuthContext logout() called');
+    console.log('2. About to call authService.logout()');
+    
+    try {
+      authService.logout();
+      console.log('3. authService.logout() called successfully');
+    } catch (error) {
+      console.error('3. Error calling authService.logout():', error);
+    }
+    
+    try {
+      console.log('4. About to setUser(null)');
+      setUser(null);
+      console.log('5. setUser(null) called successfully');
+    } catch (error) {
+      console.error('5. Error calling setUser(null):', error);
+    }
+    
+    console.log('6. AuthContext logout() completed');
+    console.log('=== AUTHCONTEXT LOGOUT DEBUG END ===');
   };
 
   const refreshUser = async () => {
@@ -153,6 +178,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // const redirectBasedOnOnboardingStage = async (user: User) => { // Removed navigation logic
+  //   console.log('Redirecting based on onboarding stage:', user);
+    
+  //   // If user has no role selected, go to role selection
+  //   if (!user.roles) {
+  //     navigate('/role-selection');
+  //     return;
+  //   }
+    
+  //   // If user is not a client, redirect to appropriate place
+  //   if (user.roles !== 'client') {
+  //     navigate('/dashboard');
+  //     return;
+  //   }
+    
+  //   // For client users, check onboarding stage
+  //   const onboardingStage = user.onboarding_stage;
+  //   console.log('Client user onboarding stage:', onboardingStage);
+    
+  //   if (!onboardingStage || onboardingStage === 'organisation_creation') {
+  //     // Start from organization creation
+  //     navigate('/clientOnboarding');
+  //   } else if (onboardingStage === 'team_creation' || onboardingStage.startsWith('team_creation')) {
+  //     // Go to team creation step
+  //     navigate('/clientOnboarding');
+  //   } else if (onboardingStage === 'job_creation' || onboardingStage.startsWith('job_creation')) {
+  //     // Go to job creation step
+  //     navigate('/clientOnboarding');
+  //   } else if (onboardingStage === 'completed' || onboardingStage === 'complete') {
+  //     // Onboarding completed
+  //     navigate('/dashboard');
+  //   } else {
+  //     // Default fallback
+  //     navigate('/clientOnboarding');
+  //   }
+  // };
+
   const value: AuthContextType = {
     user,
     isAuthenticated,
@@ -162,6 +224,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     refreshUser,
     sendWelcomeEmail,
+    // redirectBasedOnOnboardingStage, // Removed navigation function
   };
 
   return (

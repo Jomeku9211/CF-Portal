@@ -15,7 +15,7 @@ function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,10 +41,41 @@ function Header() {
   };
 
   const handleLogout = () => {
-    logout();
-    closeMobileMenu();
-    setIsAccountMenuOpen(false);
-    navigate('/');
+    console.log('=== LOGOUT DEBUG START ===');
+    console.log('1. Logout button clicked!');
+    console.log('2. Current user state:', isAuthenticated);
+    console.log('3. About to call logout()');
+    
+    try {
+      logout();
+      console.log('4. logout() called successfully');
+    } catch (error) {
+      console.error('4. Error calling logout():', error);
+    }
+    
+    try {
+      closeMobileMenu();
+      console.log('5. closeMobileMenu() called successfully');
+    } catch (error) {
+      console.error('5. Error calling closeMobileMenu():', error);
+    }
+    
+    try {
+      setIsAccountMenuOpen(false);
+      console.log('6. setIsAccountMenuOpen(false) called successfully');
+    } catch (error) {
+      console.error('6. Error calling setIsAccountMenuOpen:', error);
+    }
+    
+    try {
+      console.log('7. About to navigate to /');
+      navigate('/');
+      console.log('8. navigate() called successfully');
+    } catch (error) {
+      console.error('8. Error calling navigate():', error);
+    }
+    
+    console.log('=== LOGOUT DEBUG END ===');
   };
 
   return (
@@ -111,7 +142,14 @@ function Header() {
               </Link>
             ) : (
               <div className="relative" ref={accountMenuRef}>
-                <button className="Login_Button" onClick={() => setIsAccountMenuOpen(v => !v)} aria-label="Account menu">
+                {/* Debug info - remove this later */}
+                <div className="text-xs text-gray-400 mr-4">
+                  Debug: Role: {JSON.stringify(user?.roles)}, Stage: {user?.onboarding_stage}
+                </div>
+                <button className="Login_Button" onClick={() => {
+                  console.log('Account menu toggle clicked, current state:', isAccountMenuOpen);
+                  setIsAccountMenuOpen(v => !v);
+                }} aria-label="Account menu">
                   <UserCircle2 size={20} />
                 </button>
                 {isAccountMenuOpen && (

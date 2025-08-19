@@ -1,17 +1,72 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BuildingIcon, UsersIcon, UserIcon, CheckCircle } from 'lucide-react';
+import { userService } from '@/services/userService';
+import { useAuth } from '@/contexts/AuthContext';
 
 type Role = 'client' | 'freelancer' | 'agency' | null;
 
 export function RoleSelection() {
   const [selectedRole, setSelectedRole] = useState<Role>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleContinue = (role: Role) => {
+  const handleContinue = async (role: Role) => {
+    if (!role) return;
+    
+    // 1) Update roles column with selected role
+    let roleUpdated = true;
+    if (user?.id) {
+      // Send roles as an array since database expects array
+      const res = await userService.updateUserById(String(user.id), { roles: [role] });
+      roleUpdated = res.success;
+      if (!res.success && res.message) alert(`Failed to update roles: ${res.message}`);
+    } else {
+      const res = await userService.updateCurrentUserRole(role);
+      roleUpdated = res.success;
+      if (!res.success && res.message) alert(`Failed to update roles: ${res.message}`);
+    }
+    
+    if (roleUpdated) {
+      // Update cache for roles (store as array)
+      try {
+        const raw = localStorage.getItem('currentUser');
+        const parsed = raw ? JSON.parse(raw) : {};
+        localStorage.setItem('currentUser', JSON.stringify({ ...parsed, roles: [role] }));
+      } catch {}
+      
+      // 2) Update onboarding_stage if client role selected
+      if (role === 'client') {
+        try {
+          if (user?.id) {
+            await userService.updateUserById(String(user.id), { 
+              onboarding_stage: 'organization_creation',
+              is_onboarding: true,
+              onboarding_status: 'org_pending'
+            });
+          } else {
+            await userService.updateCurrentUserRole(role); // already set above; skip if not needed
+          }
+          
+          // Cache onboarding fields
+          try {
+            const raw2 = localStorage.getItem('currentUser');
+            const parsed2 = raw2 ? JSON.parse(raw2) : {};
+            localStorage.setItem('currentUser', JSON.stringify({ 
+              ...parsed2, 
+              onboarding_stage: 'organization_creation',
+              is_onboarding: true, 
+              onboarding_status: 'org_pending' 
+            }));
+          } catch {}
+        } catch {}
+      }
+    }
+    
+    // 3) Redirect based on role
     if (role === 'client') {
-      // Navigate to the existing client onboarding flow
-      navigate('/onboarding');
+      // Navigate to the client onboarding flow
+      navigate('/clientOnboarding');
     } else if (role === 'freelancer') {
       // TODO: Navigate to freelancer onboarding flow when implemented
       console.log('Freelancer onboarding not yet implemented');

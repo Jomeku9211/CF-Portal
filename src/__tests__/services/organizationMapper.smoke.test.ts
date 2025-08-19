@@ -23,14 +23,14 @@ describe('organizationMapper smoke (mapping enums)', () => {
   } as any;
 
   test.each([
-    { companyFunction: 'saas', expectedIndustry: 'technology' },
-    { companyFunction: 'fintech', expectedIndustry: 'financial_services' },
-    { companyFunction: 'healthtech', expectedIndustry: 'healthcare' },
-    { companyFunction: 'edtech', expectedIndustry: 'education' },
-    { companyFunction: 'agency', expectedIndustry: 'professional_services' },
+    { companyFunction: 'saas', expectedIndustry: 'saas' },
+    { companyFunction: 'fintech', expectedIndustry: 'fintech' },
+    { companyFunction: 'healthtech', expectedIndustry: 'healthtech' },
+    { companyFunction: 'edtech', expectedIndustry: 'edtech' },
+    { companyFunction: 'agency', expectedIndustry: 'agency' },
     { companyFunction: 'ecommerce', expectedIndustry: 'ecommerce' },
     { companyFunction: 'other', expectedIndustry: 'other' },
-  ])('maps companyFunction %p to backend industry enum', ({ companyFunction, expectedIndustry }) => {
+  ])('maps companyFunction %p to industry', ({ companyFunction, expectedIndustry }) => {
     const payload = buildXanoPayloadFromOrgProfile({ ...baseForm, companyFunction } as any);
     expect(payload.industry).toBe(expectedIndustry);
   });

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { OrganizationProfile as OrgProfileV2 } from './OrganizationProfile';
 import { TeamOnboarding } from './TeamOnboarding';
 import { HiringIntent } from './HiringIntent';
@@ -44,9 +45,47 @@ interface FormData {
 }
 
 export function OnboardingFlow() {
-  // Start with Organization onboarding (uses new-v2222onboarding UI)
-  const [currentMainStep, setCurrentMainStep] = useState(1);
-  const [currentSubStep, setCurrentSubStep] = useState(0);
+  const navigate = useNavigate();
+  
+  // Check onboarding stage immediately to set initial state
+  let initialMainStep = 1;
+  let initialSubStep = 0;
+  
+  try {
+    const rawUser = localStorage.getItem('currentUser');
+    if (rawUser) {
+      const parsed = JSON.parse(rawUser);
+      console.log('=== INITIAL STATE DEBUG ===');
+      console.log('Raw parsed user data:', parsed);
+      console.log('User onboarding_stage:', parsed?.onboarding_stage);
+      
+      const stage = String(parsed?.onboarding_stage || '');
+      console.log('Processing stage:', stage);
+      
+      // Route based on onboarding_stage only
+      if (stage.startsWith('team_creation')) {
+        initialMainStep = 2;
+        console.log('Setting initial step to 2 (Team)');
+      } else if (stage === 'hiring_intent') {
+        initialMainStep = 3;
+        console.log('Setting initial step to 3 (Hiring Intent)');
+      } else if (stage.startsWith('job_creation')) {
+        initialMainStep = 4;
+        console.log('Setting initial step to 4 (Job)');
+      } else {
+        initialMainStep = 1;
+        console.log('Setting initial step to 1 (Organization)');
+      }
+      
+      console.log('=== INITIAL STATE DEBUG END ===');
+    }
+  } catch (error) {
+    console.error('Error setting initial state:', error);
+  }
+  
+  // Start with the correct step based on onboarding stage
+  const [currentMainStep, setCurrentMainStep] = useState(initialMainStep);
+  const [currentSubStep, setCurrentSubStep] = useState(initialSubStep);
   const [formData, setFormData] = useState<FormData>({
     organization: {
       name: '',
@@ -83,6 +122,108 @@ export function OnboardingFlow() {
     },
     team: {}
   });
+
+  // If user already has an organization, skip directly to Team onboarding
+  useEffect(() => {
+    // Route purely based on onboarding_stage tag for client role
+    try {
+      const rawUser = localStorage.getItem('currentUser');
+      console.log('=== ONBOARDING FLOW DEBUG ===');
+      console.log('1. Raw localStorage data:', rawUser);
+      
+      if (rawUser) {
+        const parsed = JSON.parse(rawUser);
+        console.log('2. Parsed user data:', parsed);
+        console.log('3. User onboarding_stage:', parsed?.onboarding_stage);
+        console.log('4. All user fields:', Object.keys(parsed));
+        
+        const stage = String(parsed?.onboarding_stage || '');
+        console.log('5. Processing stage:', stage);
+        console.log('6. Current main step before routing:', currentMainStep);
+        
+        if (stage.startsWith('team_creation') || parsed?.onboarding_status === 'team_pending') {
+          console.log('7. Setting to team creation step (step 2)');
+          setCurrentMainStep(2);
+          setCurrentSubStep(0);
+          console.log('8. State updated - currentMainStep should now be 2');
+          return;
+        }
+        if (stage === 'hiring_intent') {
+          console.log('9. Setting to hiring intent step (step 3)');
+          setCurrentMainStep(3);
+          setCurrentSubStep(0);
+          return;
+        }
+        if (stage.startsWith('job_creation')) {
+          console.log('10. Setting to job creation step (step 4)');
+          setCurrentMainStep(4);
+          setCurrentSubStep(0);
+          return;
+        }
+        console.log('11. Keeping at organization creation step (step 1)');
+        // organization_creation (default) => keep at step 1
+      } else {
+        console.log('2. No user data found in localStorage');
+      }
+      console.log('=== ONBOARDING FLOW DEBUG END ===');
+    } catch (error) {
+      console.error('Error in OnboardingFlow useEffect:', error);
+    }
+  }, []); // Remove currentMainStep dependency to prevent infinite loops
+
+  // Monitor currentMainStep changes
+  useEffect(() => {
+    console.log('=== CURRENT MAIN STEP CHANGED ===');
+    console.log('New currentMainStep:', currentMainStep);
+    console.log('New currentSubStep:', currentSubStep);
+    console.log('=== CURRENT MAIN STEP CHANGED END ===');
+  }, [currentMainStep, currentSubStep]);
+
+  // Force routing based on onboarding stage on every render
+  useEffect(() => {
+    console.log('=== FORCE ROUTING DEBUG START ===');
+    console.log('Component rendered, checking onboarding stage...');
+    
+    try {
+      const rawUser = localStorage.getItem('currentUser');
+      console.log('Raw user data from localStorage:', rawUser);
+      
+      if (rawUser) {
+        const parsed = JSON.parse(rawUser);
+        console.log('Parsed user data:', parsed);
+        console.log('User onboarding_stage:', parsed?.onboarding_stage);
+        
+        const stage = String(parsed?.onboarding_stage || '');
+        
+        console.log('Current stage:', stage);
+        console.log('Current main step state:', currentMainStep);
+        
+        if (stage.startsWith('team_creation')) {
+          console.log('=== FORCING TEAM STEP (2) ===');
+          setCurrentMainStep(2);
+          setCurrentSubStep(0);
+        } else if (stage === 'hiring_intent') {
+          console.log('=== FORCING HIRING INTENT STEP (3) ===');
+          setCurrentMainStep(3);
+          setCurrentSubStep(0);
+        } else if (stage.startsWith('job_creation')) {
+          console.log('=== FORCING JOB STEP (4) ===');
+          setCurrentMainStep(4);
+          setCurrentSubStep(0);
+        } else if (!stage || stage === 'organization_creation') {
+          console.log('=== FORCING ORGANIZATION STEP (1) ===');
+          setCurrentMainStep(1);
+          setCurrentSubStep(0);
+        }
+      } else {
+        console.log('No user data found in localStorage');
+      }
+    } catch (error) {
+      console.error('Error in force routing useEffect:', error);
+    }
+    
+    console.log('=== FORCE ROUTING DEBUG END ===');
+  }, []); // Run only once on mount
 
   // Define main onboarding steps
   const mainSteps = [
@@ -201,12 +342,38 @@ export function OnboardingFlow() {
     window.scrollTo(0, 0);
   };
 
+  const handleHiringIntentComplete = () => {
+    setCurrentMainStep(4);
+    setCurrentSubStep(0);
+    window.scrollTo(0, 0);
+  };
+
   const handleJobPersonaComplete = () => {
     // Navigate to success or next step
     console.log('All onboarding steps completed!');
   };
 
   const renderCurrentContent = () => {
+    // Always check onboarding stage on every render to handle page refreshes
+    try {
+      const rawUser = localStorage.getItem('currentUser');
+      if (rawUser) {
+        const parsed = JSON.parse(rawUser);
+        const stage = String(parsed?.onboarding_stage || '');
+        
+        console.log('=== RENDER CONTENT DEBUG ===');
+        console.log('Current onboarding_stage:', stage);
+        console.log('Current main step state:', currentMainStep);
+        
+        // Don't force routing here - let the useEffect handle it
+        // Just log the current state for debugging
+        console.log('=== RENDER CONTENT DEBUG END ===');
+      }
+    } catch (error) {
+      console.error('Error checking onboarding stage in renderCurrentContent:', error);
+    }
+    
+    // Render based on currentMainStep state (which should be updated by useEffect)
     if (currentMainStep === 1) {
       // New Organization Onboarding UI (self-contained)
       return <OrgProfileV2 onSubmitSuccess={() => {
@@ -231,8 +398,7 @@ export function OnboardingFlow() {
             window.scrollTo(0, 0);
           }}
           onBack={() => {
-            setCurrentMainStep(2);
-            setCurrentSubStep(0);
+            // Stay on the current step; routing is driven by onboarding_stage
             window.scrollTo(0, 0);
           }}
         />
@@ -243,9 +409,17 @@ export function OnboardingFlow() {
           formData={formData}
           updateFormData={updateFormData}
           onComplete={handleJobPersonaComplete}
+          onBack={() => {
+            setCurrentMainStep(3);
+            setCurrentSubStep(0);
+            window.scrollTo(0, 0);
+          }}
         />
       );
     }
+    
+    // Default fallback
+    return <div>Loading...</div>;
   };
 
   const isFirstStep = currentMainStep === 1 && currentSubStep === 0;
@@ -255,10 +429,16 @@ export function OnboardingFlow() {
     <div className="w-full min-h-screen bg-gradient-to-r from-[#0f172a] to-[#2d1e3a]">
       <div className="max-w-4xl mx-auto p-4 md:p-8 min-h-screen flex flex-col">
         <div className="mb-6">
-          <div className="text-sm text-gray-400">
-            <span className="hover:text-blue-400 cursor-pointer" onClick={() => window.history.back()}>Select Role</span>
-            <span className="mx-2">/</span>
-            <span className="text-gray-300">Onboarding</span>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div className="text-sm text-gray-400">
+              <span className="hover:text-blue-400 cursor-pointer" onClick={() => navigate('/role-selection')}>Select Role</span>
+              <span className="mx-2">/</span>
+              <span className="text-gray-300">Onboarding</span>
+            </div>
+            <div className="text-sm text-gray-300">
+              <span className="mr-4">Organisation: {localStorage.getItem('organizationName') || '—'}</span>
+              <span>Team: {localStorage.getItem('teamName') || '—'}</span>
+            </div>
           </div>
         </div>
         

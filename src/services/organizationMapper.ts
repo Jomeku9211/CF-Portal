@@ -4,6 +4,7 @@ export type NewOrgFormData = {
   website: string;
   size: string;
   fundingStatus: string;
+  industry: string;
   companyFunction: string;
   revenueStatus: string;
   profitabilityStatus?: string;
@@ -73,22 +74,21 @@ const profitabilityMap: Record<string, string> = {
 };
 
 // Map UI selections to backend-allowed enum values
-// Backend rejects labels like "Software & Technology"; expects canonical enums
-// Use labels that are more likely accepted by Xano schema; adjust as backend expects
+// Backend rejects mapped values; send raw values directly
 const industryMap: Record<string, string> = {
-  saas: 'Software',
-  ecommerce: 'E-commerce',
-  fintech: 'Financial Services',
-  healthtech: 'Healthcare',
-  edtech: 'Education',
-  agency: 'Professional Services',
-  other: 'Other',
+  saas: 'saas',
+  ecommerce: 'ecommerce',
+  fintech: 'fintech',
+  healthtech: 'healthtech',
+  edtech: 'edtech',
+  agency: 'agency',
+  other: 'other',
 };
 
 export function buildXanoPayloadFromOrgProfile(form: NewOrgFormData, creatorId?: string): XanoOrganizationPayload {
   return {
     name: (form.name || '').trim(),
-    industry: industryMap[form.companyFunction] || undefined,
+    industry: industryMap[form.companyFunction] || form.industry || undefined,
     website_url: form.website || '',
     organization_size: form.size || '',
     creator: creatorId,

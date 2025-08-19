@@ -7,6 +7,7 @@ import { GrowthSuccess } from './OrganizationProfileSteps/GrowthSuccess';
 import { CultureValues } from './OrganizationProfileSteps/CultureValues';
 import { buildXanoPayloadFromOrgProfile, validateXanoPayload } from '@/services/organizationMapper';
 import { organizationService } from '@/services/organizationService';
+import { userService } from '@/services/userService';
 import { useAuth } from '@/contexts/AuthContext';
 
 type OrganizationProfileStep = 'quick-setup' | 'purpose-story' | 'growth-success' | 'culture-values';
@@ -19,7 +20,8 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
     website: '',
     size: '',
     fundingStatus: '',
-    companyFunction: 'saas',
+    industry: '',
+    companyFunction: 'Idea Stage',
     revenueStatus: '',
     keyInvestors: [],
     originStory: '',
@@ -70,7 +72,13 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
       return;
     }
 
+    console.log('User ID for creator:', user?.id);
+    console.log('User object:', user);
+    console.log('Complete formData:', formData);
+    
     const payload = buildXanoPayloadFromOrgProfile(formData as any, user?.id ? String(user.id) : undefined);
+    console.log('Organization payload:', payload);
+    
     const validation = validateXanoPayload(payload);
 
     if (validation.missingRequired.length > 0) {
@@ -78,11 +86,50 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
       return;
     }
 
-    const result = await organizationService.createOrganization(payload);
+    let result: any;
+    try {
+      result = await organizationService.createOrganization(payload);
+    } catch (err) {
+      console.error('Organization creation network error', err);
+      alert('Network error');
+      return;
+    }
     if (!result.success) {
       console.error('Organization creation failed', result);
       alert(result.message || 'Failed to create organization');
       return;
+    }
+
+    // Persist organization id for subsequent team creation
+    if (result.organization?.id) {
+      try { 
+        localStorage.setItem('lastOrganizationId', String(result.organization.id));
+        // Also store organization name for display
+        if (result.organization.name) {
+          localStorage.setItem('organizationName', result.organization.name);
+        }
+      } catch {}
+    }
+
+    // Update user's onboarding_stage to 'team_creation'
+    if (user?.id) {
+      try {
+        await userService.updateUserById(String(user.id), { onboarding_stage: 'team_creation' });
+        
+        // Update local cache to reflect the change
+        try {
+          const rawUser = localStorage.getItem('currentUser');
+          if (rawUser) {
+            const parsedUser = JSON.parse(rawUser);
+            localStorage.setItem('currentUser', JSON.stringify({ 
+              ...parsedUser, 
+              onboarding_stage: 'team_creation' 
+            }));
+          }
+        } catch {}
+      } catch (error) {
+        console.error('Failed to update user onboarding stage', error);
+      }
     }
 
     if (onSubmitSuccess) onSubmitSuccess();

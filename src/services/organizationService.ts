@@ -1,4 +1,4 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF';
+import { XANO_BASE_URL } from './apiConfig';
 
 export interface Organization {
   id: string;

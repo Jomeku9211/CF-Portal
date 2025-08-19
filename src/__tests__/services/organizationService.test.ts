@@ -51,7 +51,7 @@ describe('OrganizationService', () => {
       expect(result.success).toBe(true);
       expect(result.organization).toEqual(mockResponse);
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF/organization',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/organization',
         {
           method: 'POST',
           headers: {
@@ -81,7 +81,7 @@ describe('OrganizationService', () => {
       const result = await organizationService.createOrganization(mockOrganizationData);
 
       expect(result.success).toBe(false);
-      expect(result.message).toBe('Validation failed');
+      expect(result.message).toBe('Validation failed (400)');
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
 
@@ -116,7 +116,7 @@ describe('OrganizationService', () => {
 
       expect(result.success).toBe(true);
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF/organization',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/organization',
         {
           method: 'POST',
           headers: {
@@ -142,7 +142,7 @@ describe('OrganizationService', () => {
       const result = await organizationService.createOrganization(mockOrganizationData);
 
       expect(result.success).toBe(false);
-      expect(result.message).toBe('Network error occurred');
+      expect(result.message).toBe('Failed to create organization (500)');
     });
   });
 
@@ -180,7 +180,7 @@ describe('OrganizationService', () => {
       expect(result.success).toBe(true);
       expect(result.organizations).toEqual(mockOrganizations);
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF/organization',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/organization',
         {
           method: 'GET',
           headers: {
@@ -224,7 +224,7 @@ describe('OrganizationService', () => {
       expect(result.success).toBe(true);
       expect(result.organization).toEqual(mockOrganization);
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF/organization/org-123',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/organization/org-123',
         {
           method: 'GET',
           headers: {
@@ -272,7 +272,7 @@ describe('OrganizationService', () => {
       expect(result.success).toBe(true);
       expect(result.organization).toEqual(mockUpdatedOrganization);
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF/organization/org-123',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/organization/org-123',
         {
           method: 'PUT',
           headers: {
@@ -299,7 +299,7 @@ describe('OrganizationService', () => {
       expect(result.success).toBe(true);
       expect(result.message).toBe('Organization deleted successfully');
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF/organization/org-123',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/organization/org-123',
         {
           method: 'DELETE',
           headers: {

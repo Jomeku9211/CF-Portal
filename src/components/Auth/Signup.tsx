@@ -171,12 +171,16 @@ export function Signup() {
       if (Object.keys(submitErrors).length > 0) {
         setValidationErrors(submitErrors);
       }
+      // Mark all fields as touched so errors become visible
+      setTouched({ name: true, email: true, password: true, confirmPassword: true });
       return;
     }
 
     if (Object.keys(submitErrors).length > 0) {
       setValidationErrors(submitErrors);
       setError('Please fix the validation errors above');
+      // Mark all fields as touched so errors become visible
+      setTouched({ name: true, email: true, password: true, confirmPassword: true });
       return;
     }
 
@@ -186,7 +190,7 @@ export function Signup() {
       const result = await signup(normalizedName, normalizedEmail, formData.password);
       if (result.success) {
         // User is automatically logged in after signup, redirect to role selection
-        navigate('/role-selection');
+        navigate('/role-selection', { replace: true });
       } else {
         setError(result.message || 'Signup failed');
         // If backend indicates the email already exists, show it under the Email field

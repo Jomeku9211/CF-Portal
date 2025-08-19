@@ -60,7 +60,7 @@ describe('Login Component - mocked credentials', () => {
     // Check if API was called with normalized email and correct payload
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://x8ki-letl-twmt.n7.xano.io/api:uvT-ex56/auth/login',
+        'https://x8ki-letl-twmt.n7.xano.io/api:jVKJIwcT/auth/login',
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
