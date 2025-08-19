@@ -26,7 +26,7 @@ export interface Organization {
 
 export interface CreateOrganizationData {
   name: string;
-  industry: string;
+  industry?: string;
   website_url: string;
   organization_size: string;
   creator?: string;
@@ -35,6 +35,8 @@ export interface CreateOrganizationData {
   revenue_status?: string;
   profitability_status?: string;
   why_statement?: string;
+  what_we_do?: string;
+  why_join_us?: string;
   origin_story?: string;
   core_beliefs_principles?: string;
   how_we_live_purpose?: string;
@@ -44,6 +46,8 @@ export interface CreateOrganizationData {
   success_metrics?: string;
   who_we_serve?: string;
   core_values_aspirations?: string;
+  core_value_aspiration?: string;
+  company_function?: string;
 }
 
 export interface OrganizationResponse {
@@ -98,6 +102,23 @@ class OrganizationService {
           rawBody,
           requestPayload: data
         });
+        // Fallback: If industry enum is rejected, retry once without industry
+        const errorText = `${errorData?.message || ''} ${Array.isArray(errorData?.errors) ? errorData.errors.join(', ') : ''} ${rawBody}`.toLowerCase();
+        const looksLikeIndustryEnumError = response.status === 400 && (errorText.includes('industry') && errorText.includes('allowable values'));
+        if (looksLikeIndustryEnumError) {
+          const retryPayload = { ...data } as any;
+          delete retryPayload.industry;
+          console.warn('Retrying createOrganization without industry due to enum validation error');
+          const retryRes = await fetch(`${XANO_BASE_URL}/organization`, {
+            method: 'POST',
+            headers: this.getAuthHeaders(),
+            body: JSON.stringify(retryPayload),
+          });
+          if (retryRes.ok) {
+            const organization = await retryRes.json();
+            return { success: true, organization };
+          }
+        }
 
         const extractedMessage =
           (errorData && (errorData.message || errorData.error || errorData.detail)) ||

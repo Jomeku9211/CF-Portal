@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OrganizationProfile as OrgProfileV2 } from '../../../new-v2222onboarding/src/components/onboarding/OrganizationProfile';
+import { OrganizationProfile as OrgProfileV2 } from './OrganizationProfile';
 import { TeamOnboarding } from './TeamOnboarding';
 import { HiringIntent } from './HiringIntent';
 import { JobPersonaCreation } from './JobPersonaCreation';

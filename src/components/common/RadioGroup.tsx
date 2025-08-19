@@ -26,7 +26,7 @@ export function RadioGroup({
             value={option.value} 
             checked={value === option.value} 
             onChange={() => onChange(option.value)} 
-            className="peer absolute opacity-0 w-full h-full cursor-pointer" 
+            className="peer absolute opacity-0 appearance-none w-full h-full cursor-pointer" 
           />
           <label 
             htmlFor={`${id}-${option.value}`} 

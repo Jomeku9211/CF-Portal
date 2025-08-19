@@ -49,6 +49,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     checkAuth();
+    
+    // Periodic session expiry check (every 5 minutes)
+    const intervalId = window.setInterval(() => {
+      try {
+        if (!authService.isAuthenticated()) {
+          setUser(null);
+        }
+      } catch {}
+    }, 5 * 60 * 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
   }, []);
 
   const login = async (email: string, password: string) => {

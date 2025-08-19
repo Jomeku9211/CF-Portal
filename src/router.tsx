@@ -13,7 +13,7 @@ import PrivacyPolicy from "./views/PrivacyPolicy/PrivacyPolicy";
 import ContentHubPage from "./views/ContentHub/ContentHub";
 import { AboutUsSection } from "./components/AboutUsSection";
 import { GuestRoute } from "./components/common/GuestRoute";
-import OnboardingNew from "./views/OnboardingNew/OnboardingNew";
+// Removed broken import: OnboardingNew does not exist in views
 
 const appRouter = createBrowserRouter([
   {
@@ -80,14 +80,7 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "onboarding-new",
-        element: (
-          <ProtectedRoute>
-            <OnboardingNew />
-          </ProtectedRoute>
-        ),
-      },
+      // Removed route for non-existent onboarding-new view
       {
         path: "privacy-policy",
         element: <PrivacyPolicy />,

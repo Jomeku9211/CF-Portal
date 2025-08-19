@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MainProgressBar } from '../common/MainProgressBar';
-import { OrganizationProfile } from './new/OrganizationProfile';
+import { OrganizationProfile } from './OrganizationProfile';
 import { TeamOnboarding } from './TeamOnboarding';
 import { HiringIntent } from './HiringIntent';
 import { JobPersonaCreation } from './JobPersonaCreation';
@@ -32,7 +32,7 @@ export function Onboarding1() {
 
         <div className="flex-grow bg-[#1a2234] rounded-xl shadow-md p-6 md:p-8 border border-[#2a3344]">
           {currentMainStep === 1 && (
-            <OrganizationProfile onCompleted={() => setCurrentMainStep(2)} />
+            <OrganizationProfile onSubmitSuccess={() => setCurrentMainStep(2)} />
           )}
           {currentMainStep === 2 && (
             <TeamOnboarding updateFormData={() => {}} onComplete={() => setCurrentMainStep(3)} formData={{}} />

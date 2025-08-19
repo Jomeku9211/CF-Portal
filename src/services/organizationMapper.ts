@@ -25,7 +25,7 @@ export type NewOrgFormData = {
 
 export type XanoOrganizationPayload = {
   name: string;
-  industry: string;
+  industry?: string;
   website_url: string;
   organization_size: string;
   creator?: string;
@@ -34,6 +34,9 @@ export type XanoOrganizationPayload = {
   revenue_status: string;
   profitability_status: string;
   why_statement: string;
+  what_we_do?: string;
+  why_join_us?: string;
+  company_function?: string;
   origin_story: string;
   core_beliefs_principles: string;
   how_we_live_purpose: string;
@@ -43,6 +46,7 @@ export type XanoOrganizationPayload = {
   success_metrics?: string;
   who_we_serve?: string;
   core_values_aspirations?: string;
+  core_value_aspiration?: string;
 };
 
 const fundingMap: Record<string, string> = {
@@ -68,20 +72,23 @@ const profitabilityMap: Record<string, string> = {
   'highly-profitable': 'Highly Profitable',
 };
 
+// Map UI selections to backend-allowed enum values
+// Backend rejects labels like "Software & Technology"; expects canonical enums
+// Use labels that are more likely accepted by Xano schema; adjust as backend expects
 const industryMap: Record<string, string> = {
-  'saas': 'Software & Technology',
-  'ecommerce': 'E-commerce & Retail',
-  'fintech': 'Financial Services',
-  'healthtech': 'Healthcare & Life Sciences',
-  'edtech': 'Education & Training',
-  'agency': 'Professional Services',
-  'other': 'Other Industries',
+  saas: 'Software',
+  ecommerce: 'E-commerce',
+  fintech: 'Financial Services',
+  healthtech: 'Healthcare',
+  edtech: 'Education',
+  agency: 'Professional Services',
+  other: 'Other',
 };
 
 export function buildXanoPayloadFromOrgProfile(form: NewOrgFormData, creatorId?: string): XanoOrganizationPayload {
   return {
     name: (form.name || '').trim(),
-    industry: industryMap[form.companyFunction] || form.companyFunction || 'Other Industries',
+    industry: industryMap[form.companyFunction] || undefined,
     website_url: form.website || '',
     organization_size: form.size || '',
     creator: creatorId,
@@ -90,6 +97,9 @@ export function buildXanoPayloadFromOrgProfile(form: NewOrgFormData, creatorId?:
     revenue_status: revenueMap[form.revenueStatus] || form.revenueStatus || '',
     profitability_status: profitabilityMap[form.profitabilityStatus || ''] || 'Not Profitable',
     why_statement: (form.whatWeDo || form.whyJoinUs || '').trim(),
+    what_we_do: (form.whatWeDo || '').trim(),
+    why_join_us: (form.whyJoinUs || '').trim(),
+    company_function: form.companyFunction || '',
     origin_story: (form.originStory || '').trim(),
     core_beliefs_principles: (form.coreValuesToday || []).join('; '),
     how_we_live_purpose: (form.cultureInAction || []).join('; '),
@@ -99,6 +109,7 @@ export function buildXanoPayloadFromOrgProfile(form: NewOrgFormData, creatorId?:
     success_metrics: (form.successMetrics || []).join('; '),
     who_we_serve: (form.whoWeServe || []).join('; '),
     core_values_aspirations: (form.coreValuesAspirations || []).join('; '),
+    core_value_aspiration: (form.coreValuesAspirations || []).join('; '),
   };
 }
 
