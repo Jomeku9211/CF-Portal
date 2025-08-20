@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { jobPostService } from '@/services/jobPostService';
+// import { jobPostService } from '@/services/jobPostService';
 import { userService } from '@/services/userService';
 
 interface HiringIntentProps {

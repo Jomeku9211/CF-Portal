@@ -43,7 +43,7 @@ export function Onboarding1() {
             <HiringIntent onNext={() => setCurrentMainStep(4)} onBack={() => setCurrentMainStep(2)} />
           )}
           {currentMainStep === 4 && (
-            <JobPersonaCreation formData={{}} updateFormData={() => {}} onComplete={() => {}} />
+            <JobPersonaCreation formData={{}} updateFormData={() => {}} onComplete={() => {}} onBack={() => setCurrentMainStep(3)} />
           )}
         </div>
       </div>

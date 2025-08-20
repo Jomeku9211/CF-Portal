@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import 'jest-axe/extend-expect';
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -37,6 +38,16 @@ global.ResizeObserver = class ResizeObserver {
 
 // Mock scrollTo
 global.scrollTo = jest.fn();
+
+// Mock performance.memory for performance testing
+Object.defineProperty(performance, 'memory', {
+  writable: true,
+  value: {
+    usedJSHeapSize: 1024 * 1024, // 1MB
+    totalJSHeapSize: 2 * 1024 * 1024, // 2MB
+    jsHeapSizeLimit: 10 * 1024 * 1024 // 10MB
+  }
+});
 
 // Mock console methods to reduce noise in tests
 const originalConsoleError = console.error;

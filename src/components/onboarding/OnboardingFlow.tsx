@@ -342,11 +342,11 @@ export function OnboardingFlow() {
     window.scrollTo(0, 0);
   };
 
-  const handleHiringIntentComplete = () => {
-    setCurrentMainStep(4);
-    setCurrentSubStep(0);
-    window.scrollTo(0, 0);
-  };
+  // const handleHiringIntentComplete = () => {
+  //   setCurrentMainStep(4);
+  //   setCurrentSubStep(0);
+  //   window.scrollTo(0, 0);
+  // };
 
   const handleJobPersonaComplete = () => {
     // Navigate to success or next step

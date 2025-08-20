@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { teamService } from '@/services/teamService';
 import { organizationService } from '@/services/organizationService';
 import { userService } from '@/services/userService';
-import { Dropdown } from '@/components/ui/Dropdown';
+// import { Dropdown } from '@/components/ui/Dropdown';
 import { useAuth } from '@/contexts/AuthContext';
 import { TeamBasics } from './steps/TeamBasics';
 import { TeamWorkstyle } from './steps/TeamWorkstyle';
@@ -32,7 +32,7 @@ interface TeamOnboardingProps {
   onComplete: () => void;
 }
 
-export function TeamOnboarding({ formData, updateFormData, onComplete }: TeamOnboardingProps) {
+export function TeamOnboarding({ formData: _formData, updateFormData, onComplete }: TeamOnboardingProps) {
   const { user } = useAuth();
   const [teamData, setTeamData] = useState<TeamFormData>({
     teamTitle: '',
@@ -59,19 +59,21 @@ export function TeamOnboarding({ formData, updateFormData, onComplete }: TeamOnb
   // Organization selection when org id not in localStorage (e.g., after logout/login)
   const [selectedOrganizationId, setSelectedOrganizationId] = useState<string>('');
   const [orgOptions, setOrgOptions] = useState<Array<{ value: string; label: string }>>([]);
-  const [orgLoading, setOrgLoading] = useState<boolean>(false);
+  // const [orgLoading, setOrgLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const existingOrgId = localStorage.getItem('lastOrganizationId') || '';
     if (!existingOrgId) {
-      setOrgLoading(true);
+              // setOrgLoading(true);
       organizationService.getUserOrganizations()
         .then(res => {
           const opts = (res.organizations || []).map(org => ({ value: String(org.id), label: org.name || String(org.id) }));
           setOrgOptions(opts);
           if (opts.length === 1) setSelectedOrganizationId(opts[0].value);
         })
-        .finally(() => setOrgLoading(false));
+        .finally(() => {
+          // setOrgLoading(false);
+        });
     }
   }, []);
 
