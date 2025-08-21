@@ -400,7 +400,7 @@ export function ContentHub() {
               <h2 className="text-2xl md:text-4xl font-bold text-[#1e335f] mb-10">
                 Ready to Share Your Story?
               </h2>
-              <form onSubmit={handleFormSubmit} className="bg-white p-8 rounded-lg shadow-md">
+              <form noValidate onSubmit={handleFormSubmit} className="bg-white p-8 rounded-lg shadow-md">
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>

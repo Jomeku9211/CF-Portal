@@ -7,6 +7,9 @@ interface OrganizationBasicInfoStepProps {
 }
 
 export function OrganizationBasicInfoStep({ formData, updateFormData }: OrganizationBasicInfoStepProps) {
+  // Add null safety checks
+  const basicInfo = formData?.organizationOnboarding?.basicInfo || {};
+  
   const industryOptions = [
     { value: 'technology', label: 'Technology', description: 'Software, hardware, IT services' },
     { value: 'healthcare', label: 'Healthcare', description: 'Medical, biotech, health services' },
@@ -39,9 +42,9 @@ export function OrganizationBasicInfoStep({ formData, updateFormData }: Organiza
 
       <InputField
         label="Organization Name"
-        value={formData.organizationOnboarding.basicInfo.name}
+        value={basicInfo.name || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          basicInfo: { ...formData.organizationOnboarding.basicInfo, name: value } 
+          basicInfo: { ...basicInfo, name: value } 
         })}
         placeholder="Enter your organization name"
         required
@@ -50,9 +53,9 @@ export function OrganizationBasicInfoStep({ formData, updateFormData }: Organiza
       <SelectField
         label="Industry"
         options={industryOptions}
-        value={formData.organizationOnboarding.basicInfo.industry}
+        value={basicInfo.industry || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          basicInfo: { ...formData.organizationOnboarding.basicInfo, industry: value } 
+          basicInfo: { ...basicInfo, industry: value } 
         })}
         placeholder="Select your industry"
         required
@@ -61,9 +64,9 @@ export function OrganizationBasicInfoStep({ formData, updateFormData }: Organiza
       <InputField
         label="Website"
         type="url"
-        value={formData.organizationOnboarding.basicInfo.website}
+        value={basicInfo.website || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          basicInfo: { ...formData.organizationOnboarding.basicInfo, website: value } 
+          basicInfo: { ...basicInfo, website: value } 
         })}
         placeholder="https://yourcompany.com"
         required
@@ -72,9 +75,9 @@ export function OrganizationBasicInfoStep({ formData, updateFormData }: Organiza
       <SelectField
         label="Company Size"
         options={sizeOptions}
-        value={formData.organizationOnboarding.basicInfo.size}
+        value={basicInfo.size || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          basicInfo: { ...formData.organizationOnboarding.basicInfo, size: value } 
+          basicInfo: { ...basicInfo, size: value } 
         })}
         placeholder="Select company size"
         required

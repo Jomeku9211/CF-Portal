@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { organizationService, Organization } from '../../services/organizationService';
 import { teamService, Team } from '../../services/teamService';
 import { PlusIcon, BuildingIcon, UsersIcon, EditIcon, TrashIcon } from 'lucide-react';
+import { LogoutButton } from '../common/LogoutButton';
 
 export function Dashboard() {
   const { user, isAuthenticated } = useAuth();
@@ -81,9 +82,12 @@ export function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}!</h1>
-          <p className="text-gray-600 mt-2">Manage your organizations and teams</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}!</h1>
+            <p className="text-gray-600 mt-2">Manage your organizations and teams</p>
+          </div>
+          <LogoutButton variant="default" />
         </div>
 
         {error && (

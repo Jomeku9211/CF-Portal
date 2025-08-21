@@ -212,8 +212,10 @@ export function Signup() {
     try {
       const result = await signup(normalizedName, normalizedEmail, formData.password);
       if (result.success) {
-        // User is automatically logged in after signup, redirect to role selection
-        navigate('/role-selection', { replace: true });
+        // Store email for email verification page
+        localStorage.setItem('signupEmail', normalizedEmail);
+        // Redirect to email verification page
+        navigate('/email-verification', { state: { email: normalizedEmail }, replace: true });
       } else {
         setError(result.message || 'Signup failed');
         // If backend indicates the email already exists, show it under the Email field
@@ -267,10 +269,6 @@ export function Signup() {
           required 
           error={touched.email ? validationErrors.email : undefined}
         />
-        
-        {validationErrors.email && (
-          <p className="text-xs text-red-500 mt-1">{validationErrors.email}</p>
-        )}
 
         <div className="space-y-2">
           <AuthInput 

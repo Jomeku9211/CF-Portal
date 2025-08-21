@@ -16,7 +16,7 @@ export function RadioGroup({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" role="radiogroup" aria-labelledby={`${id}-label`}>
       {options.map(option => (
         <div key={option.value} className="relative">
           <input 
@@ -33,6 +33,11 @@ export function RadioGroup({
             className="block p-3 border border-gray-700 rounded-md text-sm cursor-pointer bg-[#1a1f35] hover:bg-[#262c4a] peer-checked:border-blue-500 peer-checked:bg-[#1a2645] text-white"
           >
             {option.label}
+            {option.description && (
+              <div className="text-xs text-gray-400 mt-1">
+                {option.description}
+              </div>
+            )}
           </label>
         </div>
       ))}

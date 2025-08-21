@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authService, User } from '../services/authService';
+import { supabaseAuthService } from '../services/supabaseAuthService';
+import { AuthUser } from '../config/supabase';
 import { emailService } from '../services/emailService';
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
@@ -28,7 +29,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user;
@@ -36,54 +37,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Check if user is already authenticated on app load
     const checkAuth = async () => {
-      if (authService.isAuthenticated()) {
-        try {
-          const currentUser = await authService.getCurrentUser();
-          setUser(currentUser);
-        } catch (error) {
-          console.error('Error checking auth:', error);
-          authService.logout();
+      try {
+        const response = await supabaseAuthService.getCurrentSession();
+        if (response.success && response.user) {
+          setUser(response.user);
         }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        setUser(null);
       }
       setIsLoading(false);
     };
 
     checkAuth();
     
+    // Set up Supabase auth state change listener
+    const { data: { subscription } } = supabaseAuthService.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          setUser(session.user as AuthUser);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+        } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+          setUser(session.user as AuthUser);
+        }
+      }
+    );
+    
     // Periodic session expiry check (every 5 minutes)
-    const intervalId = window.setInterval(() => {
+    const intervalId = window.setInterval(async () => {
       try {
-        if (!authService.isAuthenticated()) {
+        const response = await supabaseAuthService.getCurrentSession();
+        if (!response.success || !response.user) {
           setUser(null);
         }
       } catch {}
     }, 5 * 60 * 1000);
 
     return () => {
+      subscription?.unsubscribe();
       window.clearInterval(intervalId);
     };
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await authService.login({ email, password });
+      const response = await supabaseAuthService.signIn({ email, password });
       if (response.success) {
         if (response.user) {
           setUser(response.user);
-          // Check onboarding stage and redirect accordingly
-          // await redirectBasedOnOnboardingStage(response.user); // Removed navigation
-        } else {
-          // If only token present, fetch current user
-          try {
-            const currentUser = await authService.getCurrentUser();
-            if (currentUser) {
-              setUser(currentUser);
-              // Check onboarding stage and redirect accordingly
-              // await redirectBasedOnOnboardingStage(currentUser); // Removed navigation
-            }
-          } catch (e) {
-            // ignore fetch user failure; keep token for subsequent authed routes
-          }
+        } else if (response.session) {
+          // If session exists, get user from session
+          setUser(response.session.user);
         }
         return { success: true };
       } else {
@@ -97,19 +104,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      const response = await authService.signup({ name, email, password });
-      if (response.success && (response.user || response.token)) {
-        if (response.user) {
-          setUser(response.user);
-        } else {
-          // If no user is returned, try fetching current user
-          try {
-            const currentUser = await authService.getCurrentUser();
-            if (currentUser) setUser(currentUser);
-          } catch (e) {
-            // ignore
-          }
-        }
+      const response = await supabaseAuthService.signUp({ email, password, fullName: name });
+      if (response.success) {
+        // Store email for email verification page
+        localStorage.setItem('signupEmail', email);
         
         // Send thank you email after successful signup
         try {
@@ -120,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Don't fail the signup if email fails
         }
         
-        return { success: true };
+        return { success: true, message: response.message };
       } else {
         return { success: false, message: response.message };
       }
@@ -130,37 +128,72 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    console.log('=== AUTHCONTEXT LOGOUT DEBUG ===');
-    console.log('1. AuthContext logout() called');
-    console.log('2. About to call authService.logout()');
-    
+  const logout = async () => {
     try {
-      authService.logout();
-      console.log('3. authService.logout() called successfully');
-    } catch (error) {
-      console.error('3. Error calling authService.logout():', error);
-    }
-    
-    try {
-      console.log('4. About to setUser(null)');
+      console.log('=== AUTHCONTEXT LOGOUT DEBUG ===');
+      console.log('1. AuthContext logout() called');
+      
+      // Clear all local storage data
+      console.log('2. Clearing local storage...');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('roleSelection');
+      localStorage.removeItem('completeRoleSelection');
+      localStorage.removeItem('signupEmail');
+      localStorage.removeItem('onboardingData');
+      localStorage.removeItem('userPreferences');
+      
+      // Clear any other app-specific storage
+      sessionStorage.clear();
+      
+      console.log('3. Local storage cleared');
+      
+      // Sign out from Supabase
+      console.log('4. Calling supabaseAuthService.signOut()');
+      await supabaseAuthService.signOut();
+      console.log('5. Supabase signOut completed');
+      
+      // Clear user state
+      console.log('6. Setting user to null');
       setUser(null);
-      console.log('5. setUser(null) called successfully');
+      
+      console.log('7. Logout completed successfully');
+      console.log('=== AUTHCONTEXT LOGOUT DEBUG END ===');
+      
+      // Redirect to login page
+      window.location.href = '/login';
+      
     } catch (error) {
-      console.error('5. Error calling setUser(null):', error);
+      console.error('Error during logout:', error);
+      // Even if there's an error, clear the user state
+      setUser(null);
+      
+      // Clear local storage anyway
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('roleSelection');
+      localStorage.removeItem('completeRoleSelection');
+      localStorage.removeItem('signupEmail');
+      localStorage.removeItem('onboardingData');
+      localStorage.removeItem('userPreferences');
+      sessionStorage.clear();
+      
+      // Redirect to login page
+      window.location.href = '/login';
     }
-    
-    console.log('6. AuthContext logout() completed');
-    console.log('=== AUTHCONTEXT LOGOUT DEBUG END ===');
   };
 
   const refreshUser = async () => {
     try {
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
+      const response = await supabaseAuthService.getCurrentUser();
+      if (response.success && response.user) {
+        setUser(response.user);
+      } else {
+        setUser(null);
+      }
     } catch (error) {
       console.error('Error refreshing user:', error);
-      logout();
+      setUser(null);
     }
   };
 

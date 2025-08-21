@@ -7,6 +7,9 @@ interface PurposeIdentityStepProps {
 }
 
 export function PurposeIdentityStep({ formData, updateFormData }: PurposeIdentityStepProps) {
+  // Add null safety checks
+  const purpose = formData?.organizationOnboarding?.purpose || {};
+  
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center mb-8">
@@ -20,9 +23,9 @@ export function PurposeIdentityStep({ formData, updateFormData }: PurposeIdentit
 
       <InputField
         label="Why Statement"
-        value={formData.organizationOnboarding.purpose.whyStatement}
+        value={purpose.whyStatement || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          purpose: { ...formData.organizationOnboarding.purpose, whyStatement: value } 
+          purpose: { ...purpose, whyStatement: value } 
         })}
         placeholder="Why does your organization exist? What problem are you solving?"
         required
@@ -30,9 +33,9 @@ export function PurposeIdentityStep({ formData, updateFormData }: PurposeIdentit
 
       <InputField
         label="Origin Story"
-        value={formData.organizationOnboarding.purpose.originStory}
+        value={purpose.originStory || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          purpose: { ...formData.organizationOnboarding.purpose, originStory: value } 
+          purpose: { ...purpose, originStory: value } 
         })}
         placeholder="How did your organization come to be? What inspired you to start?"
         required
@@ -40,9 +43,9 @@ export function PurposeIdentityStep({ formData, updateFormData }: PurposeIdentit
 
       <MultiLineListInput
         label="Core Beliefs"
-        value={formData.organizationOnboarding.purpose.coreBeliefs}
+        value={purpose.coreBeliefs || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          purpose: { ...formData.organizationOnboarding.purpose, coreBeliefs: value } 
+          purpose: { ...purpose, coreBeliefs: value } 
         })}
         placeholder="Add a core belief (press Enter)"
         required
@@ -51,9 +54,9 @@ export function PurposeIdentityStep({ formData, updateFormData }: PurposeIdentit
 
       <MultiLineListInput
         label="Key Practices"
-        value={formData.organizationOnboarding.purpose.practices}
+        value={purpose.practices || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          purpose: { ...formData.organizationOnboarding.purpose, practices: value } 
+          purpose: { ...purpose, practices: value } 
         })}
         placeholder="Add a key practice (press Enter)"
         required

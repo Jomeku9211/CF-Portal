@@ -7,6 +7,9 @@ interface JobPersonaStepProps {
 }
 
 export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps) {
+  // Add null safety checks
+  const jobPersona = formData?.jobPersona || {};
+  
   const experienceOptions = [
     { value: 'entry', label: 'Entry Level (0-2 years)', description: 'Recent graduates or early career professionals' },
     { value: 'mid', label: 'Mid Level (3-7 years)', description: 'Experienced professionals with proven track record' },
@@ -33,7 +36,7 @@ export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps
 
       <InputField
         label="Job Title"
-        value={formData.jobPersona.title}
+        value={jobPersona.title || ''}
         onChange={(value) => updateFormData('jobPersona', { title: value })}
         placeholder="e.g., Senior Frontend Developer, Product Manager"
         required
@@ -41,7 +44,7 @@ export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps
 
       <InputField
         label="Role Expectations"
-        value={formData.jobPersona.expectations}
+        value={jobPersona.expectations || ''}
         onChange={(value) => updateFormData('jobPersona', { expectations: value })}
         placeholder="What are the key responsibilities and expectations?"
         required
@@ -50,7 +53,7 @@ export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps
       <SelectField
         label="Experience Level"
         options={experienceOptions}
-        value={formData.jobPersona.experienceLevel || ''}
+        value={jobPersona.experienceLevel || ''}
         onChange={(value) => updateFormData('jobPersona', { experienceLevel: value })}
         placeholder="Select experience level"
         required
@@ -59,7 +62,7 @@ export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps
       <SelectField
         label="Work Style Preference"
         options={workStyleOptions}
-        value={formData.jobPersona.workStyle || ''}
+        value={jobPersona.workStyle || ''}
         onChange={(value) => updateFormData('jobPersona', { workStyle: value })}
         placeholder="Select preferred work style"
         required
@@ -67,7 +70,7 @@ export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps
 
       <MultiLineListInput
         label="Required Skills"
-        value={formData.jobPersona.skills}
+        value={jobPersona.skills || ''}
         onChange={(value) => updateFormData('jobPersona', { skills: value })}
         placeholder="Add a skill (press Enter)"
         required
@@ -76,7 +79,7 @@ export function JobPersonaStep({ formData, updateFormData }: JobPersonaStepProps
 
       <InputField
         label="Success Criteria"
-        value={formData.jobPersona.criteria}
+        value={jobPersona.criteria || ''}
         onChange={(value) => updateFormData('jobPersona', { criteria: value })}
         placeholder="How will you measure success in this role?"
         required

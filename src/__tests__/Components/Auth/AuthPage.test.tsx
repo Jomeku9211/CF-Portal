@@ -148,27 +148,30 @@ describe('AuthPage Component', () => {
       const toggleButton = screen.getByRole('button', { name: /sign up/i });
       await user.click(toggleButton);
       
-      await waitFor(async () => {
-        const firstNameInput = screen.getByLabelText(/first name/i);
-        const lastNameInput = screen.getByLabelText(/last name/i);
-        const emailInput = screen.getByLabelText(/email/i);
-        const companyInput = screen.getByLabelText(/company/i);
-        const passwordInputs = screen.getAllByLabelText(/password/i);
-        
-        await user.type(firstNameInput, 'John');
-        await user.type(lastNameInput, 'Doe');
-        await user.type(emailInput, 'john@example.com');
-        await user.type(companyInput, 'ACME Corp');
-        await user.type(passwordInputs[0], 'password123');
-        await user.type(passwordInputs[1], 'password123');
-        
-        expect(firstNameInput).toHaveValue('John');
-        expect(lastNameInput).toHaveValue('Doe');
-        expect(emailInput).toHaveValue('john@example.com');
-        expect(companyInput).toHaveValue('ACME Corp');
-        expect(passwordInputs[0]).toHaveValue('password123');
-        expect(passwordInputs[1]).toHaveValue('password123');
+      // Wait for signup fields to appear
+      await waitFor(() => {
+        expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
       });
+      
+      const firstNameInput = screen.getByLabelText(/first name/i);
+      const lastNameInput = screen.getByLabelText(/last name/i);
+      const emailInput = screen.getByLabelText(/email/i);
+      const companyInput = screen.getByLabelText(/company/i);
+      const passwordInputs = screen.getAllByLabelText(/password/i);
+      
+      await user.type(firstNameInput, 'John');
+      await user.type(lastNameInput, 'Doe');
+      await user.type(emailInput, 'john@example.com');
+      await user.type(companyInput, 'ACME Corp');
+      await user.type(passwordInputs[0], 'password123');
+      await user.type(passwordInputs[1], 'password123');
+      
+      expect(firstNameInput).toHaveValue('John');
+      expect(lastNameInput).toHaveValue('Doe');
+      expect(emailInput).toHaveValue('john@example.com');
+      expect(companyInput).toHaveValue('ACME Corp');
+      expect(passwordInputs[0]).toHaveValue('password123');
+      expect(passwordInputs[1]).toHaveValue('password123');
     });
   });
 
@@ -199,30 +202,33 @@ describe('AuthPage Component', () => {
       const toggleButton = screen.getByRole('button', { name: /sign up/i });
       await user.click(toggleButton);
       
-      await waitFor(async () => {
-        const firstNameInput = screen.getByLabelText(/first name/i);
-        const lastNameInput = screen.getByLabelText(/last name/i);
-        const emailInput = screen.getByLabelText(/email/i);
-        const companyInput = screen.getByLabelText(/company/i);
-        const passwordInputs = screen.getAllByLabelText(/password/i);
-        const submitButton = screen.getByRole('button', { name: /create account/i });
-        
-        await user.type(firstNameInput, 'John');
-        await user.type(lastNameInput, 'Doe');
-        await user.type(emailInput, 'john@example.com');
-        await user.type(companyInput, 'ACME Corp');
-        await user.type(passwordInputs[0], 'password123');
-        await user.type(passwordInputs[1], 'password123');
-        await user.click(submitButton);
-        
-        expect(console.log).toHaveBeenCalledWith('Signup:', {
-          email: 'john@example.com',
-          password: 'password123',
-          confirmPassword: 'password123',
-          firstName: 'John',
-          lastName: 'Doe',
-          company: 'ACME Corp'
-        });
+      // Wait for signup fields to appear
+      await waitFor(() => {
+        expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
+      });
+      
+      const firstNameInput = screen.getByLabelText(/first name/i);
+      const lastNameInput = screen.getByLabelText(/last name/i);
+      const emailInput = screen.getByLabelText(/email/i);
+      const companyInput = screen.getByLabelText(/company/i);
+      const passwordInputs = screen.getAllByLabelText(/password/i);
+      const submitButton = screen.getByRole('button', { name: /create account/i });
+      
+      await user.type(firstNameInput, 'John');
+      await user.type(lastNameInput, 'Doe');
+      await user.type(emailInput, 'john@example.com');
+      await user.type(companyInput, 'ACME Corp');
+      await user.type(passwordInputs[0], 'password123');
+      await user.type(passwordInputs[1], 'password123');
+      await user.click(submitButton);
+      
+      expect(console.log).toHaveBeenCalledWith('Signup:', {
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+        firstName: 'John',
+        lastName: 'Doe',
+        company: 'ACME Corp'
       });
     });
 

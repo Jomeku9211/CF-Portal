@@ -7,6 +7,9 @@ interface OrganizationStepProps {
 }
 
 export function OrganizationStep({ formData, updateFormData }: OrganizationStepProps) {
+  // Add null safety checks
+  const organization = formData?.organization || {};
+  
   const organizationOptions = [
     { value: 'startup', label: 'Startup (0-50 employees)', description: 'Early-stage company looking to scale' },
     { value: 'scaleup', label: 'Scaleup (50-500 employees)', description: 'Growing company with established product-market fit' },
@@ -46,7 +49,7 @@ export function OrganizationStep({ formData, updateFormData }: OrganizationStepP
 
       <InputField
         label="Organization Name"
-        value={formData.organization.name}
+        value={organization.name || ''}
         onChange={(value) => updateFormData('organization', { name: value })}
         placeholder="Enter your organization name"
         required
@@ -54,7 +57,7 @@ export function OrganizationStep({ formData, updateFormData }: OrganizationStepP
 
       <InputField
         label="Organization Purpose"
-        value={formData.organization.purpose}
+        value={organization.purpose || ''}
         onChange={(value) => updateFormData('organization', { purpose: value })}
         placeholder="What is your organization's mission?"
         required
@@ -63,7 +66,7 @@ export function OrganizationStep({ formData, updateFormData }: OrganizationStepP
       <SelectField
         label="Organization Type"
         options={organizationOptions}
-        value={formData.organization.organizationType || ''}
+        value={organization.organizationType || ''}
         onChange={(value) => updateFormData('organization', { organizationType: value })}
         placeholder="Select organization type"
         required
@@ -72,7 +75,7 @@ export function OrganizationStep({ formData, updateFormData }: OrganizationStepP
       <SelectField
         label="Team Size"
         options={teamSizeOptions}
-        value={formData.organization.teamSize}
+        value={organization.teamSize || ''}
         onChange={(value) => updateFormData('organization', { teamSize: value })}
         placeholder="Select team size"
         required
@@ -81,7 +84,7 @@ export function OrganizationStep({ formData, updateFormData }: OrganizationStepP
       <SelectField
         label="Working Style"
         options={workingStyleOptions}
-        value={formData.organization.workingStyle}
+        value={organization.workingStyle || ''}
         onChange={(value) => updateFormData('organization', { workingStyle: value })}
         placeholder="Select working style"
         required
@@ -90,7 +93,7 @@ export function OrganizationStep({ formData, updateFormData }: OrganizationStepP
       <SelectField
         label="Company Culture"
         options={cultureOptions}
-        value={formData.organization.culture}
+        value={organization.culture || ''}
         onChange={(value) => updateFormData('organization', { culture: value })}
         placeholder="Select company culture"
         required

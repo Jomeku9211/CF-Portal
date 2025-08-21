@@ -1,0 +1,112 @@
+/* PLEASE NOTE: THESE TAILWIND IMPORTS SHOULD NEVER BE DELETED */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+/* DO NOT DELETE THESE TAILWIND IMPORTS, OTHERWISE THE STYLING WILL NOT RENDER AT ALL */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+/* Base styles */
+@layer base {
+  html {
+    @apply font-roboto text-neutral-darkest;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-inter font-semi-bold;
+  }
+  body {
+    @apply bg-neutral-white text-neutral-darkest;
+  }
+}
+/* Custom utility classes */
+@layer utilities {
+  .text-large-extra-bold {
+    @apply text-text-large font-extra-bold;
+  }
+  .text-large-bold {
+    @apply text-text-large font-bold;
+  }
+  .text-large-semi-bold {
+    @apply text-text-large font-semi-bold;
+  }
+  .text-large-medium {
+    @apply text-text-large font-medium;
+  }
+  .text-large-normal {
+    @apply text-text-large font-normal;
+  }
+  .text-large-light {
+    @apply text-text-large font-light;
+  }
+  .text-medium-extra-bold {
+    @apply text-text-medium font-extra-bold;
+  }
+  .text-medium-bold {
+    @apply text-text-medium font-bold;
+  }
+  .text-medium-semi-bold {
+    @apply text-text-medium font-semi-bold;
+  }
+  .text-medium-medium {
+    @apply text-text-medium font-medium;
+  }
+  .text-medium-normal {
+    @apply text-text-medium font-normal;
+  }
+  .text-medium-light {
+    @apply text-text-medium font-light;
+  }
+  .text-regular-extra-bold {
+    @apply text-text-regular font-extra-bold;
+  }
+  .text-regular-bold {
+    @apply text-text-regular font-bold;
+  }
+  .text-regular-semi-bold {
+    @apply text-text-regular font-semi-bold;
+  }
+  .text-regular-medium {
+    @apply text-text-regular font-medium;
+  }
+  .text-regular-normal {
+    @apply text-text-regular font-normal;
+  }
+  .text-regular-light {
+    @apply text-text-regular font-light;
+  }
+  .text-small-extra-bold {
+    @apply text-text-small font-extra-bold;
+  }
+  .text-small-bold {
+    @apply text-text-small font-bold;
+  }
+  .text-small-semi-bold {
+    @apply text-text-small font-semi-bold;
+  }
+  .text-small-medium {
+    @apply text-text-small font-medium;
+  }
+  .text-small-normal {
+    @apply text-text-small font-normal;
+  }
+  .text-small-light {
+    @apply text-text-small font-light;
+  }
+  .text-tiny-extra-bold {
+    @apply text-text-tiny font-extra-bold;
+  }
+  .text-tiny-bold {
+    @apply text-text-tiny font-bold;
+  }
+  .text-tiny-semi-bold {
+    @apply text-text-tiny font-semi-bold;
+  }
+  .text-tiny-medium {
+    @apply text-text-tiny font-medium;
+  }
+  .text-tiny-normal {
+    @apply text-text-tiny font-normal;
+  }
+  .text-tiny-light {
+    @apply text-text-tiny font-light;
+  }
+}

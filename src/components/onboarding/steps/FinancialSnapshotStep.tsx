@@ -7,6 +7,9 @@ interface FinancialSnapshotStepProps {
 }
 
 export function FinancialSnapshotStep({ formData, updateFormData }: FinancialSnapshotStepProps) {
+  // Add null safety checks
+  const financials = formData?.organizationOnboarding?.financials || {};
+  
   const fundingStatusOptions = [
     { value: 'bootstrapped', label: 'Bootstrapped', description: 'Self-funded, no external investment' },
     { value: 'seed', label: 'Seed Stage', description: 'Early funding, typically <$1M' },
@@ -46,19 +49,19 @@ export function FinancialSnapshotStep({ formData, updateFormData }: FinancialSna
       <SelectField
         label="Funding Status"
         options={fundingStatusOptions}
-        value={formData.organizationOnboarding.financials.fundingStatus}
+        value={financials.fundingStatus || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          financials: { ...formData.organizationOnboarding.financials, fundingStatus: value } 
+          financials: { ...financials, fundingStatus: value } 
         })}
         placeholder="Select funding status"
         required
       />
 
       <InputField
-        label="Key Investors (if applicable)"
-        value={formData.organizationOnboarding.financials.investors}
+        label="Key Investors if applicable"
+        value={financials.investors || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          financials: { ...formData.organizationOnboarding.financials, investors: value } 
+          financials: { ...financials, investors: value } 
         })}
         placeholder="e.g., Y Combinator, Sequoia Capital, Angel investors"
       />
@@ -66,9 +69,9 @@ export function FinancialSnapshotStep({ formData, updateFormData }: FinancialSna
       <SelectField
         label="Revenue Status"
         options={revenueStatusOptions}
-        value={formData.organizationOnboarding.financials.revenueStatus}
+        value={financials.revenueStatus || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          financials: { ...formData.organizationOnboarding.financials, revenueStatus: value } 
+          financials: { ...financials, revenueStatus: value } 
         })}
         placeholder="Select revenue status"
         required
@@ -77,9 +80,9 @@ export function FinancialSnapshotStep({ formData, updateFormData }: FinancialSna
       <SelectField
         label="Profitability Status"
         options={profitabilityOptions}
-        value={formData.organizationOnboarding.financials.profitabilityStatus}
+        value={financials.profitabilityStatus || ''}
         onChange={(value) => updateFormData('organizationOnboarding', { 
-          financials: { ...formData.organizationOnboarding.financials, profitabilityStatus: value } 
+          financials: { ...financials, profitabilityStatus: value } 
         })}
         placeholder="Select profitability status"
         required
