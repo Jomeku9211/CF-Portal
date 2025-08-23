@@ -21,7 +21,11 @@ export const TABLES = {
   EXPERIENCE_LEVELS: 'experience_levels',
   USERS: 'users',
   USER_ROLES: 'user_roles',
-  ONBOARDING_STAGES: 'onboarding_stages'
+  ONBOARDING_STAGES: 'onboarding_stages',
+  SERVICE_PROVIDER_PROFILES: 'service_provider_profiles',
+  CLIENT_PROFILES: 'client_profiles',
+  AGENCY_PROFILES: 'agency_profiles',
+  SPECIALIZATIONS: 'specializations'
 } as const
 
 // Database types
@@ -114,6 +118,179 @@ export interface Database {
           years?: string
           tagline?: string
           features?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      service_provider_profiles: {
+        Row: {
+          id: string
+          user_id: string
+          role_id: string
+          category_id: string
+          specialization: string
+          experience_level_id: string
+          bio: string
+          skills: string[]
+          hourly_rate: number
+          availability: string
+          portfolio_url: string
+          linkedin_url: string
+          github_url: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          role_id: string
+          category_id: string
+          specialization: string
+          experience_level_id: string
+          bio?: string
+          skills?: string[]
+          hourly_rate?: number
+          availability?: string
+          portfolio_url?: string
+          linkedin_url?: string
+          github_url?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          role_id?: string
+          category_id?: string
+          specialization?: string
+          experience_level_id?: string
+          bio?: string
+          skills?: string[]
+          hourly_rate?: number
+          availability?: string
+          portfolio_url?: string
+          linkedin_url?: string
+          github_url?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      client_profiles: {
+        Row: {
+          id: string
+          user_id: string
+          role_id: string
+          category_id: string
+          specialization: string
+          experience_level_id: string
+          company_name: string
+          industry: string
+          project_description: string
+          budget_range: string
+          timeline: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          role_id: string
+          category_id: string
+          specialization: string
+          experience_level_id: string
+          company_name?: string
+          industry?: string
+          project_description?: string
+          budget_range?: string
+          timeline?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          role_id?: string
+          category_id?: string
+          specialization?: string
+          experience_level_id?: string
+          company_name?: string
+          industry?: string
+          project_description?: string
+          budget_range?: string
+          timeline?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      agency_profiles: {
+        Row: {
+          id: string
+          user_id: string
+          role_id: string
+          category_id: string
+          specialization: string
+          experience_level_id: string
+          agency_name: string
+          industry: string
+          services_offered: string[]
+          team_size: string
+          client_portfolio: string[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          role_id: string
+          category_id: string
+          specialization: string
+          experience_level_id: string
+          agency_name?: string
+          industry?: string
+          services_offered?: string[]
+          team_size?: string
+          client_portfolio?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          role_id?: string
+          category_id?: string
+          specialization?: string
+          experience_level_id?: string
+          agency_name?: string
+          industry?: string
+          services_offered?: string[]
+          team_size?: string
+          client_portfolio?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      specializations: {
+        Row: {
+          id: string
+          name: string
+          description: string
+          category_id: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description: string
+          category_id: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          category_id?: string
           created_at?: string
           updated_at?: string
         }

@@ -9,7 +9,13 @@ import { StepNavigation } from '../common/StepNavigation';
 import { useAuth } from '../../contexts/AuthContext';
 import { universalOnboardingService } from '../../services/universalOnboardingService';
 
+
 interface FormData {
+  account: {
+    fullName: string;
+    phone: string;
+    location: string;
+  };
   organization: {
     name: string;
     purpose: string;
@@ -66,19 +72,26 @@ export function OnboardingFlow() {
       const stage = String(parsed?.onboarding_stage || '');
       console.log('Processing stage:', stage);
       
-      // Route based on onboarding_stage only
-      if (stage.startsWith('team_creation')) {
-        initialMainStep = 2;
-        console.log('Setting initial step to 2 (Team)');
-      } else if (stage === 'hiring_intent') {
-        initialMainStep = 3;
-        console.log('Setting initial step to 3 (Hiring Intent)');
-      } else if (stage.startsWith('job_creation')) {
-        initialMainStep = 4;
-        console.log('Setting initial step to 4 (Job)');
+      // Route based on onboarding_stage only - Original 3-step client flow
+      if (stage && stage !== '' && stage !== 'null' && stage !== 'undefined') {
+        if (stage === 'organization_creation') {
+          initialMainStep = 1;
+          console.log('Setting initial step to 1 (Organization Creation)');
+        } else if (stage === 'team_creation') {
+          initialMainStep = 2;
+          console.log('Setting initial step to 2 (Team Creation)');
+        } else if (stage === 'hiring_intent') {
+          initialMainStep = 3;
+          console.log('Setting initial step to 3 (Hiring Intent)');
+        } else {
+          // Unknown stage, start from beginning
+          initialMainStep = 1;
+          console.log('Unknown onboarding stage, starting from step 1 (Organization Creation)');
+        }
       } else {
+        // No onboarding stage set yet, start from beginning
         initialMainStep = 1;
-        console.log('Setting initial step to 1 (Organization)');
+        console.log('No onboarding stage set, starting from step 1 (Organization Creation)');
       }
       
       console.log('=== INITIAL STATE DEBUG END ===');
@@ -90,7 +103,13 @@ export function OnboardingFlow() {
   // Start with the correct step based on onboarding stage
   const [currentMainStep, setCurrentMainStep] = useState(initialMainStep);
   const [currentSubStep, setCurrentSubStep] = useState(initialSubStep);
+  const [isLoadingProgress, setIsLoadingProgress] = useState(true);
   const [formData, setFormData] = useState<FormData>({
+    account: {
+      fullName: '',
+      phone: '',
+      location: ''
+    },
     organization: {
       name: '',
       purpose: '',
@@ -134,6 +153,40 @@ export function OnboardingFlow() {
     hiring?: string;
     general?: string;
   }>({});
+
+  // Load onboarding progress from database when component mounts
+  useEffect(() => {
+    const loadOnboardingProgress = async () => {
+      if (!user?.id) return;
+      
+      try {
+        setIsLoadingProgress(true);
+        console.log('🔄 Loading onboarding progress from database...');
+        
+        // Get current progress from database
+        const progress = await universalOnboardingService.getOnboardingProgress(user.id);
+        
+        if (progress.success && progress.data) {
+          const dbStep = progress.data.current_step || 1;
+          console.log('📊 Database shows current_step:', dbStep);
+          
+          // Set the step based on database progress
+          setCurrentMainStep(dbStep);
+          console.log('✅ Set currentMainStep to:', dbStep);
+        } else {
+          console.log('⚠️ No database progress found, starting from step 1');
+          setCurrentMainStep(1);
+        }
+      } catch (error) {
+        console.error('❌ Error loading onboarding progress:', error);
+        setCurrentMainStep(1);
+      } finally {
+        setIsLoadingProgress(false);
+      }
+    };
+
+    loadOnboardingProgress();
+  }, [user?.id]);
 
   // Clear errors when form changes
   // const clearErrors = () => {
@@ -182,13 +235,12 @@ export function OnboardingFlow() {
           setCurrentMainStep(progress.current_step);
           console.log('🔄 Restored current step to:', progress.current_step);
           
-          // Restore form data from database
-          if (progress.flow_metadata && Object.keys(progress.flow_metadata).length > 0) {
-            console.log('📋 Restoring form data from database:', progress.flow_metadata);
-            setFormData(prev => ({
-              ...prev,
-              ...progress.flow_metadata
-            }));
+          // Restore form data from database - using onboarding_stage instead of flow_metadata
+          if (progress.onboarding_stage && progress.onboarding_stage !== 'role_selection') {
+            console.log('📋 Restoring onboarding stage from database:', progress.onboarding_stage);
+            // Set the current step based on onboarding stage
+            const stepFromStage = getStepFromOnboardingStage(progress.onboarding_stage);
+            setCurrentMainStep(stepFromStage);
           }
           
           // Update onboarding stage in localStorage for backward compatibility
@@ -217,13 +269,33 @@ export function OnboardingFlow() {
       case 1:
         return 'organization_onboarding';
       case 2:
-        return 'team_creation';
+        return 'team_onboarding';
       case 3:
         return 'hiring_intent';
       case 4:
         return 'job_creation';
       default:
         return 'organization_onboarding';
+    }
+  };
+
+  // Helper function to convert onboarding stage to step number
+  const getStepFromOnboardingStage = (stage: string): number => {
+    switch (stage) {
+      case 'role_selection':
+        return 1;
+      case 'organization_onboarding':
+        return 1;
+      case 'team_onboarding':
+        return 2;
+      case 'hiring_intent':
+        return 3;
+      case 'job_creation':
+        return 4;
+      case 'completed':
+        return 4;
+      default:
+        return 1;
     }
   };
 
@@ -333,15 +405,15 @@ export function OnboardingFlow() {
   const mainSteps = [
     {
       id: 1,
-      name: 'Onboarding Organization',
+      name: 'Organization Onboarding',
       completed: currentMainStep > 1,
       active: currentMainStep === 1,
-      subSteps: 1,
+      subSteps: 5, // Organization has 5 sub-steps
       currentSubStep: currentSubStep
     },
     {
       id: 2,
-      name: 'Onboarding Team',
+      name: 'Team Onboarding',
       completed: currentMainStep > 2,
       active: currentMainStep === 2,
       subSteps: 3, // Team Basics, Workstyle, Culture
@@ -357,10 +429,10 @@ export function OnboardingFlow() {
     },
     {
       id: 4,
-      name: 'Job Persona Creation',
+      name: 'Job Creation',
       completed: currentMainStep > 4,
       active: currentMainStep === 4,
-      subSteps: 1, // Placeholder for now
+      subSteps: 1, // Single step
       currentSubStep: currentSubStep
     }
   ];
@@ -377,7 +449,7 @@ export function OnboardingFlow() {
       { id: 'hiringIntent', title: 'Hiring Intent', component: HiringIntent }
     ],
     jobPersona: [
-      { id: 'jobPersona', title: 'Job Persona Creation', component: JobPersonaCreation }
+      { id: 'jobPersona', title: 'Job Creation', component: JobPersonaCreation }
     ]
   };
 
@@ -420,16 +492,18 @@ export function OnboardingFlow() {
 
   const handleNext = () => {
     if (currentMainStep === 1) {
-      // Organization onboarding uses internal navigation; when complete, move to team
+      // Organization creation - move to team creation
       setCurrentMainStep(2);
       setCurrentSubStep(0);
       window.scrollTo(0, 0);
     } else if (currentMainStep === 2) {
-      // Team onboarding - handled by TeamOnboarding component
-      // This will be called when team onboarding is complete
+      // Team onboarding - when complete, move to hiring intent
+      setCurrentMainStep(3);
+      setCurrentSubStep(0);
+      window.scrollTo(0, 0);
     } else if (currentMainStep === 3) {
-      // Job persona creation - handled by JobPersonaCreation component
-      // This will be called when job persona creation is complete
+      // Hiring intent - handled by HiringIntent component
+      // This will be called when hiring intent is complete
     }
   };
 
@@ -472,12 +546,12 @@ export function OnboardingFlow() {
     }
   };
 
-  // Handle organization onboarding completion
-  const handleOrganizationComplete = async () => {
-    console.log('🏢 Organization onboarding completed');
+  // Handle account setup completion
+  const handleAccountSetupComplete = async () => {
+    console.log('👤 Account setup completed');
     
     // Mark step as completed
-    await handleStepComplete('organization_onboarding', formData.organization);
+    await handleStepComplete('account_setup', formData.account);
     
     // Update current step in database
     if (user?.id) {
@@ -489,6 +563,25 @@ export function OnboardingFlow() {
     
     // Move to next step
     setCurrentMainStep(2);
+  };
+
+  // Handle organization onboarding completion
+  const handleOrganizationComplete = async () => {
+    console.log('🏢 Organization onboarding completed');
+    
+    // Mark step as completed
+    await handleStepComplete('organization_onboarding', formData.organization);
+    
+    // Update current step in database
+    if (user?.id) {
+      await universalOnboardingService.updateOnboardingProgress(user.id, {
+        current_step: 3
+      });
+      console.log('✅ Updated current step to 3 in database');
+    }
+    
+    // Move to next step
+    setCurrentMainStep(3);
   };
 
   // Handle team onboarding completion
@@ -561,10 +654,7 @@ export function OnboardingFlow() {
     if (user?.id) {
       try {
         await universalOnboardingService.updateOnboardingProgress(user.id, {
-          flow_metadata: {
-            ...formData,
-            [section]: data
-          }
+          onboarding_stage: getOnboardingStageFromStep(currentMainStep)
         });
         console.log(`✅ Saved ${section} data to database`);
       } catch (error) {
@@ -593,9 +683,21 @@ export function OnboardingFlow() {
       console.error('Error checking onboarding stage in renderCurrentContent:', error);
     }
     
+    // Show loading while fetching database progress
+    if (isLoadingProgress) {
+      return (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-400">Loading your onboarding progress...</p>
+          </div>
+        </div>
+      );
+    }
+
     // Render based on currentMainStep state (which should be updated by useEffect)
     if (currentMainStep === 1) {
-      // New Organization Onboarding UI (self-contained)
+      // Organization Profile Step - Original client onboarding flow
       return (
         <div>
           {/* Error messages */}
@@ -613,6 +715,24 @@ export function OnboardingFlow() {
         </div>
       );
     } else if (currentMainStep === 2) {
+      // Organization Profile Step
+      return (
+        <div>
+          {/* Error messages */}
+          {Object.keys(errors).length > 0 && (
+            <div className="mb-6 p-4 bg-red-600/20 border border-red-600/30 rounded-lg">
+              {Object.entries(errors).map(([key, message]) => (
+                <div key={key} className="text-red-400 text-sm flex items-center mb-2 last:mb-0">
+                  <span className="mr-2">⚠️</span>
+                  {message}
+                </div>
+              ))}
+            </div>
+          )}
+          <OrgProfileV2 onSubmitSuccess={handleOrganizationComplete} />
+        </div>
+      );
+    } else if (currentMainStep === 3) {
       return (
         <div>
           {/* Error messages */}
@@ -698,7 +818,7 @@ export function OnboardingFlow() {
         // Save current progress before leaving
         universalOnboardingService.updateOnboardingProgress(user.id, {
           current_step: currentMainStep,
-          flow_metadata: formData,
+          onboarding_stage: getOnboardingStageFromStep(currentMainStep),
           last_activity: new Date().toISOString()
         }).catch(error => {
           console.error('❌ Error saving progress before unload:', error);
@@ -711,16 +831,16 @@ export function OnboardingFlow() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       
-      // Also save when component unmounts
-      if (user?.id) {
-        universalOnboardingService.updateOnboardingProgress(user.id, {
-          current_step: currentMainStep,
-          flow_metadata: formData,
-          last_activity: new Date().toISOString()
-        }).catch(error => {
-          console.error('❌ Error saving progress on unmount:', error);
-        });
-      }
+              // Also save when component unmounts
+        if (user?.id) {
+          universalOnboardingService.updateOnboardingProgress(user.id, {
+            current_step: currentMainStep,
+            onboarding_stage: getOnboardingStageFromStep(currentMainStep),
+            last_activity: new Date().toISOString()
+          }).catch(error => {
+            console.error('❌ Error saving progress on unmount:', error);
+          });
+        }
     };
   }, [user?.id, currentMainStep, formData]);
 

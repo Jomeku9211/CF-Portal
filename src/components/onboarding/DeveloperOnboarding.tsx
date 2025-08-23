@@ -77,6 +77,9 @@ const steps = [
 export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
   const { isAuthenticated, user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
+  
+  // Debug log for current step
+  console.log(`🎯 DeveloperOnboarding render - currentStep: ${currentStep}, showing: ${steps[currentStep]?.name}`);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     phone: '',
@@ -129,13 +132,21 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
           
           // Set current step based on progress
           const currentStepFromProgress = progressResult.data.current_step;
-          if (currentStepFromProgress > 0 && currentStepFromProgress < steps.length) {
-            setCurrentStep(currentStepFromProgress);
-            console.log(`📍 Setting current step to ${currentStepFromProgress} based on progress`);
+          console.log(`🔍 Raw database current_step: ${currentStepFromProgress}`);
+          console.log(`🔍 Steps array length: ${steps.length}`);
+          
+          if (currentStepFromProgress > 0 && currentStepFromProgress <= steps.length) {
+            // Convert from 1-based step number to 0-based index
+            const stepIndex = currentStepFromProgress - 1;
+            setCurrentStep(stepIndex);
+            console.log(`📍 Database shows step ${currentStepFromProgress}, setting component to index ${stepIndex}`);
+            console.log(`📍 This should show: ${steps[stepIndex]?.name}`);
+          } else {
+            console.log(`⚠️ Invalid step number: ${currentStepFromProgress}, keeping default index 0`);
           }
           
           // Load existing form data for completed steps
-          const existingData = progressResult.data.flow_metadata;
+          const existingData = progressResult.data;
           if (existingData) {
             console.log('📋 Loading existing form data from progress:', existingData);
             
@@ -144,7 +155,7 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
               if (existingData[key] && typeof existingData[key] === 'object') {
                 setFormData(prev => ({
                   ...prev,
-                  ...existingData[key]
+                  ...(existingData as any)[key]
                 }));
               }
             });
@@ -196,14 +207,22 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
     // Save form data to database for persistence (only when user is authenticated)
     if (user?.id) {
       try {
-        // Simple approach: just try to update, let the service handle creation if needed
+        // Extract searchable data for separate columns
+        const searchableData = {
+          location: data.location || formData.location,
+          primary_stack: data.primaryStack || formData.primaryStack,
+          experience_level: data.experienceLevel || formData.experienceLevel,
+          work_style: data.workStyle || formData.workStyle,
+          availability_status: 'available',
+          skills: data.secondarySkills || formData.secondarySkills || [],
+          domain_experience: data.domainExperience || formData.domainExperience || []
+        };
+        
+        // Save to separate columns for searchability
         await universalOnboardingService.updateOnboardingProgress(user.id, {
-          flow_metadata: {
-            ...formData,
-            ...data
-          }
+          ...searchableData
         });
-        console.log(`✅ Saved form data to database:`, data);
+        console.log(`✅ Saved form data to database in separate columns:`, searchableData);
       } catch (error) {
         console.error(`❌ Error saving form data to database:`, error);
       }
@@ -211,6 +230,7 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
   };
 
   const handleNext = async () => {
+    console.log(`🚀 handleNext called - currentStep: ${currentStep}, step name: ${steps[currentStep]?.name}`);
     if (currentStep < steps.length - 1) {
       // Save current step data before moving to next
       if (user?.id) {
@@ -228,9 +248,21 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
             completed: true
           });
           
-          // Update current step in onboarding progress
+          // Extract searchable data for separate columns
+          const searchableData = {
+            location: formData.location,
+            primary_stack: formData.primaryStack,
+            experience_level: formData.experienceLevel,
+            work_style: formData.workStyle,
+            availability_status: 'available',
+            skills: formData.secondarySkills || [],
+            domain_experience: formData.domainExperience || []
+          };
+          
+          // Update current step and searchable data in onboarding progress
           await universalOnboardingService.updateOnboardingProgress(user.id, {
-            current_step: currentStep + 1
+            current_step: currentStep + 1,
+            ...searchableData
           });
           
           console.log(`✅ Step ${currentStepName} marked as completed in onboarding progress`);
@@ -281,33 +313,38 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
       try {
         console.log('🚀 Updating service provider profile with onboarding data...');
         
-        // Get the user's role data to find the user_role_id
+        // Get the user's role data to find the actual role_id and category_id
         const { data: userRole, error: userRoleError } = await supabase
           .from('user_roles')
-          .select('id')
+          .select('role_id, category_id, experience_level_id, specialization')
           .eq('user_id', user.id)
           .single();
         
         if (userRoleError) {
           console.error('❌ Error getting user role:', userRoleError);
         } else if (userRole) {
-          console.log('✅ Found user role:', userRole);
+          console.log('✅ Found user role data:', userRole);
           
-          // Create profile updates with only the fields we know exist in the table
+          // Create profile updates with the correct schema fields
           const profileUpdates = {
+            user_id: user.id,
+            role_id: userRole.role_id, // Use the actual role_id, not the user_role record ID
+            category_id: userRole.category_id || '',
+            specialization: userRole.specialization || 'not-applicable',
+            experience_level_id: userRole.experience_level_id || '',
+            bio: `${formData.primaryStack || 'Software'} developer with ${formData.experienceLevel || 'professional'} experience`,
             skills: formData.secondarySkills || [],
-            technologies: formData.primaryStack ? [formData.primaryStack, ...(formData.secondarySkills || [])] : [],
-            // Note: availability field might not exist in current schema, so we'll skip it for now
-            // availability: formData.workStyle === 'full-time' ? 'full-time' : 'part-time',
-            remote_preference: formData.locationPreference === 'remote' ? 'remote-only' : 
-                              formData.locationPreference === 'hybrid' ? 'hybrid' : 'on-site',
-            timezone_preference: formData.location ? [formData.location] : ['UTC'],
-            min_project_size: 1000, // Default values - can be enhanced later
-            max_project_size: 50000,
-            preferred_project_types: formData.domainExperience || []
+            hourly_rate: formData.salaryExpectations ? 50 : 75, // Default based on experience
+            availability: formData.workStyle || 'full-time',
+            portfolio_url: formData.profileLinks?.portfolio || '',
+            linkedin_url: formData.profileLinks?.linkedin || '',
+            github_url: formData.profileLinks?.github || '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           };
           
           console.log('📝 Profile updates to apply:', profileUpdates);
+          console.log('🔍 Full profile data being inserted:', JSON.stringify(profileUpdates, null, 2));
           
           // First try to get the existing profile
           const { data: existingProfile, error: getProfileError } = await supabase
@@ -323,13 +360,7 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
             // Try to create the profile if it doesn't exist
             const { data: newProfile, error: createError } = await supabase
               .from('service_provider_profiles')
-              .insert([{
-                user_id: user.id,
-                user_role_id: userRole.id,
-                ...profileUpdates,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              }])
+              .insert([profileUpdates])
               .select()
               .single();
             
@@ -375,13 +406,7 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
             // Create new profile
             const { data: newProfile, error: createError } = await supabase
               .from('service_provider_profiles')
-              .insert([{
-                user_id: user.id,
-                user_role_id: userRole.id,
-                ...profileUpdates,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              }])
+              .insert([profileUpdates])
               .select()
               .single();
             
@@ -393,6 +418,7 @@ export const DeveloperOnboarding: React.FC<DeveloperOnboardingProps> = () => {
                 details: createError.details,
                 hint: createError.hint
               });
+              console.error('❌ Failed to insert data:', profileUpdates);
             } else {
               console.log('✅ New service provider profile created with onboarding data:', newProfile);
             }

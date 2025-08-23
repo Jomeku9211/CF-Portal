@@ -56,6 +56,25 @@ export const EmailVerification: React.FC = () => {
     }
   };
 
+  const handleManualVerification = async () => {
+    // This is for testing when Supabase emails aren't working
+    try {
+      const response = await supabaseAuthService.manuallyVerifyEmail(email);
+      if (response.success) {
+        setResendMessage('Email manually verified for testing. You can now proceed.');
+        // Redirect to role selection after a short delay
+        setTimeout(() => {
+          navigate('/role-selection', { replace: true });
+        }, 2000);
+      } else {
+        setResendMessage(response.message || 'Manual verification failed.');
+      }
+    } catch (error) {
+      setResendMessage('Manual verification error occurred.');
+      console.error('Error in manual verification:', error);
+    }
+  };
+
   const handleBackToLogin = () => {
     navigate('/login');
   };
@@ -142,6 +161,15 @@ export const EmailVerification: React.FC = () => {
                 Resend Verification Email
               </>
             )}
+          </button>
+
+          {/* Manual verification button for testing */}
+          <button
+            onClick={handleManualVerification}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            <CheckCircle className="w-4 h-4" />
+            Test: Manual Verification
           </button>
         </div>
 

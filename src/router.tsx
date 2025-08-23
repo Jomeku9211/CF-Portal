@@ -8,6 +8,7 @@ import { ForgotPassword } from "./components/Auth/ForgotPassword";
 import { OnboardingFlow } from "./components/onboarding/OnboardingFlow";
 import { Onboarding1 } from "./components/onboarding/Onboarding1";
 import { RoleSelection } from "./components/onboarding/RoleSelection";
+import { SmartOnboardingRouter } from "./components/onboarding/SmartOnboardingRouter";
 import ExperienceLevelSelection from "./components/onboarding/ExperienceLevelSelection";
 import { SpecializationSelection } from "./components/onboarding/SpecializationSelection";
 import { DeveloperExperienceSelection } from "./components/onboarding/DeveloperExperienceSelection";
@@ -77,6 +78,14 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
+        path: "onboarding",
+        element: (
+          <ProtectedRoute>
+            <SmartOnboardingRouter />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "experience-level",
         element: (
           <ProtectedRoute>
@@ -110,17 +119,17 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "clientOnboarding",
+        path: "client-onboarding",
         element: (
           <ProtectedRoute>
             <OnboardingFlow />
           </ProtectedRoute>
         ),
       },
-      // Backward compatibility: old URL
+      // Backward compatibility: old URL - now routes to smart onboarding
       {
-        path: "onboarding",
-        element: <Navigate to="/clientOnboarding" replace />,
+        path: "onboarding-old",
+        element: <Navigate to="/client-onboarding" replace />,
       },
       {
         path: "onboarding1",

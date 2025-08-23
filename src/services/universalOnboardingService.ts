@@ -7,14 +7,14 @@ export interface OnboardingProgress {
   category_id: string;
   experience_level_id?: string; // Optional for clients
   onboarding_flow: 'developer' | 'client' | 'agency';
+  onboarding_stage: string; // New field to track onboarding stage
   current_step: number;
   total_steps: number;
   completed_steps: string[];
   onboarding_status: 'in_progress' | 'completed' | 'abandoned';
   last_activity: string;
-  flow_metadata: Record<string, any>;
   
-  // New searchable columns
+  // Searchable columns (no more flow_metadata)
   location?: string;
   primary_stack?: string;
   experience_level?: string;
@@ -148,12 +148,12 @@ class UniversalOnboardingService {
         category_id: categoryId,
         experience_level_id: experienceLevelId,
         onboarding_flow: flow,
+        onboarding_stage: 'role_selection', // Start at role selection
         current_step: 1,
         total_steps: totalSteps,
         completed_steps: [],
         onboarding_status: 'in_progress',
         last_activity: new Date().toISOString(),
-        flow_metadata: {}
       };
       
       const { data, error } = await supabase
@@ -192,13 +192,11 @@ class UniversalOnboardingService {
     try {
       console.log(`🔄 Updating onboarding progress for user ${userId}:`, updates);
       
-      // Extract searchable data if flow_metadata is provided
+      // Extract searchable data from updates
       let searchableUpdates = { ...updates };
-      if (updates.flow_metadata) {
-        const searchableData = this.extractSearchableData(updates.flow_metadata);
-        searchableUpdates = { ...searchableUpdates, ...searchableData };
-        console.log('🔍 Extracted searchable data:', searchableData);
-      }
+      const searchableData = this.extractSearchableData(updates);
+      searchableUpdates = { ...searchableUpdates, ...searchableData };
+      console.log('🔍 Extracted searchable data:', searchableData);
       
       const { data, error } = await supabase
         .from('user_onboarding_progress')
@@ -242,28 +240,50 @@ class UniversalOnboardingService {
     try {
       console.log(`✅ Marking step ${stepName} as completed for user ${userId}`);
       
-      // Insert step completion record
-      const { data: stepCompletion, error: stepError } = await supabase
-        .from('onboarding_step_completions')
-        .insert({
-          user_id: userId,
-          step_name: stepName,
-          step_data: stepData,
-          completed: true
-        })
-        .select()
+      // Step completion is now tracked in the main progress table
+      // Update the completed_steps array in user_onboarding_progress
+      const { data: currentProgress, error: getError } = await supabase
+        .from('user_onboarding_progress')
+        .select('completed_steps')
+        .eq('user_id', userId)
         .single();
       
-      if (stepError) {
-        console.error('❌ Error creating step completion:', stepError);
+      if (getError) {
+        console.error('❌ Error getting current progress:', getError);
         return {
           success: false,
-          message: `Failed to mark step completed: ${stepError.message}`,
-          error: stepError
+          message: `Failed to get current progress: ${getError.message}`,
+          error: getError
         };
       }
       
-      console.log('✅ Step completion recorded:', stepCompletion);
+      // Add the completed step to the array
+      const completedSteps = currentProgress.completed_steps || [];
+      if (!completedSteps.includes(stepName)) {
+        completedSteps.push(stepName);
+      }
+      
+      // Update the progress table
+      const { data: updatedProgress, error: updateError } = await supabase
+        .from('user_onboarding_progress')
+        .update({
+          completed_steps: completedSteps,
+          last_activity: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .select()
+        .single();
+      
+      if (updateError) {
+        console.error('❌ Error updating step completion:', updateError);
+        return {
+          success: false,
+          message: `Failed to update step completion: ${updateError.message}`,
+          error: updateError
+        };
+      }
+      
+      console.log('✅ Step completion recorded in progress table:', updatedProgress);
       return {
         success: true,
         data: stepData,
@@ -493,11 +513,12 @@ class UniversalOnboardingService {
     try {
       console.log(`📋 Getting step completion history for user ${userId}`);
       
+      // Get step completion history from the main progress table
       const { data, error } = await supabase
-        .from('onboarding_step_completions')
-        .select('*')
+        .from('user_onboarding_progress')
+        .select('completed_steps')
         .eq('user_id', userId)
-        .order('completed_at', { ascending: true });
+        .single();
       
       if (error) {
         console.error('❌ Error getting step completion history:', error);
@@ -508,13 +529,14 @@ class UniversalOnboardingService {
         };
       }
       
-      const stepData = data.map(item => ({
-        step_name: item.step_name,
-        step_data: item.step_data,
-        completed: item.completed
+      // Convert completed_steps array to step data format
+      const stepData = (data?.completed_steps || []).map((stepName: string) => ({
+        step_name: stepName,
+        step_data: {},
+        completed: true
       }));
       
-      console.log('✅ Step completion history retrieved:', stepData);
+      console.log('✅ Step completion history retrieved from progress table:', stepData);
       return {
         success: true,
         data: stepData,
@@ -542,7 +564,7 @@ class UniversalOnboardingService {
           current_step: 1,
           completed_steps: [],
           onboarding_status: 'in_progress',
-          flow_metadata: {},
+
           updated_at: new Date().toISOString(),
           last_activity: new Date().toISOString()
         })
@@ -660,23 +682,48 @@ class UniversalOnboardingService {
         };
       }
 
-      // Transform the form data to match our Supabase schema
+      // First, get the client profile for this user
+      const { data: clientProfile, error: clientError } = await supabase
+        .from('client_profiles')
+        .select('id')
+        .eq('user_id', creatorId)
+        .single();
+
+      if (clientError || !clientProfile) {
+        console.error('❌ Error getting client profile:', clientError);
+        return {
+          success: false,
+          error: 'Client profile not found. Please complete client profile setup first.'
+        };
+      }
+
+      // Transform the form data to match our new organizations table schema
       const supabasePayload = {
-        name: organizationData.name,
-        description: organizationData.whatWeDo || organizationData.originStory || '',
-        industry: organizationData.industry,
-        organization_size: organizationData.size,
-        current_funding_status: organizationData.fundingStatus,
-        website: organizationData.website,
-        location: 'Not specified', // Default value
-        created_by: creatorId,
-        flow_metadata: organizationData // Store the full form data for reference
+        client_profile_id: clientProfile.id,
+        name: organizationData.basicInfo?.name || organizationData.name || 'Default Organization',
+        company_size: organizationData.basicInfo?.size || organizationData.company_size,
+        industry: organizationData.basicInfo?.industry || organizationData.industry,
+        website: organizationData.basicInfo?.website || organizationData.website,
+        funding_status: organizationData.financials?.fundingStatus || organizationData.funding_status,
+        revenue_status: organizationData.financials?.revenueStatus || organizationData.revenue_status,
+        key_investors: organizationData.financials?.investors ? [organizationData.financials.investors] : [],
+        company_function: organizationData.company_function || 'Not specified',
+        origin_story: organizationData.purpose?.originStory || organizationData.origin_story,
+        what_we_do: organizationData.purpose?.whyStatement || organizationData.what_we_do,
+        who_we_serve: organizationData.who_we_serve || [],
+        vision: organizationData.purpose?.whyStatement || organizationData.vision,
+        why_join_us: organizationData.why_join_us,
+        growth_plans: organizationData.growth_plans,
+        success_metrics: organizationData.success_metrics || [],
+        core_values_today: organizationData.purpose?.coreBeliefs || organizationData.core_values_today || [],
+        core_values_aspirations: organizationData.core_values_aspirations || [],
+        culture_in_action: organizationData.purpose?.practices || organizationData.culture_in_action || [],
+        is_primary: true, // First organization is primary
+        is_active: true
       };
 
       console.log('📤 Form data received:', organizationData);
-      console.log('📤 Transformed payload for database:', supabasePayload);
-
-      console.log('📤 Supabase payload:', supabasePayload);
+      console.log('📤 Transformed payload for new organizations table:', supabasePayload);
 
       const { data, error } = await supabase
         .from('organizations')
@@ -753,7 +800,7 @@ class UniversalOnboardingService {
         organization_id: organizationId,
         team_size: teamData.teamSize || '5-10',
         created_by: creatorId,
-        flow_metadata: teamData // Store the full form data for reference
+        // Store the full form data in separate columns
       };
 
       console.log('📤 Supabase team payload:', supabasePayload);
@@ -838,7 +885,7 @@ class UniversalOnboardingService {
         organization_id: organizationId,
         team_id: teamId,
         created_by: creatorId,
-        flow_metadata: jobData // Store the full form data for reference
+        // Store the full form data in separate columns
       };
 
       console.log('📤 Supabase job post payload:', supabasePayload);

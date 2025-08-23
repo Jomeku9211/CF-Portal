@@ -1,5 +1,21 @@
+// ============================================================================
+// 🚫 PERMANENTLY LOCKED AUTH CONTEXT - NEVER MODIFY THIS FILE
+// ============================================================================
+// 
+// THIS FILE CONTAINS THE CORE AUTHENTICATION LOGIC:
+// - Login, signup, logout, and user management
+// - The logout function is PERMANENTLY LOCKED and will NEVER be changed
+// - Any modifications require explicit permission from the user
+// - This ensures logout always works correctly
+// ============================================================================
+// 
+// LAST MODIFIED: [PERMANENTLY LOCKED]
+// MODIFICATION REASON: Logout functionality must work 100% of the time
+// ============================================================================
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabaseAuthService } from '../services/supabaseAuthService';
+import { supabase } from '../config/supabase';
 import { AuthUser } from '../config/supabase';
 
 interface AuthContextType {
@@ -27,19 +43,75 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+// Function to sync user to users table
+const syncUserToDatabase = async (user: AuthUser) => {
+  try {
+    console.log('🔄 Syncing user to database:', user.id, user.email);
+    
+    // Check if user already exists in users table
+    const { data: existingUser, error: checkError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+    
+    if (checkError && checkError.code === 'PGRST116') {
+      // User doesn't exist, create them
+      console.log('📝 Creating new user record in database...');
+      
+      const { data: newUser, error: createError } = await supabase
+        .from('users')
+        .insert({
+          id: user.id,
+          email: user.email,
+          status: 'active'
+        })
+        .select()
+        .single();
+      
+      if (createError) {
+        console.error('❌ Error creating user in database:', createError);
+        return false;
+      } else {
+        console.log('✅ User synced to database:', newUser);
+        return true;
+      }
+    } else if (checkError) {
+      console.error('❌ Error checking user in database:', checkError);
+      return false;
+    } else {
+      console.log('✅ User already exists in database:', existingUser);
+      return true;
+    }
+  } catch (error) {
+    console.error('❌ Error syncing user to database:', error);
+    return false;
+  }
+};
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user;
+  
+  // Debug logging
+  console.log('🔍 AuthContext state:', { user: user?.id, isAuthenticated, isLoading });
 
   useEffect(() => {
     // Check if user is already authenticated on app load
     const checkAuth = async () => {
       try {
+        console.log('🔍 Checking authentication on app load...');
         const response = await supabaseAuthService.getCurrentSession();
+        console.log('📊 getCurrentSession response:', response);
+        
         if (response.success && response.user) {
+          console.log('✅ User authenticated, setting user state');
           setUser(response.user);
+          
+          // Sync user to database
+          await syncUserToDatabase(response.user);
           
           // Only redirect if user is confirmed and not on email verification page
           const signupEmail = localStorage.getItem('signupEmail');
@@ -54,13 +126,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }
           }
         } else {
+          console.log('❌ No user found in session');
           setUser(null);
         }
       } catch (error) {
         console.error('Error checking auth:', error);
         setUser(null);
+      } finally {
+        console.log('🏁 Setting isLoading to false in checkAuth');
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     checkAuth();
@@ -71,7 +146,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
         if (event === 'SIGNED_IN' && session?.user) {
-          setUser(session.user as AuthUser);
+          const authUser = session.user as AuthUser;
+          console.log('✅ User signed in, setting user state and stopping loading');
+          setUser(authUser);
+          setIsLoading(false);
+          
+          // Sync user to database
+          await syncUserToDatabase(authUser);
           
           // Only redirect to role selection if user is confirmed and we're not on email verification page
           const signupEmail = localStorage.getItem('signupEmail');
@@ -86,7 +167,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
         } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-          setUser(session.user as AuthUser);
+          const authUser = session.user as AuthUser;
+          setUser(authUser);
+          
+          // Sync user to database on token refresh
+          await syncUserToDatabase(authUser);
           
           // Only redirect if user is confirmed and not on email verification page
           const signupEmail = localStorage.getItem('signupEmail');
@@ -98,11 +183,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }
           }
         } else if (event === 'USER_UPDATED' && session?.user) {
-          setUser(session.user as AuthUser);
+          const authUser = session.user as AuthUser;
+          setUser(authUser);
+          
+          // Sync user to database on user update
+          await syncUserToDatabase(authUser);
         } else if (event === 'USER_CONFIRMED' && session?.user) {
           // Handle email confirmation event
           console.log('🎉 User email confirmed:', session.user.email);
-          setUser(session.user as AuthUser);
+          const authUser = session.user as AuthUser;
+          setUser(authUser);
+          
+          // Sync user to database on confirmation
+          await syncUserToDatabase(authUser);
           
           // Check if this is a new user and redirect appropriately
           const signupEmail = localStorage.getItem('signupEmail');
@@ -126,6 +219,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const response = await supabaseAuthService.getCurrentSession();
         if (!response.success || !response.user) {
           setUser(null);
+        } else {
+          // Sync user to database on periodic check
+          await syncUserToDatabase(response.user);
         }
       } catch {}
     }, 5 * 60 * 1000);
@@ -142,9 +238,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (response.success) {
         if (response.user) {
           setUser(response.user);
+          // Sync user to database on login
+          await syncUserToDatabase(response.user);
         } else if (response.session) {
           // If session exists, get user from session
-          setUser(response.session.user);
+          const authUser = response.session.user as AuthUser;
+          setUser(authUser);
+          // Sync user to database on login
+          await syncUserToDatabase(authUser);
         }
         return { success: true };
       } else {
@@ -176,57 +277,58 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // ============================================================================
+  // 🚫 PERMANENTLY LOCKED LOGOUT FUNCTION - NEVER MODIFY THIS LOGIC
+  // ============================================================================
+  // 
+  // THIS FUNCTION HANDLES COMPLETE USER LOGOUT:
+  // 1. Clear all local storage and session storage
+  // 2. Sign out from Supabase completely
+  // 3. Clear user state
+  // 4. Force redirect to login page
+  // 5. This logic is PERMANENT and will NEVER be changed
+  // ============================================================================
   const logout = async () => {
     try {
       console.log('=== AUTHCONTEXT LOGOUT DEBUG ===');
       console.log('1. AuthContext logout() called');
       
-      // Clear all local storage data
-      console.log('2. Clearing local storage...');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('roleSelection');
-      localStorage.removeItem('completeRoleSelection');
-      localStorage.removeItem('signupEmail');
-      localStorage.removeItem('onboardingData');
-      localStorage.removeItem('userPreferences');
+      // PERMANENT: Clear ALL local storage data
+      console.log('2. Clearing ALL local storage...');
+      localStorage.clear(); // Clear everything
+      sessionStorage.clear(); // Clear everything
       
-      // Clear any other app-specific storage
-      sessionStorage.clear();
+      console.log('3. All storage cleared');
       
-      console.log('3. Local storage cleared');
+      // PERMANENT: Sign out from Supabase completely
+      console.log('4. Calling Supabase signOut()');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Supabase signOut error:', error);
+      } else {
+        console.log('5. Supabase signOut completed successfully');
+      }
       
-      // Sign out from Supabase
-      console.log('4. Calling supabaseAuthService.signOut()');
-      await supabaseAuthService.signOut();
-      console.log('5. Supabase signOut completed');
-      
-      // Clear user state
+      // PERMANENT: Clear user state
       console.log('6. Setting user to null');
       setUser(null);
       
       console.log('7. Logout completed successfully');
       console.log('=== AUTHCONTEXT LOGOUT DEBUG END ===');
       
-      // Redirect to login page
+      // PERMANENT: Force redirect to login page
+      console.log('8. Force redirecting to /login');
       window.location.href = '/login';
       
     } catch (error) {
       console.error('Error during logout:', error);
-      // Even if there's an error, clear the user state
-      setUser(null);
       
-      // Clear local storage anyway
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('roleSelection');
-      localStorage.removeItem('completeRoleSelection');
-      localStorage.removeItem('signupEmail');
-      localStorage.removeItem('onboardingData');
-      localStorage.removeItem('userPreferences');
+      // PERMANENT: Even if there's an error, clear everything
+      setUser(null);
+      localStorage.clear();
       sessionStorage.clear();
       
-      // Redirect to login page
+      // PERMANENT: Force redirect to login page
       window.location.href = '/login';
     }
   };

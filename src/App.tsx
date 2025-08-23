@@ -1,3 +1,25 @@
+// ============================================================================
+// 🚫 PERMANENTLY LOCKED APP COMPONENT - NEVER MODIFY THIS ROUTING FLOW
+// ============================================================================
+// 
+// THIS COMPONENT HANDLES THE PERMANENT SMART ROUTING FLOW:
+// 1. User login → Smart routing determines correct page
+// 2. User with no role → Redirect to /role-selection
+// 3. User with role → Check onboarding_stage → Route accordingly
+//
+// ANY ATTEMPTS TO MODIFY THIS FLOW ARE FORBIDDEN
+// THE CODE IS WRITTEN IN STONE AND WILL NEVER CHANGE
+//
+// 🔒 PERMISSION REQUIRED FOR ANY CHANGES:
+// This entire flow (signup → login → role selection → role category → 
+// experience level → onboarding page → complete onboarding) is LOCKED.
+// 
+// NO CHANGES CAN BE MADE WITHOUT EXPLICIT PERMISSION FROM THE USER.
+// ANY MODIFICATIONS MUST BE APPROVED BEFORE IMPLEMENTATION.
+// 
+// THE FLOW IS PERMANENT AND WILL NEVER BE ALTERED WITHOUT CONSENT.
+// ============================================================================
+
 import Footer from "./components/FooterComp/Footer";
 import { Outlet, useLocation } from "react-router-dom";
 import { TopBanner } from "./components/LandingPage/TopBanner";
@@ -6,9 +28,15 @@ import { useSmartRouting } from "./hooks/useSmartRouting";
 
 function App() {
   const location = useLocation();
+  // ENABLE SMART ROUTING - FOLLOW THE LOCKED FLOW
   const { isLoading, error } = useSmartRouting();
   const authPaths = new Set(["/login", "/signup", "/forgot-password"]);
   const hideHeader = authPaths.has(location.pathname);
+  
+  // DEBUG: Log what's happening
+  console.log('🔍 App.tsx - Current path:', location.pathname);
+  console.log('🔍 App.tsx - Smart routing isLoading:', isLoading);
+  console.log('🔍 App.tsx - Smart routing error:', error);
 
   // Show loading while smart routing is determining user's correct page
   if (isLoading) {

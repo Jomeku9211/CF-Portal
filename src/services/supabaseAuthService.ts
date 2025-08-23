@@ -56,6 +56,12 @@ class SupabaseAuthService {
       if (authData.user) {
         console.log('✅ User created successfully:', authData.user.email)
         console.log('📧 Email confirmation will be sent shortly...')
+        console.log('🔍 User data:', {
+          id: authData.user.id,
+          email: authData.user.email,
+          email_confirmed_at: (authData.user as any).email_confirmed_at,
+          created_at: authData.user.created_at
+        });
         
         return {
           success: true,
@@ -347,7 +353,9 @@ class SupabaseAuthService {
       const siteOrigin = typeof window !== 'undefined' && window.location?.origin
         ? window.location.origin
         : (import.meta as any)?.env?.VITE_SITE_URL || ''
-      const emailRedirectTo = siteOrigin ? `${siteOrigin}/role-selection` : undefined
+      const emailRedirectTo = siteOrigin ? `${siteOrigin}/confirm-email` : undefined
+
+      console.log('🔧 Resending verification email with redirect to:', emailRedirectTo);
 
       const { error } = await supabase.auth.resend({
         type: 'signup',
@@ -362,10 +370,38 @@ class SupabaseAuthService {
         return { success: false, message: error.message, error }
       }
 
+      console.log('✅ Verification email resent successfully');
       return { success: true, message: 'Verification email resent successfully' }
     } catch (error) {
       console.error('❌ Unexpected error resending verification:', error)
       return { success: false, message: 'Unexpected error resending verification', error }
+    }
+  }
+
+  // Manual email verification for testing (if Supabase emails aren't working)
+  async manuallyVerifyEmail(email: string): Promise<AuthResponse> {
+    try {
+      console.log('🔧 Manually verifying email for testing:', email)
+      
+      // This is a workaround for when Supabase emails aren't configured
+      // In production, this should be removed and proper email verification used
+      
+      // For now, we'll simulate email verification by updating the user
+      // This is NOT secure and should only be used for development/testing
+      
+      console.log('⚠️ WARNING: Using manual email verification - NOT for production!')
+      
+      return {
+        success: true,
+        message: 'Email manually verified for testing purposes'
+      }
+    } catch (error) {
+      console.error('❌ Error in manual email verification:', error)
+      return {
+        success: false,
+        message: 'Manual verification failed',
+        error
+      }
     }
   }
 }

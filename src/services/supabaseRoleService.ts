@@ -40,6 +40,10 @@ export interface UserRole {
   experience_level_id: string;
   created_at: string;
   updated_at: string;
+  roles?: { name: string };
+  role_categories?: { name: string };
+  role_name?: string;
+  category_name?: string;
 }
 
 export interface ServiceResponse<T> {
@@ -55,10 +59,17 @@ class SupabaseRoleService {
     try {
       console.log('🔍 Fetching roles from Supabase...');
       
-      const { data, error } = await supabase
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Roles fetch timeout after 5 seconds')), 5000);
+      });
+      
+      const fetchPromise = supabase
         .from(TABLES.ROLES)
         .select('*')
         .order('name');
+      
+      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
 
       if (error) {
         console.error('❌ Error fetching roles:', error);
@@ -195,7 +206,18 @@ class SupabaseRoleService {
       
       const { data, error } = await supabase
         .from(TABLES.USER_ROLES)
-        .select('id, user_id, role_id, category_id, specialization, experience_level_id, created_at, updated_at')
+        .select(`
+          id, 
+          user_id, 
+          role_id, 
+          category_id, 
+          specialization, 
+          experience_level_id, 
+          created_at, 
+          updated_at,
+          roles(name),
+          role_categories(name)
+        `)
         .eq('user_id', userId)
         .maybeSingle(); // Use maybeSingle instead of single to avoid PGRST116
 
@@ -213,6 +235,20 @@ class SupabaseRoleService {
           success: false,
           message: error.message,
           error
+        };
+      }
+
+      // Transform the data to include role_name and category_name
+      if (data) {
+        const transformedData = {
+          ...data,
+          role_name: data.roles?.name || null,
+          category_name: data.role_categories?.name || null
+        };
+        console.log('✅ User role fetched successfully:', transformedData);
+        return {
+          success: true,
+          data: transformedData
         };
       }
 
