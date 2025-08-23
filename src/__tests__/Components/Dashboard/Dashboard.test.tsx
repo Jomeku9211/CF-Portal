@@ -26,7 +26,7 @@ describe('Dashboard Component', () => {
         created_at: Date.now(),
         industry: 'technology',
         website_url: 'https://test1.com',
-        organization_size: '1-10',
+        organization_size: '10-50',
         current_funding_status: 'bootstrapped',
         key_investors_backers: 'Self-funded',
         revenue_status: 'pre-revenue',
@@ -43,7 +43,7 @@ describe('Dashboard Component', () => {
         created_at: Date.now(),
         industry: 'healthcare',
         website_url: 'https://test2.com',
-        organization_size: '11-50',
+        organization_size: '50-200',
         current_funding_status: 'seed',
         key_investors_backers: 'Angel investors',
         revenue_status: 'revenue-generating',
@@ -108,7 +108,13 @@ describe('Dashboard Component', () => {
 
   test('renders loading state initially', () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -125,7 +131,13 @@ describe('Dashboard Component', () => {
 
   test('renders dashboard content when authenticated', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -144,7 +156,13 @@ describe('Dashboard Component', () => {
 
   test('loads user organizations and teams on mount', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -164,7 +182,13 @@ describe('Dashboard Component', () => {
 
   test('displays organizations when loaded', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -184,7 +208,13 @@ describe('Dashboard Component', () => {
 
   test('displays teams when loaded', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -204,7 +234,13 @@ describe('Dashboard Component', () => {
 
   test('handles API errors gracefully', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -226,7 +262,13 @@ describe('Dashboard Component', () => {
 
   test('handles create organization button click', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -271,7 +313,13 @@ describe('Dashboard Component', () => {
 
   test('handles empty organization and team lists', async () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@test.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),

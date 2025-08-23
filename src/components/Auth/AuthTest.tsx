@@ -42,7 +42,26 @@ export const AuthTest: React.FC = () => {
     }
   };
 
-
+  const handleForceLogout = () => {
+    console.log('🔐 Force logout triggered');
+    try {
+      // Clear all storage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Clear any cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
+      console.log('✅ Storage cleared, redirecting to login');
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('❌ Force logout error:', error);
+      // Fallback - just redirect
+      window.location.href = '/login';
+    }
+  };
 
   const testSupabaseConnection = async () => {
     try {
@@ -204,6 +223,12 @@ export const AuthTest: React.FC = () => {
             <LogoutButton variant="default" className="w-full">
               Sign Out
             </LogoutButton>
+            <button
+              onClick={handleForceLogout}
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg"
+            >
+              🚨 Force Logout (Debug)
+            </button>
             <p className="text-gray-400 text-sm">
               You can also test the logout functionality using the button above
             </p>

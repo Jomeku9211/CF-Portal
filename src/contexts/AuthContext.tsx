@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabaseAuthService } from '../services/supabaseAuthService';
 import { AuthUser } from '../config/supabase';
-import { emailService } from '../services/emailService';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -11,7 +10,7 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
-  sendWelcomeEmail: (name: string, email: string) => Promise<{ success: boolean; message?: string }>;
+  sendWelcomeEmail: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,6 +40,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const response = await supabaseAuthService.getCurrentSession();
         if (response.success && response.user) {
           setUser(response.user);
+          
+          // Only redirect if user is confirmed and not on email verification page
+          const signupEmail = localStorage.getItem('signupEmail');
+          if (signupEmail && signupEmail === response.user.email && (response.user as any).email_confirmed_at) {
+            console.log('🎉 User confirmed email on app load - redirecting to role selection');
+            localStorage.removeItem('signupEmail');
+            // Only redirect if not on email verification page
+            if (window.location.pathname !== '/email-verification') {
+              setTimeout(() => {
+                window.location.href = '/role-selection';
+              }, 100);
+            }
+          }
+        } else {
+          setUser(null);
         }
       } catch (error) {
         console.error('Error checking auth:', error);
@@ -58,10 +72,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         if (event === 'SIGNED_IN' && session?.user) {
           setUser(session.user as AuthUser);
+          
+          // Only redirect to role selection if user is confirmed and we're not on email verification page
+          const signupEmail = localStorage.getItem('signupEmail');
+          if (signupEmail && signupEmail === session.user.email && (session.user as any).email_confirmed_at) {
+            console.log('🎉 New confirmed user signed in - redirecting to role selection');
+            localStorage.removeItem('signupEmail');
+            // Only redirect if not already on email verification page
+            if (window.location.pathname !== '/email-verification') {
+              window.location.href = '/role-selection';
+            }
+          }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
         } else if (event === 'TOKEN_REFRESHED' && session?.user) {
           setUser(session.user as AuthUser);
+          
+          // Only redirect if user is confirmed and not on email verification page
+          const signupEmail = localStorage.getItem('signupEmail');
+          if (signupEmail && signupEmail === session.user.email && (session.user as any).email_confirmed_at) {
+            console.log('🎉 New user confirmed email (token refresh) - redirecting to role selection');
+            localStorage.removeItem('signupEmail');
+            if (window.location.pathname !== '/email-verification') {
+              window.location.href = '/role-selection';
+            }
+          }
+        } else if (event === 'USER_UPDATED' && session?.user) {
+          setUser(session.user as AuthUser);
+        } else if (event === 'USER_CONFIRMED' && session?.user) {
+          // Handle email confirmation event
+          console.log('🎉 User email confirmed:', session.user.email);
+          setUser(session.user as AuthUser);
+          
+          // Check if this is a new user and redirect appropriately
+          const signupEmail = localStorage.getItem('signupEmail');
+          if (signupEmail && signupEmail === session.user.email) {
+            console.log('🎉 New user confirmed email - redirecting to role selection');
+            localStorage.removeItem('signupEmail');
+            // Small delay to ensure the page has loaded
+            setTimeout(() => {
+              if (window.location.pathname !== '/email-verification') {
+                window.location.href = '/role-selection';
+              }
+            }, 1000);
+          }
         }
       }
     );
@@ -109,14 +163,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Store email for email verification page
         localStorage.setItem('signupEmail', email);
         
-        // Send thank you email after successful signup
-        try {
-          await emailService.sendThankYouEmail({ name, email });
-          console.log('Thank you email sent successfully');
-        } catch (emailError) {
-          console.error('Failed to send thank you email:', emailError);
-          // Don't fail the signup if email fails
-        }
+        // Supabase will automatically send email confirmation
+        console.log('Signup successful - email confirmation sent by Supabase');
         
         return { success: true, message: response.message };
       } else {
@@ -197,17 +245,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const sendWelcomeEmail = async (name: string, email: string) => {
+  const sendWelcomeEmail = async (email: string) => {
     try {
-      const response = await emailService.sendWelcomeEmail({ name, email });
+      const response = await supabaseAuthService.sendWelcomeEmail(email);
       if (response.success) {
-        return { success: true, message: 'Welcome email sent successfully' };
+        console.log('Welcome email sent successfully for:', email);
       } else {
-        return { success: false, message: response.message };
+        console.error('Failed to send welcome email for:', email, response.message);
       }
     } catch (error) {
-      console.error('Welcome email error:', error);
-      return { success: false, message: 'Failed to send welcome email' };
+      console.error('Error sending welcome email:', error);
     }
   };
 

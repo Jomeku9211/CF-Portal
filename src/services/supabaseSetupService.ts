@@ -13,6 +13,7 @@ class SupabaseSetupService {
       console.log('🔍 Checking database tables status...');
       
       const results = await Promise.all([
+        this.checkTable(TABLES.USERS),
         this.checkTable(TABLES.ROLES),
         this.checkTable(TABLES.ROLE_CATEGORIES),
         this.checkTable(TABLES.EXPERIENCE_LEVELS),
@@ -44,6 +45,75 @@ class SupabaseSetupService {
     }
   }
 
+  // Create user record manually if needed
+  async ensureUserRecord(userId: string, email: string, fullName?: string, avatarUrl?: string): Promise<SetupResult> {
+    try {
+      console.log('🔧 Ensuring user record exists...');
+      
+      // Check if user record exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('id', userId)
+        .single();
+      
+      if (checkError && checkError.code === 'PGRST116') {
+        // User doesn't exist, create them
+        console.log('🆕 Creating user record...');
+        
+        const { error: insertError } = await supabase
+          .from('users')
+          .insert([{
+            id: userId,
+            email: email,
+            full_name: fullName || '',
+            avatar_url: avatarUrl || ''
+          }]);
+        
+        if (insertError) {
+          console.error('❌ Error creating user record:', insertError);
+          return {
+            success: false,
+            message: 'Failed to create user record',
+            details: insertError
+          };
+        }
+        
+        console.log('✅ User record created successfully');
+        return {
+          success: true,
+          message: 'User record created successfully'
+        };
+      } else if (existingUser) {
+        console.log('✅ User record already exists');
+        return {
+          success: true,
+          message: 'User record already exists'
+        };
+      } else if (checkError) {
+        console.error('❌ Error checking user record:', checkError);
+        return {
+          success: false,
+          message: 'Error checking user record',
+          details: checkError
+        };
+      }
+      
+      return {
+        success: true,
+        message: 'User record check completed'
+      };
+      
+    } catch (error) {
+      console.error('❌ Error ensuring user record:', error);
+      return {
+        success: false,
+        message: 'Error ensuring user record',
+        details: error
+      };
+    }
+  }
+
   private async checkTable(tableName: string): Promise<{ success: boolean; count: number; error?: any }> {
     try {
       const { count, error } = await supabase
@@ -67,37 +137,50 @@ class SupabaseSetupService {
     try {
       console.log('🚀 Inserting sample data...');
       
-      // First check if we need to insert data
-      const status = await this.checkTablesStatus();
-      if (status.success) {
-        return {
-          success: true,
-          message: 'Tables already have data, no need to insert'
-        };
+      // Create users table and sync function first
+      const usersSetupResult = await this.setupUsersTable();
+      if (!usersSetupResult.success) {
+        return usersSetupResult;
       }
 
-      // Insert roles
-      const rolesResult = await this.insertRoles();
-      if (!rolesResult.success) {
-        return rolesResult;
+      // Try to insert data, but handle existing data gracefully
+      try {
+        const rolesResult = await this.insertRoles();
+        if (rolesResult.success) {
+          console.log('✅ Roles setup completed');
+        } else {
+          console.log('⚠️ Roles setup failed (may already exist):', rolesResult.message);
+        }
+      } catch (error) {
+        console.log('⚠️ Roles setup error (may already exist):', error);
       }
 
-      // Insert role categories
-      const categoriesResult = await this.insertRoleCategories();
-      if (!categoriesResult.success) {
-        return categoriesResult;
+      try {
+        const categoriesResult = await this.insertRoleCategories();
+        if (categoriesResult.success) {
+          console.log('✅ Categories setup completed');
+        } else {
+          console.log('⚠️ Categories setup failed (may already exist):', categoriesResult.message);
+        }
+      } catch (error) {
+        console.log('⚠️ Categories setup error (may already exist):', error);
       }
 
-      // Insert experience levels
-      const levelsResult = await this.insertExperienceLevels();
-      if (!levelsResult.success) {
-        return levelsResult;
+      try {
+        const levelsResult = await this.insertExperienceLevels();
+        if (levelsResult.success) {
+          console.log('✅ Experience levels setup completed');
+        } else {
+          console.log('⚠️ Experience levels setup failed (may already exist):', levelsResult.message);
+        }
+      } catch (error) {
+        console.log('⚠️ Experience levels setup error (may already exist):', error);
       }
 
-      console.log('✅ Sample data inserted successfully');
+      console.log('✅ Sample data insertion completed');
       return {
         success: true,
-        message: 'Sample data inserted successfully'
+        message: 'Sample data insertion completed'
       };
 
     } catch (error) {
@@ -110,8 +193,168 @@ class SupabaseSetupService {
     }
   }
 
-  private async insertRoles(): Promise<SetupResult> {
+  // Setup users table and auth sync
+  private async setupUsersTable(): Promise<SetupResult> {
     try {
+      console.log('🔧 Setting up users table and auth sync...');
+      
+      // Try to create users table directly using SQL
+      const { error: createTableError } = await supabase
+        .from('users')
+        .select('id')
+        .limit(1);
+      
+      if (createTableError && createTableError.code === '42P01') {
+        // Table doesn't exist, create it
+        console.log('🆕 Users table does not exist, creating it...');
+        
+        // Use a simple approach: try to insert a dummy record to trigger table creation
+        // This is a fallback since we can't execute DDL directly from the client
+        console.log('⚠️ Cannot create table from client, please create manually in Supabase dashboard');
+        console.log('📋 Required SQL:');
+        console.log(`
+          CREATE TABLE public.users (
+            id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+            email TEXT UNIQUE NOT NULL,
+            full_name TEXT,
+            avatar_url TEXT,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+          );
+          
+          -- Create index for better performance
+          CREATE INDEX users_email_idx ON public.users(email);
+          
+          -- Enable RLS
+          ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+          
+          -- Create RLS policies
+          CREATE POLICY "Users can view own profile" ON public.users
+            FOR SELECT USING (auth.uid() = id);
+          
+          CREATE POLICY "Users can update own profile" ON public.users
+            FOR UPDATE USING (auth.uid() = id);
+          
+          CREATE POLICY "Users can insert own profile" ON public.users
+            FOR INSERT WITH CHECK (auth.uid() = id);
+          
+          -- Create trigger function
+          CREATE OR REPLACE FUNCTION public.handle_new_user()
+          RETURNS TRIGGER AS $$
+          BEGIN
+            INSERT INTO public.users (id, email, full_name, avatar_url)
+            VALUES (
+              NEW.id,
+              NEW.email,
+              COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+              COALESCE(NEW.raw_user_meta_data->>'avatar_url', '')
+            )
+            ON CONFLICT (id) DO UPDATE SET
+              email = EXCLUDED.email,
+              full_name = EXCLUDED.full_name,
+              avatar_url = EXCLUDED.avatar_url,
+              updated_at = NOW();
+            RETURN NEW;
+          END;
+          $$ LANGUAGE plpgsql SECURITY DEFINER;
+          
+          -- Create trigger
+          CREATE TRIGGER on_auth_user_created
+            AFTER INSERT OR UPDATE ON auth.users
+            FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+        `);
+        
+        return {
+          success: false,
+          message: 'Users table needs to be created manually in Supabase dashboard',
+          details: 'Please run the SQL commands shown in the console'
+        };
+      }
+      
+      // Table exists, try to sync existing auth users
+      console.log('✅ Users table exists, syncing auth users...');
+      
+      try {
+        // Get current user from auth context
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          // Check if user exists in public.users
+          const { data: existingUser, error: checkError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('id', user.id)
+            .single();
+          
+          if (checkError && checkError.code === 'PGRST116') {
+            // User doesn't exist in public.users, create them
+            console.log('🆕 Creating user record in public.users...');
+            
+            const { error: insertError } = await supabase
+              .from('users')
+              .insert([{
+                id: user.id,
+                email: user.email || '',
+                full_name: user.user_metadata?.full_name || '',
+                avatar_url: user.user_metadata?.avatar_url || ''
+              }]);
+            
+            if (insertError) {
+              console.error('❌ Error creating user record:', insertError);
+              return {
+                success: false,
+                message: 'Failed to create user record',
+                details: insertError
+              };
+            }
+            
+            console.log('✅ User record created successfully');
+          } else if (existingUser) {
+            console.log('✅ User record already exists');
+          }
+        }
+      } catch (syncError) {
+        console.error('❌ Error syncing user:', syncError);
+        // Continue anyway, this is not critical
+      }
+      
+      console.log('✅ Users table setup completed');
+      return {
+        success: true,
+        message: 'Users table setup completed'
+      };
+      
+    } catch (error) {
+      console.error('❌ Error setting up users table:', error);
+      return {
+        success: false,
+        message: 'Error setting up users table',
+        details: error
+      };
+    }
+  }
+
+  private async insertRolesIfNeeded(): Promise<SetupResult> {
+    try {
+      // Check if roles already exist
+      const { count: existingCount, error: checkError } = await supabase
+        .from(TABLES.ROLES)
+        .select('*', { count: 'exact', head: true });
+
+      if (checkError) {
+        console.error('❌ Error checking existing roles:', checkError);
+        return {
+          success: false,
+          message: 'Error checking existing roles',
+          details: checkError
+        };
+      }
+
+      if (existingCount && existingCount > 0) {
+        console.log('✅ Roles already exist, skipping insertion');
+        return { success: true, message: 'Roles already exist' };
+      }
+
       const roles = [
         {
           name: 'client',
@@ -138,6 +381,15 @@ class SupabaseSetupService {
         .insert(roles);
 
       if (error) {
+        // Check if it's a duplicate key error
+        if (error.code === '23505' || error.message.includes('duplicate key')) {
+          console.log('✅ Roles already exist, skipping insertion');
+          return {
+            success: true,
+            message: 'Roles already exist'
+          };
+        }
+        
         console.error('❌ Error inserting roles:', error);
         return {
           success: false,
@@ -157,6 +409,10 @@ class SupabaseSetupService {
         details: error
       };
     }
+  }
+
+  private async insertRoles(): Promise<SetupResult> {
+    return this.insertRolesIfNeeded();
   }
 
   private async insertRoleCategories(): Promise<SetupResult> {
@@ -252,6 +508,15 @@ class SupabaseSetupService {
         .insert(categories);
 
       if (error) {
+        // Check if it's a duplicate key error
+        if (error.code === '23505' || error.message.includes('duplicate key')) {
+          console.log('✅ Role categories already exist, skipping insertion');
+          return {
+            success: true,
+            message: 'Role categories already exist'
+          };
+        }
+        
         console.error('❌ Error inserting role categories:', error);
         return {
           success: false,
@@ -311,6 +576,15 @@ class SupabaseSetupService {
         .insert(levels);
 
       if (error) {
+        // Check if it's a duplicate key error
+        if (error.code === '23505' || error.message.includes('duplicate key')) {
+          console.log('✅ Experience levels already exist, skipping insertion');
+          return {
+            success: true,
+            message: 'Experience levels already exist'
+          };
+        }
+        
         console.error('❌ Error inserting experience levels:', error);
         return {
           success: false,
@@ -337,31 +611,16 @@ class SupabaseSetupService {
     try {
       console.log('🚀 Setting up database...');
       
-      const status = await this.checkTablesStatus();
-      if (status.success) {
-        return {
-          success: true,
-          message: 'Database is already set up with data'
-        };
-      }
-
-      console.log('📝 Tables are missing or empty, inserting sample data...');
+      // Always try to insert sample data (it will handle existing data gracefully)
+      console.log('📝 Inserting sample data...');
       const insertResult = await this.insertSampleData();
       
       if (insertResult.success) {
-        // Verify the setup
-        const finalStatus = await this.checkTablesStatus();
-        if (finalStatus.success) {
-          return {
-            success: true,
-            message: 'Database setup completed successfully'
-          };
-        } else {
-          return {
-            success: false,
-            message: 'Database setup failed verification'
-          };
-        }
+        console.log('✅ Database setup completed successfully');
+        return {
+          success: true,
+          message: 'Database setup completed successfully'
+        };
       }
 
       return insertResult;

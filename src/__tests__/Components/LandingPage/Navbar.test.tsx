@@ -101,7 +101,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
 
       render(
@@ -231,7 +237,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
 
       const user = userEvent.setup();
@@ -262,7 +274,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
     });
 
@@ -339,7 +357,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
         logout: mockLogout,
       });
 
@@ -385,7 +409,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
 
       render(
@@ -423,7 +453,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
 
       render(
@@ -483,7 +519,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
 
       render(
@@ -543,7 +585,13 @@ describe('Navbar Component', () => {
       mockUseAuth.mockReturnValue({
         ...defaultAuthContext,
         isAuthenticated: true,
-        user: { id: '1', email: 'test@example.com', name: 'Test User' },
+        user: { 
+          id: '1', 
+          email: 'test@example.com', 
+          name: 'Test User',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z'
+        },
       });
 
       const { unmount } = render(

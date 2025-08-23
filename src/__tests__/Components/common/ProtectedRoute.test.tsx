@@ -15,7 +15,13 @@ describe('ProtectedRoute Component', () => {
 
   test('renders children when user is authenticated', () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@example.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -108,7 +114,13 @@ describe('ProtectedRoute Component', () => {
 
   test('renders complex nested components when authenticated', () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@example.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -137,7 +149,13 @@ describe('ProtectedRoute Component', () => {
 
   test('handles function children when authenticated', () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@example.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -162,7 +180,13 @@ describe('ProtectedRoute Component', () => {
 
   test('handles null children gracefully', () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@example.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),
@@ -186,7 +210,13 @@ describe('ProtectedRoute Component', () => {
 
   test('handles empty children gracefully', () => {
     mockUseAuth.mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      user: { 
+        id: '1', 
+        name: 'Test User', 
+        email: 'test@example.com',
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z'
+      },
       isAuthenticated: true,
       login: jest.fn(),
       logout: jest.fn(),

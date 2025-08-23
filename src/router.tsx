@@ -8,9 +8,10 @@ import { ForgotPassword } from "./components/Auth/ForgotPassword";
 import { OnboardingFlow } from "./components/onboarding/OnboardingFlow";
 import { Onboarding1 } from "./components/onboarding/Onboarding1";
 import { RoleSelection } from "./components/onboarding/RoleSelection";
+import ExperienceLevelSelection from "./components/onboarding/ExperienceLevelSelection";
 import { SpecializationSelection } from "./components/onboarding/SpecializationSelection";
 import { DeveloperExperienceSelection } from "./components/onboarding/DeveloperExperienceSelection";
-import ExperienceLevelSelection from "./components/onboarding/ExperienceLevelSelection";
+import { DeveloperOnboarding } from "./components/onboarding/DeveloperOnboarding";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import PrivacyPolicy from "./views/PrivacyPolicy/PrivacyPolicy";
 import ContentHubPage from "./views/ContentHub/ContentHub";
@@ -20,6 +21,10 @@ import { Dashboard } from "./components/Dashboard/Dashboard";
 import { AuthTest } from "./components/Auth/AuthTest";
 import { EmailVerification } from "./components/Auth/EmailVerification";
 import { EmailConfirmation } from "./components/Auth/EmailConfirmation";
+import EmailConfirmationHandler from "./components/Auth/EmailConfirmationHandler";
+import EmailConfirmed from "./components/Auth/EmailConfirmed";
+import AssessmentsPage from './components/onboarding/AssessmentsPage';
+import { TestFlow } from './components/TestFlow';
 // Removed broken import: OnboardingNew does not exist in views
 
 const appRouter = createBrowserRouter([
@@ -72,6 +77,15 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
+        path: "experience-level",
+        element: (
+          <ProtectedRoute>
+            <ExperienceLevelSelection />
+          </ProtectedRoute>
+        ),
+      },
+      // Legacy routes for backward compatibility
+      {
         path: "specialization-selection",
         element: (
           <ProtectedRoute>
@@ -80,18 +94,18 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "experience-level",
-        element: (
-          <ProtectedRoute>
-            <ExperienceLevelSelection />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: "developer-experience",
         element: (
           <ProtectedRoute>
             <DeveloperExperienceSelection />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "developer-onboarding",
+        element: (
+          <ProtectedRoute>
+            <DeveloperOnboarding />
           </ProtectedRoute>
         ),
       },
@@ -141,13 +155,41 @@ const appRouter = createBrowserRouter([
         path: "auth-test",
         element: <AuthTest />,
       },
-          {
-      path: "email-verification",
-      element: <EmailVerification />,
+      {
+        path: "email-verification",
+        element: (
+          <GuestRoute>
+            <EmailVerification />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: "email-confirmation",
+        element: <EmailConfirmation />,
+      },
+      {
+        path: "confirm-email",
+        element: <EmailConfirmationHandler />,
+      },
+      {
+        path: "email-confirmed",
+        element: <EmailConfirmed />,
+      },
+    {
+      path: "assessments",
+      element: (
+        <ProtectedRoute>
+          <AssessmentsPage />
+        </ProtectedRoute>
+      ),
     },
     {
-      path: "email-confirmation",
-      element: <EmailConfirmation />,
+      path: "test-flow",
+      element: (
+        <ProtectedRoute>
+          <TestFlow />
+        </ProtectedRoute>
+      ),
     },
     ],
   },

@@ -1,27 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Mail, CheckCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { supabaseAuthService } from '../../services/supabaseAuthService';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const EmailVerification: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated, user } = useAuth();
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState('');
   
   // Get email from location state or localStorage
   const email = location.state?.email || localStorage.getItem('signupEmail') || 'your email';
 
+  // Check if user is already authenticated and redirect if needed
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // If user is authenticated and has confirmed email, redirect to role selection
+      if ((user as any).email_confirmed_at) {
+        console.log('User already confirmed email, redirecting to role selection');
+        localStorage.removeItem('signupEmail');
+        navigate('/role-selection', { replace: true });
+      }
+    }
+
+    // If no signup email is found, redirect to signup page
+    if (!localStorage.getItem('signupEmail')) {
+      console.log('No signup email found, redirecting to signup');
+      navigate('/signup', { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
+
   const handleResendVerification = async () => {
     setIsResending(true);
     setResendMessage('');
 
     try {
-      const response = await supabaseAuthService.resetPasswordForEmail(email);
+      if (!email || email === 'your email') {
+        setResendMessage('We could not detect your email. Please go back and sign up again.');
+        return;
+      }
+
+      const response = await supabaseAuthService.resendVerificationEmail(email);
       if (response.success) {
-        setResendMessage('Verification email sent successfully! Please check your inbox.');
+        setResendMessage('Verification email resent! Please check your inbox.');
       } else {
-        setResendMessage('Failed to resend verification email. Please try again.');
+        setResendMessage(response.message || 'Failed to resend verification email. Please try again.');
       }
     } catch (error) {
       setResendMessage('An error occurred. Please try again.');

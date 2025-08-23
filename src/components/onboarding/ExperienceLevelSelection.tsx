@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CheckCircle, ArrowLeft, TrendingUp, Users, Crown, Star } from 'lucide-react';
+import { CheckCircle, TrendingUp, Users, Crown, Star } from 'lucide-react';
+import { universalOnboardingService } from '../../services/universalOnboardingService';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ExperienceLevel {
   id: string;
@@ -15,21 +17,45 @@ interface ExperienceLevel {
 const ExperienceLevelSelection: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string>('');
   const [roleSelection, setRoleSelection] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Get role selection from location state or localStorage
     const stateRoleSelection = location.state;
     const storedRoleSelection = localStorage.getItem('roleSelection');
     
-    if (stateRoleSelection) {
+    console.log('🔍 ExperienceLevelSelection useEffect triggered');
+    console.log('📍 Location state:', stateRoleSelection);
+    console.log('💾 Stored role selection:', storedRoleSelection);
+    
+    if (stateRoleSelection && stateRoleSelection.role) {
+      console.log('📥 Received role selection from navigation:', stateRoleSelection);
       setRoleSelection(stateRoleSelection);
+      setIsLoading(false);
     } else if (storedRoleSelection) {
-      setRoleSelection(JSON.parse(storedRoleSelection));
+      try {
+        const parsed = JSON.parse(storedRoleSelection);
+        if (parsed.role) {
+          console.log('📥 Using stored role selection:', parsed);
+          setRoleSelection(parsed);
+          setIsLoading(false);
+        } else {
+          console.log('❌ Stored selection missing role, redirecting');
+          setIsLoading(false);
+          setTimeout(() => navigate('/role-selection'), 100);
+        }
+      } catch (error) {
+        console.error('❌ Error parsing stored selection:', error);
+        setIsLoading(false);
+        setTimeout(() => navigate('/role-selection'), 100);
+      }
     } else {
-      // Redirect back if no role selection
-      navigate('/role-selection');
+      console.log('❌ No role selection found, redirecting to role selection');
+      setIsLoading(false);
+      setTimeout(() => navigate('/role-selection'), 100);
     }
   }, [location.state, navigate]);
 
@@ -97,7 +123,10 @@ const ExperienceLevelSelection: React.FC = () => {
   };
 
   const handleContinue = async () => {
-    if (!selectedLevel || !roleSelection) return;
+    if (!selectedLevel || !roleSelection) {
+      console.log('❌ Missing required data:', { selectedLevel, roleSelection });
+      return;
+    }
 
     try {
       // Store the complete selection including experience level
@@ -107,23 +136,89 @@ const ExperienceLevelSelection: React.FC = () => {
       };
       localStorage.setItem('completeRoleSelection', JSON.stringify(completeSelection));
 
-      // Navigate to the appropriate onboarding flow based on role and experience
-      if (roleSelection.role.id === 'freelancer') {
+      // Initialize onboarding progress in the database
+      if (user) {
+        try {
+          console.log('🚀 Initializing onboarding progress for user:', user.id);
+          const progressResult = await universalOnboardingService.getOrCreateOnboardingProgress(
+            user.id,
+            roleSelection.role.id,
+            roleSelection.category.id,
+            'developer',
+            selectedLevel
+          );
+          
+          if (progressResult.success) {
+            console.log('✅ Onboarding progress initialized:', progressResult.data);
+          } else {
+            console.log('⚠️ Onboarding progress initialization failed:', progressResult.message);
+          }
+        } catch (error) {
+          console.error('❌ Error initializing onboarding progress:', error);
+          // Continue with navigation even if progress tracking fails
+        }
+      }
+
+      console.log('🚀 Navigating to role-specific onboarding with selection:', completeSelection);
+      console.log('🔍 Role Selection Debug:', {
+        roleName: roleSelection.role?.name,
+        roleId: roleSelection.role?.id,
+        fullRole: roleSelection.role,
+        fullSelection: roleSelection
+      });
+
+      // ROUTING LOGIC:
+      // - Service Provider → Developer Onboarding (regardless of experience level)
+      // - Client/Agency → Client Onboarding (regardless of experience level)
+      
+      // Navigate to the appropriate onboarding flow based on role
+      // Check both the name and id for service provider
+      const isServiceProvider = roleSelection.role?.name === 'service-provider' || 
+                               roleSelection.role?.id === 'service-provider' ||
+                               roleSelection.role?.name?.toLowerCase().includes('service') ||
+                               roleSelection.role?.name?.toLowerCase().includes('provider');
+      
+      console.log('🔍 Service Provider Check:', {
+        roleName: roleSelection.role?.name,
+        roleId: roleSelection.role?.id,
+        isServiceProvider: isServiceProvider,
+        nameCheck: roleSelection.role?.name === 'service-provider',
+        idCheck: roleSelection.role?.id === 'service-provider'
+      });
+      
+      if (isServiceProvider) {
+        console.log('🎯 Routing to Developer Onboarding');
+        const targetPath = '/developer-onboarding';
+        console.log('📍 Target path:', targetPath);
+        console.log('📤 Navigation state:', {
+          role: roleSelection.role,
+          category: roleSelection.category,
+          experienceLevel: selectedLevel
+        });
+        
         // For service providers, go to developer onboarding
-        navigate('/developer-onboarding', {
+        navigate(targetPath, {
           state: {
-            role: roleSelection.role.id,
-            category: roleSelection.category.id,
-            specialization: roleSelection.specialization,
+            role: roleSelection.role,
+            category: roleSelection.category,
             experienceLevel: selectedLevel
           }
         });
       } else {
-        // For other roles, go to appropriate onboarding
-        navigate('/onboarding-stage', {
+        console.log('🎯 Routing to Client Onboarding');
+        const targetPath = '/clientOnboarding';
+        console.log('📍 Target path:', targetPath);
+        console.log('📤 Navigation state:', {
+          role: roleSelection.role,
+          category: roleSelection.category,
+          experienceLevel: selectedLevel
+        });
+        
+        // For clients, agencies, or any other role, go to existing client onboarding flow
+        navigate(targetPath, {
           state: {
-            role: roleSelection.role.id,
-            category: roleSelection.category.id,
+            role: roleSelection.role,
+            category: roleSelection.category,
             experienceLevel: selectedLevel
           }
         });
@@ -135,24 +230,25 @@ const ExperienceLevelSelection: React.FC = () => {
     }
   };
 
-  const handleBack = () => {
-    // Go back to specialization selection if available, otherwise role selection
-    if (roleSelection?.specialization) {
-      navigate('/specialization-selection', {
-        state: {
-          role: roleSelection.role.id,
-          category: roleSelection.category.id
-        }
-      });
-    } else {
-      navigate('/role-selection');
-    }
-  };
-
-  if (!roleSelection) {
+  // Show loading state while checking for role selection
+  if (isLoading) {
     return (
-      <div className="w-full min-h-screen bg-gradient-to-r from-[#0f172a] to-[#2d1e3a] flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading experience level selection...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no role selection, show error (redirect will happen automatically)
+  if (!roleSelection || !roleSelection.role) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-white text-lg">No role selection found. Redirecting...</p>
+        </div>
       </div>
     );
   }
@@ -160,14 +256,22 @@ const ExperienceLevelSelection: React.FC = () => {
   return (
     <div className="w-full min-h-screen bg-gradient-to-r from-[#0f172a] to-[#2d1e3a]">
       <div className="max-w-6xl mx-auto p-4 md:p-8 min-h-screen flex flex-col">
+        {/* Breadcrumb Navigation */}
         <div className="mb-6">
-          <button 
-            onClick={handleBack}
-            className="text-sm text-gray-400 hover:text-blue-400 flex items-center gap-1"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </button>
+          <nav className="flex items-center space-x-2 text-sm text-gray-400">
+            <button
+              onClick={() => navigate('/role-selection')}
+              className="hover:text-blue-400 transition-colors"
+            >
+              Role Selection
+            </button>
+            <span>→</span>
+            <span className="text-blue-400">Experience Level</span>
+            <span>→</span>
+            <span className="text-gray-500">
+              {roleSelection.role.name === 'service-provider' ? 'Developer Onboarding' : 'Client Onboarding'}
+            </span>
+          </nav>
         </div>
 
         {/* Header with selection summary */}
@@ -178,12 +282,49 @@ const ExperienceLevelSelection: React.FC = () => {
               Choose the level that best represents your professional experience and expertise.
             </p>
             
+            {/* Progress indicator */}
+            <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">✓</div>
+                <div className="text-green-400 text-sm">Role</div>
+                <div className="w-8 h-1 bg-green-500"></div>
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">✓</div>
+                <div className="text-green-400 text-sm">Category</div>
+                <div className="w-8 h-1 bg-green-500"></div>
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">✓</div>
+                <div className="text-green-400 text-sm">Experience</div>
+                <div className="w-8 h-1 bg-blue-500"></div>
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">4</div>
+                <div className="text-blue-400 text-sm">
+                  {roleSelection.role.name === 'service-provider' ? 'Developer Profile' : 'Client Onboarding'}
+                </div>
+              </div>
+            </div>
+            
             <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 inline-block">
               <div className="text-center">
                 <p className="text-blue-400 text-sm mb-1">Your Selection</p>
                 <p className="text-white font-semibold">
-                  {roleSelection.role.name} → {roleSelection.category.name}
-                  {roleSelection.specialization && ` → ${roleSelection.specialization}`}
+                  {roleSelection.role?.name || 'Role'} → {roleSelection.category?.name || 'Category'}
+                </p>
+              </div>
+            </div>
+            
+            {/* Next Step Information */}
+            <div className="mt-4 bg-green-500/10 border border-green-500/20 rounded-lg p-4 inline-block">
+              <div className="text-center">
+                <p className="text-green-400 text-sm mb-1">Next Step</p>
+                <p className="text-white font-semibold">
+                  {roleSelection.role.name === 'service-provider' 
+                    ? '→ Developer Onboarding' 
+                    : '→ Client Onboarding Flow'
+                  }
+                </p>
+                <p className="text-green-400 text-xs mt-1">
+                  {roleSelection.role.name === 'service-provider' 
+                    ? 'Complete your developer profile setup' 
+                    : 'Complete your organization profile and project requirements'
+                  }
                 </p>
               </div>
             </div>
@@ -255,7 +396,10 @@ const ExperienceLevelSelection: React.FC = () => {
               onClick={handleContinue}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl"
             >
-              Continue with {experienceLevels.find(l => l.id === selectedLevel)?.name} Level
+              {roleSelection.role.name === 'service-provider' 
+                ? `Continue to Developer Onboarding (${experienceLevels.find(l => l.id === selectedLevel)?.name})`
+                : `Continue to Client Onboarding (${experienceLevels.find(l => l.id === selectedLevel)?.name})`
+              }
             </button>
           </div>
         )}

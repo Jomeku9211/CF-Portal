@@ -1,9 +1,10 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^src/config/supabase$': '<rootDir>/src/__tests__/mocks/supabase-mock.ts',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/src/__tests__/mocks/file-mock.js',
   },
@@ -33,10 +34,19 @@ module.exports = {
   },
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: 'tsconfig.test.json'
+      tsconfig: 'tsconfig.test.json',
+      useESM: true,
+      allowJs: true
     }]
   },
+  globals: {
+    'ts-jest': {
+      useESM: true,
+      tsconfig: 'tsconfig.test.json'
+    }
+  },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  testTimeout: 10000
+  testTimeout: 10000,
+  extensionsToTreatAsEsm: ['.ts', '.tsx']
 };
 

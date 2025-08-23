@@ -98,3 +98,12 @@ describe('WelcomeStep', () => {
   });
 });
 
+
+
+
+
+
+
+
+
+

@@ -49,6 +49,21 @@ Object.defineProperty(performance, 'memory', {
   }
 });
 
+// Mock import.meta for tests
+Object.defineProperty(global, 'import', {
+  value: {
+    meta: {
+      env: {
+        VITE_SUPABASE_URL: 'http://localhost:54321',
+        VITE_SUPABASE_ANON_KEY: 'test-anon-key',
+        VITE_SITE_URL: 'http://localhost:5173'
+      }
+    }
+  }
+});
+
+// Mock console.warn to suppress React Router warnings
+
 // Mock console methods to reduce noise in tests
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;

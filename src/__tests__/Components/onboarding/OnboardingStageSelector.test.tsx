@@ -1,206 +1,162 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { OnboardingStageSelector } from '../../../components/onboarding/OnboardingStageSelector';
 
-// Mock navigate
+// Mock react-router-dom
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
 
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  clear: jest.fn(),
+};
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
+
 describe('OnboardingStageSelector Component', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockNavigate.mockClear();
+    localStorageMock.getItem.mockClear();
+    localStorageMock.setItem.mockClear();
   });
 
+  const renderWithRouter = (component: React.ReactElement) => {
+    return render(<BrowserRouter>{component}</BrowserRouter>);
+  };
+
   describe('Rendering', () => {
-    test('renders the component title and description', () => {
-      render(<OnboardingStageSelector />);
+    test('renders main heading and description', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      expect(screen.getByText('Choose Your Onboarding Path')).toBeInTheDocument();
-      expect(screen.getByText('Select the option that best describes your current situation.')).toBeInTheDocument();
+      expect(screen.getByText('Select your current onboarding stage')).toBeInTheDocument();
+      expect(screen.getByText("We'll route you to the right place.")).toBeInTheDocument();
     });
 
-    test('renders both onboarding options', () => {
-      render(<OnboardingStageSelector />);
+    test('renders all four stage options as radio buttons', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      expect(screen.getByText('New Organization')).toBeInTheDocument();
-      expect(screen.getByText('Existing Organization')).toBeInTheDocument();
+      expect(screen.getByLabelText('Organization creation')).toBeInTheDocument();
+      expect(screen.getByLabelText('Team creation')).toBeInTheDocument();
+      expect(screen.getByLabelText('Hiring intent')).toBeInTheDocument();
+      expect(screen.getByLabelText('Job creation')).toBeInTheDocument();
     });
 
-    test('renders option descriptions', () => {
-      render(<OnboardingStageSelector />);
+    test('renders continue button', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      expect(screen.getByText('I\'m starting a new company or team and need to set up everything from scratch.')).toBeInTheDocument();
-      expect(screen.getByText('I already have an established organization and want to join or update our profile.')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
+    });
+  });
+
+  describe('State Management', () => {
+    test('defaults to organization_creation stage', () => {
+      renderWithRouter(<OnboardingStageSelector />);
+      
+      const orgRadio = screen.getByLabelText('Organization creation') as HTMLInputElement;
+      expect(orgRadio.checked).toBe(true);
     });
 
-    test('renders option button labels', () => {
-      render(<OnboardingStageSelector />);
+    test('changes selected stage when radio buttons are clicked', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      expect(screen.getByText('Start New Setup')).toBeInTheDocument();
-      expect(screen.getByText('Join Existing')).toBeInTheDocument();
+      const teamRadio = screen.getByLabelText('Team creation') as HTMLInputElement;
+      fireEvent.click(teamRadio);
+      
+      expect(teamRadio.checked).toBe(true);
     });
   });
 
   describe('Navigation', () => {
-    test('navigates to organization onboarding when new organization is selected', () => {
-      render(<OnboardingStageSelector />);
+    test('navigates to clientOnboarding when continue is clicked', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      const newOrgButton = screen.getByText('Start New Setup');
-      fireEvent.click(newOrgButton);
+      const continueButton = screen.getByRole('button', { name: /continue/i });
+      fireEvent.click(continueButton);
       
-      expect(mockNavigate).toHaveBeenCalledWith('/onboarding');
+      expect(mockNavigate).toHaveBeenCalledWith('/clientOnboarding');
     });
 
-    test('navigates to organization profile when existing organization is selected', () => {
-      render(<OnboardingStageSelector />);
+    test('saves selected stage to localStorage', () => {
+      localStorageMock.getItem.mockReturnValue('{"id": "123"}');
       
-      const existingOrgButton = screen.getByText('Join Existing');
-      fireEvent.click(existingOrgButton);
+      renderWithRouter(<OnboardingStageSelector />);
       
-      expect(mockNavigate).toHaveBeenCalledWith('/organization-profile');
-    });
-  });
-
-  describe('UI Elements', () => {
-    test('renders back to home button', () => {
-      render(<OnboardingStageSelector />);
+      const teamRadio = screen.getByLabelText('Team creation');
+      fireEvent.click(teamRadio);
       
-      const backButton = screen.getByText('← Back to Home');
-      expect(backButton).toBeInTheDocument();
-      expect(backButton).toHaveClass('text-gray-400');
-      expect(backButton).toHaveClass('hover:text-blue-400');
-    });
-
-    test('back button navigates to home', () => {
-      render(<OnboardingStageSelector />);
+      const continueButton = screen.getByRole('button', { name: /continue/i });
+      fireEvent.click(continueButton);
       
-      const backButton = screen.getByText('← Back to Home');
-      fireEvent.click(backButton);
-      
-      expect(mockNavigate).toHaveBeenCalledWith('/');
-    });
-
-    test('renders option cards with correct styling', () => {
-      render(<OnboardingStageSelector />);
-      
-      const optionCards = screen.getAllByText(/New Organization|Existing Organization/);
-      optionCards.forEach(card => {
-        const cardElement = card.closest('div');
-        expect(cardElement).toHaveClass('bg-[#171c33]');
-        expect(cardElement).toHaveClass('border-gray-700');
-        expect(cardElement).toHaveClass('hover:border-gray-500');
-      });
-    });
-
-    test('renders option icons', () => {
-      render(<OnboardingStageSelector />);
-      
-      const iconContainers = document.querySelectorAll('.w-12.h-12');
-      expect(iconContainers).toHaveLength(2);
-      
-      iconContainers.forEach(container => {
-        expect(container.querySelector('svg')).toBeInTheDocument();
-      });
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        'currentUser',
+        JSON.stringify({ id: '123', onboarding_stage: 'team_creation' })
+      );
     });
   });
 
-  describe('Layout and Styling', () => {
-    test('renders with correct background and container styling', () => {
-      render(<OnboardingStageSelector />);
+  describe('Styling', () => {
+    test('renders with proper background gradient', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      const container = screen.getByText('Choose Your Onboarding Path').closest('div');
+      const container = screen.getByText('Select your current onboarding stage').closest('.w-full');
       expect(container).toHaveClass('bg-gradient-to-r');
       expect(container).toHaveClass('from-[#0f172a]');
-      expect(container).toHaveClass('to-[#2d334a]');
+      expect(container).toHaveClass('to-[#2d1e3a]');
     });
 
-    test('renders with responsive grid layout', () => {
-      render(<OnboardingStageSelector />);
+    test('renders with proper container classes', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      const gridContainer = screen.getByText('New Organization').closest('.grid');
-      expect(gridContainer).toHaveClass('grid-cols-1');
-      expect(gridContainer).toHaveClass('md:grid-cols-2');
-      expect(gridContainer).toHaveClass('gap-6');
+      const mainContainer = screen.getByText('Select your current onboarding stage').closest('.max-w-3xl');
+      expect(mainContainer).toHaveClass('max-w-3xl');
+      expect(mainContainer).toHaveClass('mx-auto');
+      expect(mainContainer).toHaveClass('p-6');
     });
 
-    test('renders with proper spacing and margins', () => {
-      render(<OnboardingStageSelector />);
+    test('renders content card with proper styling', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      const title = screen.getByText('Choose Your Onboarding Path');
-      const titleContainer = title.closest('div');
-      expect(titleContainer).toHaveClass('mb-3');
-      
-      const description = screen.getByText('Select the option that best describes your current situation.');
-      const descriptionContainer = description.closest('div');
-      expect(descriptionContainer).toHaveClass('mb-8');
+      const contentCard = screen.getByText('Organization creation').closest('.bg-\\[\\#1a2234\\]');
+      expect(contentCard).toHaveClass('bg-[#1a2234]');
+      expect(contentCard).toHaveClass('rounded-lg');
+      expect(contentCard).toHaveClass('border');
+      expect(contentCard).toHaveClass('border-[#2a3344]');
+      expect(contentCard).toHaveClass('p-6');
     });
   });
 
   describe('Accessibility', () => {
     test('has proper heading structure', () => {
-      render(<OnboardingStageSelector />);
+      renderWithRouter(<OnboardingStageSelector />);
       
       const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading).toHaveTextContent('Choose Your Onboarding Path');
+      expect(heading).toHaveTextContent('Select your current onboarding stage');
     });
 
-    test('has clickable buttons for navigation', () => {
-      render(<OnboardingStageSelector />);
+    test('has properly labeled radio buttons', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      const newOrgButton = screen.getByRole('button', { name: /start new setup/i });
-      const existingOrgButton = screen.getByRole('button', { name: /join existing/i });
-      
-      expect(newOrgButton).toBeInTheDocument();
-      expect(existingOrgButton).toBeInTheDocument();
+      expect(screen.getByLabelText('Organization creation')).toBeInTheDocument();
+      expect(screen.getByLabelText('Team creation')).toBeInTheDocument();
+      expect(screen.getByLabelText('Hiring intent')).toBeInTheDocument();
+      expect(screen.getByLabelText('Job creation')).toBeInTheDocument();
     });
 
-    test('has proper button text for screen readers', () => {
-      render(<OnboardingStageSelector />);
+    test('has accessible continue button', () => {
+      renderWithRouter(<OnboardingStageSelector />);
       
-      expect(screen.getByRole('button', { name: /start new setup/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /join existing/i })).toBeInTheDocument();
-    });
-  });
-
-  describe('Responsive Design', () => {
-    test('renders single column on mobile', () => {
-      render(<OnboardingStageSelector />);
-      
-      const gridContainer = screen.getByText('New Organization').closest('.grid');
-      expect(gridContainer).toHaveClass('grid-cols-1');
-    });
-
-    test('renders two columns on medium screens and up', () => {
-      render(<OnboardingStageSelector />);
-      
-      const gridContainer = screen.getByText('New Organization').closest('.grid');
-      expect(gridContainer).toHaveClass('md:grid-cols-2');
-    });
-  });
-
-  describe('Component Structure', () => {
-    test('renders main container with proper classes', () => {
-      render(<OnboardingStageSelector />);
-      
-      const mainContainer = screen.getByText('Choose Your Onboarding Path').closest('.max-w-4xl');
-      expect(mainContainer).toHaveClass('max-w-4xl');
-      expect(mainContainer).toHaveClass('mx-auto');
-      expect(mainContainer).toHaveClass('p-4');
-      expect(mainContainer).toHaveClass('md:p-8');
-    });
-
-    test('renders content card with proper styling', () => {
-      render(<OnboardingStageSelector />);
-      
-      const contentCard = screen.getByText('Choose Your Onboarding Path').closest('.bg-[#1a2234]');
-      expect(contentCard).toHaveClass('bg-[#1a2234]');
-      expect(contentCard).toHaveClass('rounded-xl');
-      expect(contentCard).toHaveClass('shadow-md');
-      expect(contentCard).toHaveClass('p-6');
-      expect(contentCard).toHaveClass('md:p-8');
+      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
     });
   });
 });
+
+
+
+
 

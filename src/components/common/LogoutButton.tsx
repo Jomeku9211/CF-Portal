@@ -17,9 +17,24 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
 
   const handleLogout = async () => {
     try {
+      console.log('🔐 LogoutButton: Starting logout process...');
+      console.log('🔐 LogoutButton: logout function from useAuth:', typeof logout);
+      
+      if (typeof logout !== 'function') {
+        console.error('❌ LogoutButton: logout is not a function!', logout);
+        return;
+      }
+      
       await logout();
+      console.log('🔐 LogoutButton: Logout completed successfully');
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('❌ LogoutButton: Logout error:', error);
+      // Try to redirect manually if logout fails
+      try {
+        window.location.href = '/login';
+      } catch (redirectError) {
+        console.error('❌ LogoutButton: Redirect also failed:', redirectError);
+      }
     }
   };
 

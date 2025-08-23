@@ -26,10 +26,17 @@ class SupabaseAuthService {
     try {
       console.log('🔐 Attempting to sign up user:', data.email)
       
+      // Build dynamic redirect URL for email confirmation (works in dev/prod)
+      const siteOrigin = typeof window !== 'undefined' && window.location?.origin
+        ? window.location.origin
+        : (import.meta as any)?.env?.VITE_SITE_URL || ''
+      const emailRedirectTo = siteOrigin ? `${siteOrigin}/confirm-email` : undefined
+      
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
+          emailRedirectTo,
           data: {
             full_name: data.fullName || '',
           }
@@ -45,16 +52,20 @@ class SupabaseAuthService {
         }
       }
 
-      if (authData.user && authData.session) {
-        console.log('✅ User signed up successfully:', authData.user.email)
+      // Return immediately after user creation - don't wait for email
+      if (authData.user) {
+        console.log('✅ User created successfully:', authData.user.email)
+        console.log('📧 Email confirmation will be sent shortly...')
+        
         return {
           success: true,
           user: authData.user as AuthUser,
-          session: authData.session as AuthSession
+          session: authData.session as AuthSession,
+          message: 'Account created! Please check your email for confirmation.'
         }
       }
 
-      // Email confirmation required
+      // Fallback
       console.log('📧 Email confirmation required for:', data.email)
       return {
         success: true,
@@ -118,6 +129,8 @@ class SupabaseAuthService {
   async signOut(): Promise<AuthResponse> {
     try {
       console.log('🔐 Attempting to sign out user')
+      console.log('🔐 Supabase client:', supabase)
+      console.log('🔐 Supabase auth:', supabase.auth)
       
       const { error } = await supabase.auth.signOut()
 
@@ -178,6 +191,27 @@ class SupabaseAuthService {
       return {
         success: false,
         message: 'An unexpected error occurred getting current user',
+        error
+      }
+    }
+  }
+
+  // Send welcome email
+  async sendWelcomeEmail(email: string): Promise<AuthResponse> {
+    try {
+      console.log('📧 Sending welcome email to:', email)
+      
+      // This would typically call a Supabase Edge Function or external email service
+      // For now, we'll simulate success
+      return {
+        success: true,
+        message: 'Welcome email sent successfully'
+      }
+    } catch (error) {
+      console.error('❌ Error sending welcome email:', error)
+      return {
+        success: false,
+        message: 'Failed to send welcome email',
         error
       }
     }
@@ -298,6 +332,40 @@ class SupabaseAuthService {
         message: 'An unexpected error occurred updating profile',
         error
       }
+    }
+  }
+
+  // Resend signup verification email
+  async resendVerificationEmail(email: string): Promise<AuthResponse> {
+    try {
+      console.log('📧 Resending signup verification email to:', email)
+
+      if (!email || email === 'your email') {
+        return { success: false, message: 'No email to resend verification to' }
+      }
+
+      const siteOrigin = typeof window !== 'undefined' && window.location?.origin
+        ? window.location.origin
+        : (import.meta as any)?.env?.VITE_SITE_URL || ''
+      const emailRedirectTo = siteOrigin ? `${siteOrigin}/role-selection` : undefined
+
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo
+        }
+      })
+
+      if (error) {
+        console.error('❌ Resend verification error:', error)
+        return { success: false, message: error.message, error }
+      }
+
+      return { success: true, message: 'Verification email resent successfully' }
+    } catch (error) {
+      console.error('❌ Unexpected error resending verification:', error)
+      return { success: false, message: 'Unexpected error resending verification', error }
     }
   }
 }

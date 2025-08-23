@@ -37,7 +37,7 @@ export interface UserRole {
   role_id: string;
   category_id: string;
   specialization: string;
-  experience_level: string;
+  experience_level_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -195,13 +195,14 @@ class SupabaseRoleService {
       
       const { data, error } = await supabase
         .from(TABLES.USER_ROLES)
-        .select('*')
+        .select('id, user_id, role_id, category_id, specialization, experience_level_id, created_at, updated_at')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to avoid PGRST116
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No user role found
+        if (error.code === '406') {
+          // Not Acceptable - likely RLS policy issue
+          console.warn('⚠️ 406 error - possible RLS policy issue for user:', userId);
           return {
             success: true,
             data: null

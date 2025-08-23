@@ -8,7 +8,10 @@ import appRouter from "./router.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={appRouter} />
+      <RouterProvider 
+        router={appRouter} 
+        future={{ v7_startTransition: true }}
+      />
     </AuthProvider>
   </React.StrictMode>
 );

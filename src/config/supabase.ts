@@ -3,11 +3,16 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+console.log('🔧 Supabase Config Debug:')
+console.log('VITE_SUPABASE_URL:', supabaseUrl)
+console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Present' : 'Missing')
+
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables. Please check your .env file.')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+console.log('✅ Supabase client created successfully')
 
 // Database table names
 export const TABLES = {
@@ -153,6 +158,9 @@ export interface Database {
 export interface AuthUser {
   id: string
   email: string
+  name?: string
+  roles?: string[]
+  onboarding_stage?: string
   user_metadata?: {
     full_name?: string
     avatar_url?: string

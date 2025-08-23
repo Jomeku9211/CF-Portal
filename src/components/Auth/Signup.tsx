@@ -1,11 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, XIcon } from 'lucide-react';
-import { AuthCard } from '../common/AuthCard';
-import { AuthInput } from '../common/AuthInput';
-import { AuthButton } from '../common/AuthButton';
-import { AuthDivider } from '../common/AuthDivider';
-import { GoogleAuthButton } from '../common/GoogleAuthButton';
+import { AuthCard, AuthInput, AuthDivider, GoogleAuthButton } from '../common';
 import { Checkbox } from '../common/Checkbox';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -367,13 +363,24 @@ export function Signup() {
         )}
         
         <div className="mt-6">
-          <AuthButton 
-            type="submit" 
-            fullWidth 
-            disabled={isLoading || Object.keys(validationErrors).length > 0}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+              isLoading
+                ? 'bg-blue-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'
+            } text-white`}
           >
-            {isLoading ? 'Creating account...' : 'Sign up'}
-          </AuthButton>
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Creating Account...</span>
+              </div>
+            ) : (
+              'Create Account'
+            )}
+          </button>
         </div>
         
         <AuthDivider text="OR" />

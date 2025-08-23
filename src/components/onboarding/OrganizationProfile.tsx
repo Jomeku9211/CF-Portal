@@ -5,10 +5,9 @@ import QuickSetup from './OrganizationProfileSteps/QuickSetup';
 import { PurposeStory } from './OrganizationProfileSteps/PurposeStory';
 import { GrowthSuccess } from './OrganizationProfileSteps/GrowthSuccess';
 import { CultureValues } from './OrganizationProfileSteps/CultureValues';
-import { buildXanoPayloadFromOrgProfile, validateXanoPayload } from '@/services/organizationMapper';
-import { organizationService } from '@/services/organizationService';
-import { userService } from '@/services/userService';
 import { useAuth } from '@/contexts/AuthContext';
+// import { supabase } from '@/config/supabase'; // Unused - keeping for future use
+import { universalOnboardingService } from '@/services/universalOnboardingService';
 
 type OrganizationProfileStep = 'quick-setup' | 'purpose-story' | 'growth-success' | 'culture-values';
 
@@ -23,18 +22,20 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
     industry: '',
     companyFunction: 'Idea Stage',
     revenueStatus: '',
-    keyInvestors: [],
+    keyInvestors: [] as string[],
     originStory: '',
     whatWeDo: '',
-    whoWeServe: [],
+    whoWeServe: [] as string[],
     vision: '',
     whyJoinUs: '',
     growthPlans: '',
-    successMetrics: [],
-    coreValuesToday: [],
-    coreValuesAspirations: [],
-    cultureInAction: []
+    successMetrics: [] as string[],
+    coreValuesToday: [] as string[],
+    coreValuesAspirations: [] as string[],
+    cultureInAction: [] as string[]
   });
+  const [message, setMessage] = useState<{ type: 'success' | 'info'; text: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateFormData = (data: Partial<typeof formData>) => {
     setFormData(prev => ({ ...prev, ...data }));
@@ -65,10 +66,69 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
     }
   };
 
+  const fillDemoData = () => {
+    const demoData = {
+      name: 'TechStart Innovations',
+      website: 'https://techstart-innovations.com',
+      size: '10-50',
+      fundingStatus: 'Series A',
+      industry: 'Technology',
+      companyFunction: 'Growth Stage',
+      revenueStatus: 'Generating Revenue',
+      keyInvestors: ['Sequoia Capital', 'Andreessen Horowitz', 'Y Combinator'],
+      originStory: 'Founded in 2022 by a team of ex-Google engineers who wanted to democratize AI technology for small businesses. We started in a garage in Palo Alto and have grown to serve over 500 clients worldwide.',
+      whatWeDo: 'We provide AI-powered business intelligence solutions that help small and medium businesses make data-driven decisions. Our platform includes predictive analytics, customer insights, and automated reporting.',
+      whoWeServe: ['E-commerce businesses', 'SaaS companies', 'Retail chains', 'Service providers'],
+      vision: 'To make advanced AI technology accessible to every business, regardless of size, enabling them to compete with industry giants.',
+      whyJoinUs: 'Join a mission-driven team that\'s revolutionizing how businesses use AI. We offer competitive salaries, equity, flexible work arrangements, and the opportunity to work on cutting-edge technology.',
+      growthPlans: 'Expand to European markets in Q2 2024, launch enterprise product in Q3, and reach 1000+ clients by end of year. Planning for Series B funding in Q4.',
+      successMetrics: ['Customer acquisition rate', 'Monthly recurring revenue', 'Customer satisfaction score', 'Product adoption rate'],
+      coreValuesToday: ['Innovation', 'Customer focus', 'Transparency', 'Continuous learning'],
+      coreValuesAspirations: ['Industry leadership', 'Global impact', 'Sustainability', 'Diversity & inclusion'],
+      cultureInAction: ['Weekly hackathons', 'Monthly team retreats', 'Open feedback culture', 'Professional development budget']
+    };
+
+    setFormData(demoData);
+    setMessage({ type: 'success', text: '🎯 Demo data filled successfully! All fields are now populated with sample data.' });
+    console.log('🎯 Demo data filled:', demoData);
+    
+    // Auto-hide message after 3 seconds
+    setTimeout(() => setMessage(null), 3000);
+  };
+
+  const clearDemoData = () => {
+    const emptyData = {
+      name: '',
+      website: '',
+      size: '',
+      fundingStatus: '',
+      industry: '',
+      companyFunction: 'Idea Stage',
+      revenueStatus: '',
+      keyInvestors: [] as string[],
+      originStory: '',
+      whatWeDo: '',
+      whoWeServe: [] as string[],
+      vision: '',
+      whyJoinUs: '',
+      growthPlans: '',
+      successMetrics: [] as string[],
+      coreValuesToday: [] as string[],
+      coreValuesAspirations: [] as string[],
+      cultureInAction: [] as string[]
+    };
+
+    setFormData(emptyData);
+    setMessage({ type: 'info', text: '🗑️ All form data has been cleared. You can now start fresh or fill demo data again.' });
+    console.log('🗑️ Demo data cleared');
+    
+    // Auto-hide message after 3 seconds
+    setTimeout(() => setMessage(null), 3000);
+  };
+
   const handleSubmit = async () => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      alert('Please log in before submitting your organization.');
+    if (!user?.id) {
+      setMessage({ type: 'info', text: 'Please log in before submitting your organization.' });
       return;
     }
 
@@ -76,67 +136,75 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
     console.log('User object:', user);
     console.log('Complete formData:', formData);
     
-    const payload = buildXanoPayloadFromOrgProfile(formData as any, user?.id ? String(user.id) : undefined);
-    console.log('Organization payload:', payload);
-    
-    const validation = validateXanoPayload(payload);
-
-    if (validation.missingRequired.length > 0) {
-      alert(`Please fill required fields: ${validation.missingRequired.join(', ')}`);
-      return;
-    }
-
-    let result: any;
+    setIsSubmitting(true);
     try {
-      result = await organizationService.createOrganization(payload);
-    } catch (err) {
-      console.error('Organization creation network error', err);
-      alert('Network error');
-      return;
-    }
-    if (!result.success) {
-      console.error('Organization creation failed', result);
-      alert(result.message || 'Failed to create organization');
-      return;
-    }
-
-    // Persist organization id for subsequent team creation
-    if (result.organization?.id) {
-      try { 
-        localStorage.setItem('lastOrganizationId', String(result.organization.id));
-        // Also store organization name for display
-        if (result.organization.name) {
-          localStorage.setItem('organizationName', result.organization.name);
-        }
-      } catch {}
-    }
-
-    // Update user's onboarding_stage to 'team_creation'
-    if (user?.id) {
-      try {
-        await userService.updateUserById(String(user.id), { onboarding_stage: 'team_creation' });
+      const result = await universalOnboardingService.createOrganization(formData, user.id);
+      
+      if (result.success) {
+        setMessage({ type: 'success', text: '🎉 Organization created successfully! Moving to team onboarding...' });
+        console.log('✅ Organization created:', result.data);
         
-        // Update local cache to reflect the change
-        try {
-          const rawUser = localStorage.getItem('currentUser');
-          if (rawUser) {
-            const parsedUser = JSON.parse(rawUser);
-            localStorage.setItem('currentUser', JSON.stringify({ 
-              ...parsedUser, 
-              onboarding_stage: 'team_creation' 
-            }));
-          }
-        } catch {}
-      } catch (error) {
-        console.error('Failed to update user onboarding stage', error);
+        // Call onSubmitSuccess after a short delay to show the success message
+        setTimeout(() => {
+          if (onSubmitSuccess) onSubmitSuccess();
+        }, 2000);
+        
+      } else {
+        setMessage({ type: 'info', text: `❌ Failed to create organization: ${result.error}` });
+        console.error('❌ Organization creation failed:', result.error);
       }
+    } catch (err) {
+      console.error('Organization creation error:', err);
+      setMessage({ type: 'info', text: '❌ An error occurred while creating the organization. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (onSubmitSuccess) onSubmitSuccess();
   };
 
   return (
     <div className="w-full m-0 p-0">
+      {/* Demo Data Button */}
+      <div className="mb-4">
+        <div className="text-right mb-2">
+          <span className="text-sm text-gray-400">
+            💡 Testing? Use these buttons to quickly populate or clear the form
+          </span>
+        </div>
+        <div className="flex justify-end">
+          <button
+            onClick={fillDemoData}
+            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
+          >
+            🎯 Fill Demo Data
+          </button>
+          <button
+            onClick={clearDemoData}
+            className="ml-2 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
+          >
+            🗑️ Clear Data
+          </button>
+        </div>
+      </div>
+
+      {/* Message Display */}
+      {message && (
+        <div className={`mb-4 p-3 rounded-lg border ${
+          message.type === 'success' 
+            ? 'bg-green-600/20 border-green-600/30 text-green-400' 
+            : 'bg-blue-600/20 border-blue-600/30 text-blue-400'
+        }`}>
+          <div className="flex items-center justify-between">
+            <span>{message.text}</span>
+            <button 
+              onClick={() => setMessage(null)}
+              className="text-gray-400 hover:text-white ml-2"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mb-6">
         <div className="flex items-center justify-between border-b border-gray-700 pb-4">
           <div className="flex items-center">
@@ -211,8 +279,9 @@ export function OrganizationProfile({ onSubmitSuccess }: { onSubmitSuccess?: () 
             icon={<ArrowRightIcon size={16} />}
             iconPosition="right"
             className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] hover:from-[#2563eb] hover:to-[#1d4ed8] transition-all duration-200 shadow-md hover:shadow-lg"
+            disabled={isSubmitting}
           >
-            Submit
+            {isSubmitting ? 'Submitting...' : 'Submit'}
           </Button>
         )}
       </div>

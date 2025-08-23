@@ -9,13 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-// Mock the email service
-jest.mock('../../../services/emailService', () => ({
-  emailService: {
-    sendThankYouEmail: jest.fn().mockResolvedValue({ success: true })
-  }
-}));
-
 // Mock react-router-dom navigation
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -69,7 +62,7 @@ describe('Signup Component', () => {
       
     // Check if main form elements are rendered
       expect(screen.getByText('Create an account')).toBeInTheDocument();
-      expect(screen.getByText('Sign up to get started')).toBeInTheDocument();
+      expect(screen.getByText('Create Account to get started')).toBeInTheDocument();
     
     // Check form fields
     expect(screen.getByLabelText('Full Name')).toBeInTheDocument();
@@ -82,7 +75,7 @@ describe('Signup Component', () => {
     expect(screen.getByLabelText(/I consent to receive updates/)).toBeInTheDocument();
     
     // Check submit button
-    expect(screen.getByRole('button', { name: /Sign up/i })).toBeInTheDocument();
+          expect(screen.getByRole('button', { name: /Create Account/i })).toBeInTheDocument();
     
     // Check Google signup option
     expect(screen.getByText('OR')).toBeInTheDocument();
@@ -323,7 +316,7 @@ describe('Signup Component', () => {
       render(<Signup />, { wrapper: TestWrapper });
       
       // Try to submit empty form
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       await user.click(submitButton);
       
       // Should show privacy policy error
@@ -448,7 +441,7 @@ describe('Signup Component', () => {
       render(<Signup />, { wrapper: TestWrapper });
       
       const privacyCheckbox = screen.getByLabelText(/I agree to the Privacy Policy/);
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       
       // Try to submit without checking privacy policy
       await user.click(submitButton);
@@ -493,7 +486,7 @@ describe('Signup Component', () => {
       expect(marketingCheckbox).not.toBeChecked();
         
       // Submit form
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       await user.click(submitButton);
       
       // Should still work without marketing emails checked
@@ -547,7 +540,7 @@ describe('Signup Component', () => {
     await user.click(privacyCheckbox);
       
       // Submit form
-    const submitButton = screen.getByRole('button', { name: /Sign up/i });
+    const submitButton = screen.getByRole('button', { name: /Create Account/i });
     await user.click(submitButton);
     
       // Check if signup was called with correct data
@@ -578,7 +571,7 @@ describe('Signup Component', () => {
     await user.click(privacyCheckbox);
       
       // Submit form
-    const submitButton = screen.getByRole('button', { name: /Sign up/i });
+    const submitButton = screen.getByRole('button', { name: /Create Account/i });
     await user.click(submitButton);
     
       // Check if error is displayed (handle multiple elements)
@@ -608,7 +601,7 @@ describe('Signup Component', () => {
     await user.click(privacyCheckbox);
       
       // Submit form
-    const submitButton = screen.getByRole('button', { name: /Sign up/i });
+    const submitButton = screen.getByRole('button', { name: /Create Account/i });
     await user.click(submitButton);
     
     // Check if generic error is displayed
@@ -636,7 +629,7 @@ describe('Signup Component', () => {
     await user.click(privacyCheckbox);
       
       // Submit form
-    const submitButton = screen.getByRole('button', { name: /Sign up/i });
+    const submitButton = screen.getByRole('button', { name: /Create Account/i });
     await user.click(submitButton);
     
     // Check if button shows loading state
@@ -648,7 +641,7 @@ describe('Signup Component', () => {
     const user = userEvent.setup();
     render(<Signup />, { wrapper: TestWrapper });
     
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       
       // Initially the button should be enabled (no validation errors yet)
       expect(submitButton).not.toBeDisabled();
@@ -688,7 +681,7 @@ describe('Signup Component', () => {
       await user.click(privacyCheckbox);
       
       // Submit form
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       await user.click(submitButton);
       
       // Check if normalized name was sent
@@ -716,7 +709,7 @@ describe('Signup Component', () => {
       await user.click(privacyCheckbox);
       
       // Submit form
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       await user.click(submitButton);
       
       // Check if normalized email was sent
@@ -744,7 +737,7 @@ describe('Signup Component', () => {
       await user.click(privacyCheckbox);
       
       // Submit form
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       await user.click(submitButton);
       
       // Check if error is displayed
@@ -770,7 +763,7 @@ describe('Signup Component', () => {
     await user.click(privacyCheckbox);
     
       // Submit form
-      const submitButton = screen.getByRole('button', { name: /Sign up/i });
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
       await user.click(submitButton);
       
       // Check if email-specific error is displayed (handle multiple elements)
@@ -799,8 +792,8 @@ describe('Signup Component', () => {
       await user.click(privacyCheckbox);
       
       // Submit form
-    const submitButton = screen.getByRole('button', { name: /Sign up/i });
-    await user.click(submitButton);
+      const submitButton = screen.getByRole('button', { name: /Create Account/i });
+      await user.click(submitButton);
     
       await waitFor(() => {
         expect(screen.getByText('First error')).toBeInTheDocument();
@@ -896,7 +889,7 @@ describe('Signup Component', () => {
     test('has proper button labels', () => {
       render(<Signup />, { wrapper: TestWrapper });
 
-      expect(screen.getByRole('button', { name: /Sign up/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Create Account/i })).toBeInTheDocument();
       // Note: Only one password toggle button is visible initially
       const toggleButtons = screen.getAllByLabelText(/Toggle password visibility/);
       expect(toggleButtons.length).toBeGreaterThan(0);

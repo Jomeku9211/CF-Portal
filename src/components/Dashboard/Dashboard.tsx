@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../config/supabase';
+import { universalOnboardingService } from '../../services/universalOnboardingService';
 import { organizationService, Organization } from '../../services/organizationService';
 import { teamService, Team } from '../../services/teamService';
 import { PlusIcon, BuildingIcon, UsersIcon, EditIcon, TrashIcon } from 'lucide-react';
@@ -7,6 +10,7 @@ import { LogoutButton } from '../common/LogoutButton';
 
 export function Dashboard() {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,9 +18,54 @@ export function Dashboard() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadUserData();
+      checkOnboardingStatus();
     }
   }, [isAuthenticated]);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      // Check if user has any roles assigned
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select(`
+          *,
+          roles:role_id(name)
+        `)
+        .eq('user_id', user?.id);
+
+      if (rolesError) {
+        console.error('Error checking user roles:', rolesError);
+        // If we can't check roles, continue with dashboard
+        loadUserData();
+        return;
+      }
+
+      // If user has no roles, they need to start onboarding
+      if (!userRoles || userRoles.length === 0) {
+        console.log('User has no roles, redirecting to role selection');
+        navigate('/role-selection');
+        return;
+      }
+
+      // Use universal onboarding service to get the correct route
+      const currentRoute = await universalOnboardingService.getCurrentRoute(user?.id || '');
+      console.log('📍 Universal onboarding service suggests route:', currentRoute);
+      
+      // Navigate to the appropriate place
+      if (currentRoute !== '/dashboard') {
+        navigate(currentRoute);
+        return;
+      }
+
+      // If we get here, user should see the dashboard
+      loadUserData();
+      
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+      // If there's an error, continue with dashboard
+      loadUserData();
+    }
+  };
 
   const loadUserData = async () => {
     try {
@@ -84,7 +133,7 @@ export function Dashboard() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}!</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}!</h1>
             <p className="text-gray-600 mt-2">Manage your organizations and teams</p>
           </div>
           <LogoutButton variant="default" />
