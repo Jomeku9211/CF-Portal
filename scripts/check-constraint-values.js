@@ -74,6 +74,55 @@ async function checkConstraintValues() {
       }
     }
     
+    // Test developer onboarding stages
+    console.log('🧪 Testing developer onboarding stages...');
+    const developerStages = [
+      'DEV_STEP_1',
+      'dev_step_1', 
+      'developer_step_1',
+      'developer_onboarding',
+      'dev_onboarding',
+      'step_1',
+      'developer'
+    ];
+    
+    for (const stage of developerStages) {
+      console.log(`   Testing: '${stage}'`);
+      
+      const testData = {
+        user_id: testUserId,
+        role_id: '3dbcccbb-3007-4112-bf5b-804d0950046c',
+        category_id: '5b1e6297-18a4-4d12-8eae-ddb8bbecfa78',
+        onboarding_flow: 'developer',
+        current_step: 1,
+        total_steps: 5,
+        completed_steps: ['role_selection'],
+        onboarding_status: 'in_progress',
+        onboarding_stage: stage,
+        last_activity: new Date().toISOString()
+      };
+      
+      const { data, error } = await supabase
+        .from('user_onboarding_progress')
+        .insert([testData])
+        .select();
+      
+      if (error) {
+        console.log(`      ❌ '${stage}': NOT ALLOWED (${error.message})`);
+      } else {
+        console.log(`      ✅ '${stage}': ALLOWED - SUCCESS!`);
+        console.log(`      📊 Record created:`, data[0]);
+        
+        // Clean up this test record
+        await supabase
+          .from('user_onboarding_progress')
+          .delete()
+          .eq('id', data[0].id);
+        
+        break; // Found a working value
+      }
+    }
+    
     console.log('');
     console.log('❌ None of the tested values worked!');
     console.log('🔧 Need to check the actual constraint definition in Supabase');

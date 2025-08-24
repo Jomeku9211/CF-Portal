@@ -58,7 +58,7 @@ async function smokeTestServiceProvider() {
     const { data: experienceLevels, error: expError } = await supabase
       .from('experience_levels')
       .select('*')
-      .in('name', ['junior', 'mid', 'senior', 'principal']);
+      .in('name', ['junior', 'mid-level', 'senior', 'principal']);
     
     if (expError || !experienceLevels || experienceLevels.length === 0) {
       console.log('❌ Cannot get experience levels:', expError?.message);
@@ -102,11 +102,10 @@ async function smokeTestServiceProvider() {
     
     const serviceProviderData = {
       user_id: testUserId,
-      role_category: developerCategory.name,
-      experience_level: midLevel.name,
+      primary_stack: 'full-stack', // Required field based on error
       specialization: 'full-stack',
-      is_verified: false,
-      is_active: true
+      technical_skills: ['JavaScript', 'React', 'Node.js'], // Required field based on error
+      is_verified: false
     };
     
     console.log('💾 Creating service provider profile:', serviceProviderData);
@@ -129,14 +128,14 @@ async function smokeTestServiceProvider() {
     
     const onboardingData = {
       user_id: testUserId,
-      role_id: newUserRole[0].id,
+      role_id: serviceProviderRole.id, // Use the actual role ID, not user_role record ID
       category_id: developerCategory.id,
       onboarding_flow: 'developer',
       current_step: 1,
       total_steps: 5,
       completed_steps: ['role_selection'],
       onboarding_status: 'in_progress',
-      onboarding_stage: 'DEV_STEP_1', // EXACTLY as per OFFICIAL document
+      onboarding_stage: 'organization_onboarding', // Use the value that works
       last_activity: new Date().toISOString()
     };
     
