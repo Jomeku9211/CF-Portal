@@ -9,8 +9,7 @@ ADD COLUMN IF NOT EXISTS onboarding_status VARCHAR(50),
 ADD COLUMN IF NOT EXISTS last_activity TIMESTAMP WITH TIME ZONE;
 
 -- Step 2: Set default values (separate UPDATE statements)
-UPDATE user_onboarding_progress 
-SET onboarding_flow = 'client' 
+UPDATE user_onboarding_parding_flow = 'client' 
 WHERE onboarding_flow IS NULL;
 
 UPDATE user_onboarding_progress 
