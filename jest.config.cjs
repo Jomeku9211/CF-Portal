@@ -3,9 +3,11 @@ module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    // Place asset mocks BEFORE alias mapping so image imports like '@/assets/CFLogo.png' are mocked
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/src/__tests__/mocks/file-mock.js',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^@/services/scraper/config$': '<rootDir>/src/__tests__/mocks/scraper-config-mock.ts',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   testMatch: [
     '<rootDir>/src/__tests__/**/*.test.{ts,tsx}',
@@ -25,10 +27,10 @@ module.exports = {
   coverageReporters: ['text', 'html', 'lcov'],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100
     }
   },
   transform: {

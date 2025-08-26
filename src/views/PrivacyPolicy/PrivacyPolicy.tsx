@@ -2,7 +2,7 @@ import "../../styles/PrivacyPolicy/PrivacyPolicy.css";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="Privacy_Main_Div">
+    <div className="Privacy_Main_Div" data-testid="PrivacyPolicyId">
       <div>
         <h1>Terms and conditions</h1>
         <p>DATE OF LAST REVISION: 05/05/2022</p>

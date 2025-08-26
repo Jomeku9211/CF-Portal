@@ -1,22 +1,17 @@
-import Footer from "./components/FooterComp/Footer";
 import { Outlet, useLocation } from "react-router-dom";
-import { TopBanner } from "./components/LandingPage/TopBanner";
-import { Navbar } from "./components/LandingPage/Navbar";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
 
 function App() {
   const location = useLocation();
   const authPaths = new Set(["/login", "/signup", "/forgot-password"]);
-  const hideHeader = authPaths.has(location.pathname);
+  const isAdminSection = location.pathname.startsWith("/admin");
+  const hideHeader = authPaths.has(location.pathname) || isAdminSection;
   return (
     <>
-      {!hideHeader && (
-        <>
-          <TopBanner />
-          <Navbar />
-        </>
-      )}
+      {!hideHeader && <Header />}
       <Outlet />
-      <Footer /> 
+      <Footer />
     </>
   );
 }

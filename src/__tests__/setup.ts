@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import 'jest-axe/extend-expect';
+
+// Note: jest-axe setup is handled in individual test files where needed
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -48,6 +49,17 @@ Object.defineProperty(performance, 'memory', {
     jsHeapSizeLimit: 10 * 1024 * 1024 // 10MB
   }
 });
+
+// Extend Performance interface to include memory property
+declare global {
+  interface Performance {
+    memory: {
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    };
+  }
+}
 
 // Mock console methods to reduce noise in tests
 const originalConsoleError = console.error;

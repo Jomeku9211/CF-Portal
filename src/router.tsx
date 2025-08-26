@@ -1,18 +1,24 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import LandingPage from "./views/LandingPage/LandingPage";
-import AuthPage from "./components/Auth/AuthPage";
 import { Login } from "./components/Auth/Login";
 import { Signup } from "./components/Auth/Signup";
 import { ForgotPassword } from "./components/Auth/ForgotPassword";
-import { OnboardingFlow } from "./components/onboarding/OnboardingFlow";
-import { Onboarding1 } from "./components/onboarding/Onboarding1";
-import { RoleSelection } from "./components/onboarding/RoleSelection";
-import { ProtectedRoute } from "./components/common/ProtectedRoute";
+import { OnboardingFlow } from "./components_backup/onboarding/OnboardingFlow";
+import { Onboarding1 } from "./components_backup/onboarding/Onboarding1";
+import { RoleSelection } from "./components_backup/onboarding/RoleSelection";
+import { ProtectedRoute } from "./components_backup/common/ProtectedRoute";
 import PrivacyPolicy from "./views/PrivacyPolicy/PrivacyPolicy";
-import ContentHubPage from "./views/ContentHub/ContentHub";
-import { AboutUsSection } from "./components/AboutUsSection";
-import { GuestRoute } from "./components/common/GuestRoute";
+import { PodcastPage } from "./pages/Podcast";
+import { AboutPage } from "./pages/About";
+import { ContactPage } from "./pages/Contact";
+import { StyleGuidePage } from "./pages/StyleGuide";
+import { GuestRoute } from "./components_backup/common/GuestRoute";
+import { SuperAdminLogin } from "./components_backup/Auth/SuperAdminLogin";
+import { AdminRoute } from "./components_backup/common/AdminRoute";
+import { SuperAdminDashboard } from "./components_backup/Dashboard/SuperAdminDashboard";
+import { ProfileScraperPage, PostScraperPage, GenerateCommentPage, AutoCommentingPage, PodcastManagementPage } from "./components_backup/Dashboard";
+import { MemberDashboardPage } from "./pages/MemberDashboard";
 // Removed broken import: OnboardingNew does not exist in views
 
 const appRouter = createBrowserRouter([
@@ -23,14 +29,6 @@ const appRouter = createBrowserRouter([
       {
         index: true,
         element: <LandingPage />,
-      },
-      {
-        path: "auth",
-        element: (
-          <GuestRoute>
-            <AuthPage />
-          </GuestRoute>
-        ),
       },
       {
         path: "login",
@@ -55,6 +53,30 @@ const appRouter = createBrowserRouter([
             <ForgotPassword />
           </GuestRoute>
         ),
+      },
+      {
+        path: "super-admin",
+        element: (
+          <GuestRoute>
+            <SuperAdminLogin />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <AdminRoute>
+            <SuperAdminDashboard />
+          </AdminRoute>
+        ),
+        children: [
+          { index: true, element: <ProfileScraperPage /> },
+          { path: "profile-scraper", element: <ProfileScraperPage /> },
+          { path: "post-scraper", element: <PostScraperPage /> },
+          { path: "generate-comment", element: <GenerateCommentPage /> },
+          { path: "auto-commenting", element: <AutoCommentingPage /> },
+          { path: "podcast-management", element: <PodcastManagementPage /> },
+        ],
       },
       {
         path: "role-selection",
@@ -92,11 +114,27 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "content-hub",
-        element: <ContentHubPage />,
+        element: <Navigate to="/podcast" replace />,
+      },
+      {
+        path: "podcast",
+        element: <PodcastPage />,
+      },
+      {
+        path: "podcast/dashboard",
+        element: <MemberDashboardPage />,
       },
       {
         path: "about",
-        element: <AboutUsSection />,
+        element: <AboutPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "style-guide",
+        element: <StyleGuidePage />,
       },
     ],
   },

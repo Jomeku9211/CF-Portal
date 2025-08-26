@@ -1,4 +1,4 @@
-import { ContentHub } from "../../components/LandingPage/ContentHub";
+import { ContentHub } from "../../components/ContentHub";
 
 const ContentHubPage = () => {
   return (
