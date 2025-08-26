@@ -8,6 +8,7 @@ import { AuthDivider } from '../common/AuthDivider';
 import { GoogleAuthButton } from '../common/GoogleAuthButton';
 import { Checkbox } from '../common/Checkbox';
 import { useAuth } from '../../contexts/AuthContext';
+import { organizationService } from '../../services/organizationService';
 
 interface ValidationErrors {
   name?: string;
@@ -57,45 +58,24 @@ export function Signup() {
     let score = 0;
     const feedback = [] as string[];
 
-    // Very short passwords (1 character) get 0 score
-    if (password.length === 1) {
-      feedback.push('At least 8 characters', 'Lowercase letter', 'Uppercase letter', 'Number', 'Special character');
-      return {
-        score: 0,
-        feedback: feedback.join(', '),
-        color: 'text-red-500'
-      };
-    }
-
     if (password.length >= 8) score++;
-    else feedback.push('At least 8 characters');
+    else if (password.length > 0) feedback.push('At least 8 characters');
 
     if (/[a-z]/.test(password)) score++;
-    else feedback.push('Lowercase letter');
+    else if (password.length > 0) feedback.push('Lowercase letter');
 
     if (/[A-Z]/.test(password)) score++;
-    else feedback.push('Uppercase letter');
+    else if (password.length > 0) feedback.push('Uppercase letter');
 
     if (/[0-9]/.test(password)) score++;
-    else feedback.push('Number');
+    else if (password.length > 0) feedback.push('Number');
 
-    // Special character scoring: 1 point for basic special chars, extra point for multiple special chars
-    const specialChars = password.match(/[^A-Za-z0-9]/g) || [];
-    if (specialChars.length > 0) {
-      score++;
-    } else {
-      feedback.push('Special character');
-    }
-    
-    // Bonus point for multiple special characters (3 or more)
-    if (specialChars.length >= 3) {
-      score++;
-    }
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    else if (password.length > 0) feedback.push('Special character');
 
     let color = 'text-red-500';
-    if (score >= 5) color = 'text-green-500';
-    else if (score >= 4) color = 'text-yellow-500';
-    else if (score >= 3) color = 'text-orange-500';
+    if (score >= 4) color = 'text-green-500';
+    else if (score >= 3) color = 'text-yellow-500';
     else if (score >= 2) color = 'text-orange-500';
 
     return {
@@ -160,6 +140,7 @@ export function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
 
     // Normalize inputs for validation and submission
     const normalizedName = formData.name.trim().replace(/\s+/g, ' ');
@@ -191,19 +172,12 @@ export function Signup() {
       if (Object.keys(submitErrors).length > 0) {
         setValidationErrors(submitErrors);
       }
-      // Mark all fields as touched so errors become visible
-      setTouched({ name: true, email: true, password: true, confirmPassword: true });
       return;
     }
-
-    // Clear privacy policy error since it's now accepted
-    setError('');
 
     if (Object.keys(submitErrors).length > 0) {
       setValidationErrors(submitErrors);
       setError('Please fix the validation errors above');
-      // Mark all fields as touched so errors become visible
-      setTouched({ name: true, email: true, password: true, confirmPassword: true });
       return;
     }
 
@@ -212,8 +186,17 @@ export function Signup() {
     try {
       const result = await signup(normalizedName, normalizedEmail, formData.password);
       if (result.success) {
-        // User is automatically logged in after signup, redirect to role selection
-        navigate('/role-selection', { replace: true });
+        // After signup, if an organization exists, go directly to onboarding
+        try {
+          const orgRes = await organizationService.getUserOrganizations();
+          if (orgRes.success && (orgRes.organizations?.length || 0) > 0) {
+            navigate('/onboarding');
+          } else {
+            navigate('/role-selection');
+          }
+        } catch {
+          navigate('/onboarding');
+        }
       } else {
         setError(result.message || 'Signup failed');
         // If backend indicates the email already exists, show it under the Email field
@@ -235,15 +218,13 @@ export function Signup() {
     if (passwordStrength.score === 1) return 'Weak';
     if (passwordStrength.score === 2) return 'Fair';
     if (passwordStrength.score === 3) return 'Good';
-    if (passwordStrength.score === 4) return 'Good';
-    if (passwordStrength.score === 5) return 'Strong';
-    if (passwordStrength.score >= 6) return 'Very Strong';
+    if (passwordStrength.score === 4) return 'Strong';
     return 'Very Strong';
   };
 
   return (
     <AuthCard title="Create an account" subtitle="Sign up to get started">
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <AuthInput 
           label="Full Name" 
           type="text" 
@@ -327,7 +308,7 @@ export function Signup() {
           icon={<LockIcon size={18} />} 
           rightIcon={showConfirmPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
           onRightIconClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          rightIconAriaLabel="Toggle password visibility"
+          rightIconAriaLabel="Toggle confirm password visibility"
           required 
           error={touched.confirmPassword ? validationErrors.confirmPassword : undefined}
         />

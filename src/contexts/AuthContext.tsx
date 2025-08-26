@@ -31,7 +31,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isAuthenticated = !!user;
+  // Derive auth from token/session state to avoid stale user-driven truthiness
+  const isAuthenticated = authService.isAuthenticated();
 
   useEffect(() => {
     // Check if user is already authenticated on app load
