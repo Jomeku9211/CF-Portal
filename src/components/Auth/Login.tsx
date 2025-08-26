@@ -7,6 +7,7 @@ import { AuthButton } from '../common/AuthButton';
 import { AuthDivider } from '../common/AuthDivider';
 import { GoogleAuthButton } from '../common/GoogleAuthButton';
 import { useAuth } from '../../contexts/AuthContext';
+import { organizationService } from '../../services/organizationService';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -27,8 +28,17 @@ export function Login() {
       const normalizedEmail = email.trim().toLowerCase();
       const result = await login(normalizedEmail, password);
       if (result.success) {
-        // Redirect to role selection after successful login
-        navigate('/role-selection');
+        // If user already has an organization, skip role selection
+        try {
+          const orgRes = await organizationService.getUserOrganizations();
+          if (orgRes.success && (orgRes.organizations?.length || 0) > 0) {
+            navigate('/onboarding');
+          } else {
+            navigate('/role-selection');
+          }
+        } catch {
+          navigate('/onboarding');
+        }
       } else {
         setError(result.message || 'Login failed');
       }

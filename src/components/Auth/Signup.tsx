@@ -8,6 +8,7 @@ import { AuthDivider } from '../common/AuthDivider';
 import { GoogleAuthButton } from '../common/GoogleAuthButton';
 import { Checkbox } from '../common/Checkbox';
 import { useAuth } from '../../contexts/AuthContext';
+import { organizationService } from '../../services/organizationService';
 
 interface ValidationErrors {
   name?: string;
@@ -185,8 +186,17 @@ export function Signup() {
     try {
       const result = await signup(normalizedName, normalizedEmail, formData.password);
       if (result.success) {
-        // User is automatically logged in after signup, redirect to role selection
-        navigate('/role-selection');
+        // After signup, if an organization exists, go directly to onboarding
+        try {
+          const orgRes = await organizationService.getUserOrganizations();
+          if (orgRes.success && (orgRes.organizations?.length || 0) > 0) {
+            navigate('/onboarding');
+          } else {
+            navigate('/role-selection');
+          }
+        } catch {
+          navigate('/onboarding');
+        }
       } else {
         setError(result.message || 'Signup failed');
         // If backend indicates the email already exists, show it under the Email field

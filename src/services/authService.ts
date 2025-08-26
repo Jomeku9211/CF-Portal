@@ -1,4 +1,4 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:uvT-ex56';
+import { AUTH_BASE_URL } from './config';
 
 // Simple client-side session TTL (e.g., 24 hours)
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
@@ -48,8 +48,22 @@ class AuthService {
 
   private clearSession(): void {
     try {
+      // Primary keys used by this app
       localStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem(SESSION_EXPIRY_KEY);
+
+      // Defensive: clear common token key variants that may exist from older builds
+      const legacyKeys = [
+        'token',
+        'jwt',
+        'access_token',
+        'authorization',
+        'auth_token',
+        'user',
+      ];
+      for (const key of legacyKeys) {
+        try { localStorage.removeItem(key); } catch {}
+      }
     } catch {}
   }
 
@@ -66,9 +80,9 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      console.log('Auth login → URL:', `${XANO_BASE_URL}/auth/login`);
+      console.log('Auth login → URL:', `${AUTH_BASE_URL}/auth/login`);
       console.log('Auth login → payload:', { email: credentials.email ? '[redacted]' : '', hasPassword: !!credentials.password });
-      const response = await fetch(`${XANO_BASE_URL}/auth/login`, {
+      const response = await fetch(`${AUTH_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +137,7 @@ class AuthService {
 
   async signup(credentials: SignupCredentials): Promise<AuthResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/auth/signup`, {
+      const response = await fetch(`${AUTH_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +183,7 @@ class AuthService {
         this.clearSession();
         return null;
       }
-      const response = await fetch(`${XANO_BASE_URL}/auth/me`, {
+      const response = await fetch(`${AUTH_BASE_URL}/auth/me`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });

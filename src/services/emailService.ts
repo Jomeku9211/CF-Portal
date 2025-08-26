@@ -1,4 +1,4 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:uvT-ex56';
+import { API_BASE_URL } from './config';
 
 export interface EmailData {
   to: string;
@@ -23,7 +23,7 @@ class EmailService {
     try {
       const emailContent = this.generateThankYouEmail(userData);
       
-      const response = await fetch(`${XANO_BASE_URL}/email/send`, {
+      const response = await fetch(`${API_BASE_URL}/email/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ class EmailService {
     try {
       const emailContent = this.generateWelcomeEmail(userData);
       
-      const response = await fetch(`${XANO_BASE_URL}/email/send`, {
+      const response = await fetch(`${API_BASE_URL}/email/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -510,7 +510,7 @@ The Coder Farm Team
 
   async sendCustomEmail(emailData: EmailData): Promise<EmailResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/email/send`, {
+      const response = await fetch(`${API_BASE_URL}/email/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

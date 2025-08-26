@@ -1,4 +1,4 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:4mi5W9uU';
+import { API_BASE_URL } from './config';
 
 export interface JobPost {
   id: string;
@@ -59,7 +59,7 @@ class JobPersonaService {
 
   async createJobPost(data: CreateJobPostData): Promise<JobPostResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/job_post`, {
+      const response = await fetch(`${API_BASE_URL}/job_post`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -89,7 +89,7 @@ class JobPersonaService {
 
   async getJobPostsByTeam(teamId: string): Promise<JobPostResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/job_post?team_id=${teamId}`, {
+      const response = await fetch(`${API_BASE_URL}/job_post?team_id=${teamId}`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -118,7 +118,7 @@ class JobPersonaService {
 
   async getUserJobPosts(): Promise<JobPostResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/job_post`, {
+      const response = await fetch(`${API_BASE_URL}/job_post`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -147,7 +147,7 @@ class JobPersonaService {
 
   async getJobPostById(id: string): Promise<JobPostResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/job_post/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/job_post/${id}`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -176,7 +176,7 @@ class JobPersonaService {
 
   async updateJobPost(id: string, data: Partial<CreateJobPostData>): Promise<JobPostResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/job_post/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/job_post/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -206,7 +206,7 @@ class JobPersonaService {
 
   async deleteJobPost(id: string): Promise<JobPostResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/job_post/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/job_post/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders(),
       });

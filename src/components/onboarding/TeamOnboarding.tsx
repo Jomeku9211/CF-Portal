@@ -3,6 +3,8 @@ import { TeamBasics } from './steps/TeamBasics';
 import { TeamWorkstyle } from './steps/TeamWorkstyle';
 import { TeamCulture } from './steps/TeamCulture';
 import { CheckCircleIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon } from 'lucide-react';
+import { organizationService } from '@/services/organizationService';
+import { teamService, CreateTeamData } from '@/services/teamService';
 
 interface TeamFormData {
   teamTitle: string;
@@ -48,6 +50,8 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string>('');
   const totalSteps = 3;
 
   const handleChange = (field: string | number | symbol, value: string) => {
@@ -76,16 +80,56 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateStep(currentStep)) {
       if (currentStep < totalSteps) {
         setCurrentStep(currentStep + 1);
         window.scrollTo(0, 0);
       } else {
         // Submit form when on last step
-        console.log('Team form submitted:', teamData);
-        updateFormData('team', teamData);
-        setIsSubmitted(true);
+        setSubmitError('');
+        setIsSubmitting(true);
+        try {
+          // Ensure the user has an organization; use the first one
+          const orgRes = await organizationService.getUserOrganizations();
+          const organizationId = orgRes.success && orgRes.organizations && orgRes.organizations[0]?.id;
+          if (!organizationId) {
+            setSubmitError('No organization found. Please complete organization onboarding first.');
+            setIsSubmitting(false);
+            return;
+          }
+
+          const payload: CreateTeamData = {
+            organization_id: organizationId,
+            name: teamData.teamTitle,
+            structure_preference: teamData.structurePreference,
+            pace_of_work: teamData.paceOfWork,
+            autonomy: teamData.autonomy,
+            initiative_level: teamData.initiativeLevel,
+            decision_making_style: teamData.decisionMakingStyle,
+            attention_to_detail: teamData.attentionToDetail,
+            team_age_composition: teamData.ageComposition,
+            team_gender_composition: teamData.genderComposition,
+            multitasking_ability: teamData.multitaskingAbility,
+            working_hours_energy_flow: teamData.workingHours,
+            preferred_communication_style: teamData.communicationStyle,
+            cultural_diversity_alignment: teamData.diversityAlignment,
+          };
+
+          const res = await teamService.createTeam(payload);
+          if (!res.success) {
+            setSubmitError(res.message || 'Failed to create team.');
+            setIsSubmitting(false);
+            return;
+          }
+
+          updateFormData('team', { ...teamData, id: res.team?.id });
+          setIsSubmitted(true);
+        } catch (e) {
+          setSubmitError('Network error occurred while creating team.');
+        } finally {
+          setIsSubmitting(false);
+        }
       }
     }
   };
@@ -205,6 +249,12 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
             />
           )}
         </div>
+
+        {submitError && (
+          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {submitError}
+          </div>
+        )}
         
         {/* Navigation buttons */}
         <div className="flex justify-between mt-8">
@@ -225,8 +275,9 @@ export function TeamOnboarding({ updateFormData, onComplete }: TeamOnboardingPro
             type="button" 
             className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-medium flex items-center gap-2 transition-colors" 
             onClick={handleNext}
+            disabled={isSubmitting}
           >
-            {currentStep < totalSteps ? 'Next' : 'Create Team'}
+            {isSubmitting ? 'Submitting...' : currentStep < totalSteps ? 'Next' : 'Create Team'}
             <ArrowRightIcon className="w-4 h-4" />
           </button>
         </div>

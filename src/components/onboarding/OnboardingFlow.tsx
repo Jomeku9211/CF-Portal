@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { organizationService } from '../../services/organizationService';
 import { OrganizationProfile as OrgProfileV2 } from './OrganizationProfile';
 import { TeamOnboarding } from './TeamOnboarding';
 import { HiringIntent } from './HiringIntent';
@@ -83,6 +84,22 @@ export function OnboardingFlow() {
     },
     team: {}
   });
+
+  // On mount, detect if user already completed organization onboarding
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await organizationService.getUserOrganizations();
+        const hasOrg = res.success && (res.organizations?.length || 0) > 0;
+        if (hasOrg) {
+          setCurrentMainStep(2);
+          setCurrentSubStep(0);
+        }
+      } catch {
+        // Ignore and start at step 1
+      }
+    })();
+  }, []);
 
   // Define main onboarding steps
   const mainSteps = [

@@ -8,7 +8,8 @@ export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
-  const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  const accountMenuDesktopRef = useRef<HTMLDivElement | null>(null);
+  const accountMenuMobileRef = useRef<HTMLDivElement | null>(null);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +29,10 @@ export function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const inDesktop = accountMenuDesktopRef.current?.contains(target) ?? false;
+      const inMobile = accountMenuMobileRef.current?.contains(target) ?? false;
+      if (!inDesktop && !inMobile) {
         setIsAccountMenuOpen(false);
       }
     };
@@ -83,7 +87,7 @@ export function Navbar() {
                 </Link>
               </>
             ) : (
-              <div className="relative" ref={accountMenuRef}>
+              <div className="relative" ref={accountMenuDesktopRef}>
                 <button
                   onClick={() => setIsAccountMenuOpen(v => !v)}
                   className="text-gray-700 hover:text-blue-700 transition-colors flex items-center"
@@ -93,7 +97,7 @@ export function Navbar() {
                   <ChevronDown size={16} className="ml-1" />
                 </button>
                 {isAccountMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-[1001]" role="menu">
                     <Link
                       to="/onboarding"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -125,7 +129,7 @@ export function Navbar() {
               </svg>
             </button>
             {isAuthenticated && (
-              <div className="relative" ref={accountMenuRef}>
+              <div className="relative" ref={accountMenuMobileRef}>
                 <button
                   onClick={() => setIsAccountMenuOpen(v => !v)}
                   className="text-gray-700 hover:text-blue-700 transition-colors flex items-center"
@@ -134,7 +138,7 @@ export function Navbar() {
                   <UserCircle2 size={24} />
                 </button>
                 {isAccountMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-[1001]" role="menu">
                     <Link
                       to="/onboarding"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

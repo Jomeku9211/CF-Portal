@@ -1,4 +1,4 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF';
+import { API_BASE_URL } from './config';
 
 export interface Team {
   id: string;
@@ -54,7 +54,7 @@ class TeamService {
 
   async createTeam(data: CreateTeamData): Promise<TeamResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/team`, {
+      const response = await fetch(`${API_BASE_URL}/team`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -84,7 +84,7 @@ class TeamService {
 
   async getTeamsByOrganization(organizationId: string): Promise<TeamResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/team?organization_id=${organizationId}`, {
+      const response = await fetch(`${API_BASE_URL}/team?organization_id=${organizationId}`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -113,7 +113,7 @@ class TeamService {
 
   async getUserTeams(): Promise<TeamResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/team`, {
+      const response = await fetch(`${API_BASE_URL}/team`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -142,7 +142,7 @@ class TeamService {
 
   async getTeamById(id: string): Promise<TeamResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/team/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/team/${id}`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -171,7 +171,7 @@ class TeamService {
 
   async updateTeam(id: string, data: Partial<CreateTeamData>): Promise<TeamResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/team/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/team/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -201,7 +201,7 @@ class TeamService {
 
   async deleteTeam(id: string): Promise<TeamResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/team/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/team/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders(),
       });

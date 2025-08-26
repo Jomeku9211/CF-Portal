@@ -1,4 +1,4 @@
-const XANO_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:ZqkMXGPF';
+import { API_BASE_URL } from './config';
 
 export interface Organization {
   id: string;
@@ -69,11 +69,11 @@ class OrganizationService {
 
   async createOrganization(data: CreateOrganizationData): Promise<OrganizationResponse> {
     try {
-      console.log('Sending request to:', `${XANO_BASE_URL}/organization`);
+      console.log('Sending request to:', `${API_BASE_URL}/organization`);
       console.log('Request headers:', this.getAuthHeaders());
       console.log('Request body:', JSON.stringify(data, null, 2));
       
-      const response = await fetch(`${XANO_BASE_URL}/organization`, {
+      const response = await fetch(`${API_BASE_URL}/organization`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -109,7 +109,7 @@ class OrganizationService {
           const retryPayload = { ...data } as any;
           delete retryPayload.industry;
           console.warn('Retrying createOrganization without industry due to enum validation error');
-          const retryRes = await fetch(`${XANO_BASE_URL}/organization`, {
+          const retryRes = await fetch(`${API_BASE_URL}/organization`, {
             method: 'POST',
             headers: this.getAuthHeaders(),
             body: JSON.stringify(retryPayload),
@@ -141,7 +141,7 @@ class OrganizationService {
 
   async getUserOrganizations(): Promise<OrganizationResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/organization`, {
+      const response = await fetch(`${API_BASE_URL}/organization`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -170,7 +170,7 @@ class OrganizationService {
 
   async getOrganizationById(id: string): Promise<OrganizationResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/organization/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/${id}`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -199,7 +199,7 @@ class OrganizationService {
 
   async updateOrganization(id: string, data: Partial<CreateOrganizationData>): Promise<OrganizationResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/organization/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data),
@@ -229,7 +229,7 @@ class OrganizationService {
 
   async deleteOrganization(id: string): Promise<OrganizationResponse> {
     try {
-      const response = await fetch(`${XANO_BASE_URL}/organization/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/organization/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders(),
       });
