@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/auto-commenting/process",
+      "dest": "/api/auto-commenting/process.ts"
+    }
+  ],
+  "env": {
+    "PLAYWRIGHT_BROWSERS_PATH": "0"
+  },
+  "functions": {
+    "api/auto-commenting/process.ts": {
+      "maxDuration": 60
+    }
+  }
+}

@@ -1,17 +1,20 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   moduleNameMapper: {
     // Place asset mocks BEFORE alias mapping so image imports like '@/assets/CFLogo.png' are mocked
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/src/__tests__/mocks/file-mock.js',
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/tests/mocks/file-mock.js',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '^@/services/scraper/config$': '<rootDir>/src/__tests__/mocks/scraper-config-mock.ts',
+    '^@/services/scraper/config$': '<rootDir>/tests/mocks/scraper-config-mock.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   testMatch: [
-    '<rootDir>/src/__tests__/**/*.test.{ts,tsx}',
-    '<rootDir>/src/__tests__/**/*.spec.{ts,tsx}',
+    '<rootDir>/tests/**/*.test.{ts,tsx}',
+    '<rootDir>/tests/**/*.spec.{ts,tsx}',
+  ],
+  testPathIgnorePatterns: [
+    '<rootDir>/tests/e2e/', // Playwright tests are run via Playwright, not Jest
   ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
@@ -21,7 +24,7 @@ module.exports = {
     '!src/**/*.spec.{ts,tsx}',
     '!src/main.tsx',
     '!src/vite-env.d.ts',
-    '!src/__tests__/**/*'
+    '!tests/**/*'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'html', 'lcov'],
@@ -39,6 +42,11 @@ module.exports = {
     }]
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  testTimeout: 10000
+  testTimeout: 10000,
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json'
+    }
+  }
 };
 
